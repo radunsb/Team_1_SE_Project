@@ -9,6 +9,7 @@ public class Schedule {
     private String semester;
     private String scheduleName;
     private ArrayList<Course> courses;
+    //alex is nice
 
     public Schedule(int scheduleID, String semester, String scheduleName) {
         this.scheduleID = scheduleID;
@@ -37,6 +38,7 @@ public class Schedule {
      * @return a string representation of a schedule in a weekly timeslot format
      */
     public String toString(){
+        //this will return the name of the schedule
         return null;
     }
 
