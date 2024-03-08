@@ -15,7 +15,7 @@ public class Main {
     }
 
     public static void run(){
-
+        //read CSV here
     }
 
     public HashMap<String, Course> getCourseCatalog() {
