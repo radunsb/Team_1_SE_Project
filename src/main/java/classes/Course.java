@@ -8,7 +8,7 @@ public class Course {
     private String name;
     private String description;
     private String professor;
-    private ArrayList<Date> meetingTimes;
+    private Date[][] meetingTimes;
     private char[] meetingDays;
     private ArrayList<String> meetingLocations;
     private ArrayList<String> prerequisites; //ArrayList of course codes
@@ -18,7 +18,7 @@ public class Course {
                   String name,
                   String description,
                   String professor,
-                  ArrayList<Date> meetingTimes,
+                  Date[][] meetingTimes,
                   char[] meetingDays,
                   ArrayList<String> meetingLocations,
                   ArrayList<String> prerequisites,
@@ -62,11 +62,11 @@ public class Course {
         this.professor = professor;
     }
 
-    public ArrayList<Date> getMeetingTimes() {
+    public Date[][] getMeetingTimes() {
         return meetingTimes;
     }
 
-    public void setMeetingTimes(ArrayList<Date> meetingTimes) {
+    public void setMeetingTimes(Date[][] meetingTimes) {
         this.meetingTimes = meetingTimes;
     }
 
