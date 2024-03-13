@@ -5,8 +5,9 @@ import java.util.ArrayList;
 public class Filter {
     private ArrayList<String> input;
     private FilterType type; //see FilterType enum below
-    enum FilterType{
-        //Fill in later
+    public enum FilterType{
+        TIME,
+        DAY
     }
 
     public Filter(ArrayList<String> input, FilterType type) {

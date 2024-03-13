@@ -23,7 +23,8 @@ public class Search {
      * @return the results of the filter application
      */
     public ArrayList<Course> addFilter(Filter filter){
-        return null;
+        appliedFilters.add(filter);
+        return search(appliedFilters);
     }
 
     /**
@@ -34,7 +35,8 @@ public class Search {
      * @return the results of the filter removal
      */
     public ArrayList<Course> removeFilter(Filter filter){
-        return null;
+        appliedFilters.remove(filter);
+        return search(appliedFilters);
     }
 
     /**
@@ -52,7 +54,17 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(ArrayList<Filter> filters){
-        return null;
+        Main main = new Main();
+        ArrayList<Course> allCourses = (ArrayList<Course>) main.getCourseCatalog().values();
+        for(Filter filter : filters){
+            if(filter.getType() == Filter.FilterType.DAY){
+                //filter by day here
+            }
+            else if(filter.getType() == Filter.FilterType.TIME){
+                //filter by time here
+            }
+        }
+        return allCourses;
     }
 
     public String getQuery() {
