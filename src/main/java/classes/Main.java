@@ -23,4 +23,8 @@ public class Main {
         return courseCatalog;
     }
 
+    public void setCourseCatalog(HashMap<String, Course> map){
+        this.courseCatalog = map;
+    }
+
 }

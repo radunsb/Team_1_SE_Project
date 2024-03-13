@@ -55,10 +55,19 @@ public class Search {
      */
     public ArrayList<Course> search(ArrayList<Filter> filters){
         Main main = new Main();
-        ArrayList<Course> allCourses = (ArrayList<Course>) main.getCourseCatalog().values();
+        //ArrayList<Course> allCourses = (ArrayList<Course>) main.getCourseCatalog().values();
+        ArrayList<Course> allCourses = this.results;
         for(Filter filter : filters){
             if(filter.getType() == Filter.FilterType.DAY){
-                //filter by day here
+                ArrayList<Integer> days = new ArrayList<>();
+                filter.getInput().forEach(filt -> days.add(Integer.parseInt(filt)));
+                for(Course course : allCourses){
+                    for(Integer day : days) {
+                        if (course.getMeetingTimes()[day] == null){
+                            allCourses.remove(course);
+                        }
+                    }
+                }
             }
             else if(filter.getType() == Filter.FilterType.TIME){
                 //filter by time here
