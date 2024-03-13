@@ -23,7 +23,7 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-
+    courses.add(course);
     }
 
     /**
