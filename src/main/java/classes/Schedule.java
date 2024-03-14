@@ -3,6 +3,7 @@ package classes;
 import classes.Course;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Schedule {
     private int scheduleID;
@@ -29,7 +30,9 @@ public class Schedule {
      * @param course is the course to remove from the schedule
      */
     public void removeCourse(Course course){
-
+        if (courseConflict(course).equals(course)) {
+            courses.add(course);
+        }
     }
 
     /**
@@ -70,5 +73,25 @@ public class Schedule {
 
     public void setCourses(ArrayList<Course> courses) {
         this.courses = courses;
+    }
+
+    // private method that will check candidate course with existing courses for conflict
+    // returns candidate course if there is no conflict, returns course it conflicts with otheriwse
+    private Course courseConflict(Course candidate) {
+        Date candidateStartTime = candidate.getMeetingTimes().get(0);
+        Date candidateEndTime = candidate.getMeetingTimes().get(0);
+
+        for (Course check: courses) {
+            if (check.getCourseCode().equals(candidate.getCourseCode()))
+                return check;
+
+            Date existingStartTime = check.getMeetingTimes().get(0);
+            Date existingEndTime = check.getMeetingTimes().get(0);
+            if (existingEndTime.after(candidateStartTime) || existingStartTime.before(candidateEndTime)) {
+                return check;
+            }
+        }
+
+        return candidate;
     }
 }
