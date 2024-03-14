@@ -1,7 +1,7 @@
 package classes;
 
 import classes.Course;
-
+import classes.Student;
 import java.util.HashMap;
 
 public class Main {
