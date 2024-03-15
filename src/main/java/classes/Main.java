@@ -39,7 +39,6 @@ public class Main {
         courseCatalog = new HashMap<String, Course>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));
-        //scnr.useDelimiter(",");
         // Get the header line and skip it
         String headLine = scnr.nextLine();
 
@@ -73,7 +72,7 @@ public class Main {
             String startTime = line.next();
             String endTime = line.next();
 
-            Date[][] times = new Date[5][2];
+            Date[][] times = new Date[2][5];
 
 
 
