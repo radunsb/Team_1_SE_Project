@@ -22,7 +22,9 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-        System.out.println("Hello world!");
+        if (courseConflict(course).equals(course)) {
+            courses.add(course);
+        }
     }
 
     /**
@@ -30,9 +32,7 @@ public class Schedule {
      * @param course is the course to remove from the schedule
      */
     public void removeCourse(Course course){
-        if (courseConflict(course).equals(course)) {
-            courses.add(course);
-        }
+
     }
 
     /**

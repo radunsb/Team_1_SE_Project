@@ -87,7 +87,9 @@ public class Course {
         return corequisites;
     }
 
-    public void setCorequisites(ArrayList<String> corequisites) {
-        this.corequisites = corequisites;
+    public void setCorequisites(ArrayList<String> corequisites) { this.corequisites = corequisites; }
+
+    public String toString() {
+        return getCourseCode();
     }
 }
