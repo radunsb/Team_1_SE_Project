@@ -5,6 +5,8 @@ import java.util.*;
 
 import java.util.ArrayList;
 
+import static classes.Student.Class.JUNIOR;
+
 public class Schedule {
     private int scheduleID;
     private String semester;
@@ -84,3 +86,12 @@ public class Schedule {
         this.courses = courses;
     }
 }
+
+
+
+
+//ArrayList<Major> M = new ArrayList<Major>();
+//ArrayList<Minor> m = new ArrayList<Minor>();
+//ArrayList<Course> C = new ArrayList<Course>();
+//ArrayList<Schedule> s = new ArrayList<Schedule>();
+//Student Ben = new Student(1234,"Ben",JUNIOR,M,m,C,s);

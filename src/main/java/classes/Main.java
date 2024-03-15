@@ -20,11 +20,8 @@ public class Main {
     }
 
     public static void run(){
-        ArrayList<Major> M = new ArrayList<Major>();
-        ArrayList<Minor> m = new ArrayList<Minor>();
-        ArrayList<Course> C = new ArrayList<Course>();
-        ArrayList<Schedule> s = new ArrayList<Schedule>();
-        Student Ben = new Student(1234,"Ben",JUNIOR,M,m,C,s);
+
+
     }
 
     public HashMap<String, Course> getCourseCatalog() {

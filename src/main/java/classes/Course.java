@@ -13,6 +13,7 @@ public class Course {
     private ArrayList<String> prerequisites; //ArrayList of course codes
     private ArrayList<String> corequisites; //ArrayList of course codes
 
+
     public Course(String courseCode,
                   String name,
                   String description,
