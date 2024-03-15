@@ -54,26 +54,50 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(ArrayList<Filter> filters){
-        Main main = new Main();
-        //ArrayList<Course> allCourses = (ArrayList<Course>) main.getCourseCatalog().values();
+        //get list of courses to further cut down with filters
         ArrayList<Course> allCourses = this.results;
         for(Filter filter : filters){
-            if(filter.getType() == Filter.FilterType.DAY){
-                ArrayList<Integer> days = new ArrayList<>();
-                filter.getInput().forEach(filt -> days.add(Integer.parseInt(filt)));
-                for(Course course : allCourses){
-                    for(Integer day : days) {
-                        if (course.getMeetingTimes()[day] == null){
-                            allCourses.remove(course);
-                        }
-                    }
-                }
-            }
-            else if(filter.getType() == Filter.FilterType.TIME){
-                //filter by time here
+            switch(filter.getType()){
+                case Filter.FilterType.DAY:
+                    allCourses = filterDay(allCourses, filter);
+                    break;
+                case Filter.FilterType.TIME:
+                    allCourses = filterTime(allCourses, filter);
+                    break;
+                default:
+                    break;
             }
         }
         return allCourses;
+    }
+
+    public ArrayList<Course> filterDay(ArrayList<Course> courses, Filter filter){
+        ArrayList<Integer> days = new ArrayList<>();
+        filter.getInput().forEach(filt -> {switch(filt){
+            case "M":
+                days.add(0); break;
+            case "T":
+                days.add(1); break;
+            case "W":
+                days.add(2); break;
+            case "R":
+                days.add(3); break;
+            case "F":
+                days.add(4); break;
+            default: break;
+        }});
+        for(Course course : courses){
+            for(Integer day : days) {
+                if (!(course.getMeetingDays()[day])){
+                    courses.remove(course);
+                }
+            }
+        }
+        return courses;
+    }
+
+    public ArrayList<Course> filterTime(ArrayList<Course> courses, Filter filter){
+        return courses;
     }
 
     public String getQuery() {
