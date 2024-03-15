@@ -52,6 +52,11 @@ public class Student {
 
     }
 
+    public void addNewSchedule(int scheduleID, String semester, String scheuleName){
+        Schedule s = new Schedule(scheduleID,semester,scheuleName);
+        schedules.add(s);
+    }
+
     /**
      * Adds the specified classes.Major object to the majors ArrayList
      * @param major is the specified major to add

@@ -10,7 +10,7 @@ public class Schedule {
     private String semester;
     private String scheduleName;
     private ArrayList<Course> courses;
-    //alex is nice
+
 
     public Schedule(int scheduleID, String semester, String scheduleName) {
         this.scheduleID = scheduleID;
@@ -32,7 +32,11 @@ public class Schedule {
      */
     public void removeCourse(Course course){
     String courseCode = course.getCourseCode();
-
+        for(int i = 0; i < courses.size(); i++){
+            if(courses.get(i).getCourseCode().equals(courseCode)){
+                courses.remove(i);
+            }
+        }
     }
 
     /**
@@ -41,7 +45,7 @@ public class Schedule {
      */
     public String toString(){
 
-        StringBuilder str = new StringBuilder();
+
 
         return null;
     }
