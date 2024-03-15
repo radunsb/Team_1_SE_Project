@@ -1,7 +1,7 @@
 package classes;
 
 import java.util.ArrayList;
-
+//Pull test request
 public class Filter {
     private ArrayList<String> input;
     private FilterType type; //see FilterType enum below

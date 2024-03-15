@@ -1,6 +1,7 @@
 package classes;
 
 import classes.Course;
+import java.util.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,6 +11,7 @@ public class Schedule {
     private String semester;
     private String scheduleName;
     private ArrayList<Course> courses;
+    //alex is nice
 
     public Schedule(int scheduleID, String semester, String scheduleName) {
         this.scheduleID = scheduleID;
@@ -32,6 +34,7 @@ public class Schedule {
      * @param course is the course to remove from the schedule
      */
     public void removeCourse(Course course){
+    String courseCode = course.getCourseCode();
 
     }
 
@@ -40,6 +43,9 @@ public class Schedule {
      * @return a string representation of a schedule in a weekly timeslot format
      */
     public String toString(){
+
+        StringBuilder str = new StringBuilder();
+
         return null;
     }
 

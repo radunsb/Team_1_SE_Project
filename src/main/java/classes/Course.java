@@ -8,7 +8,8 @@ public class Course {
     private String name;
     private String description;
     private String professor;
-    private ArrayList<Date> meetingTimes;
+    private Date[][] meetingTimes;
+    private boolean[] meetingDays;
     private ArrayList<String> meetingLocations;
     private ArrayList<String> prerequisites; //ArrayList of course codes
     private ArrayList<String> corequisites; //ArrayList of course codes
@@ -17,7 +18,8 @@ public class Course {
                   String name,
                   String description,
                   String professor,
-                  ArrayList<Date> meetingTimes,
+                  Date[][] meetingTimes,
+                  boolean[] meetingDays,
                   ArrayList<String> meetingLocations,
                   ArrayList<String> prerequisites,
                   ArrayList<String> corequisites) {
@@ -26,6 +28,7 @@ public class Course {
         this.description = description;
         this.professor = professor;
         this.meetingTimes = meetingTimes;
+        this.meetingDays = meetingDays;
         this.meetingLocations = meetingLocations;
         this.prerequisites = prerequisites;
         this.corequisites = corequisites;
@@ -59,12 +62,19 @@ public class Course {
         this.professor = professor;
     }
 
-    public ArrayList<Date> getMeetingTimes() {
+    public Date[][] getMeetingTimes() {
         return meetingTimes;
     }
 
-    public void setMeetingTimes(ArrayList<Date> meetingTimes) {
+    public void setMeetingTimes(Date[][] meetingTimes) {
         this.meetingTimes = meetingTimes;
+    }
+
+    public boolean[] getMeetingDays(){
+        return meetingDays;
+    }
+    public void setMeetingDays(boolean[] meetingDays){
+        this.meetingDays = meetingDays;
     }
 
     public ArrayList<String> getMeetingLocations() {
