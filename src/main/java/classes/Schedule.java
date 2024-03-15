@@ -44,10 +44,11 @@ public class Schedule {
      * @return a string representation of a schedule in a weekly timeslot format
      */
     public String toString(){
-
-
-
-        return null;
+    StringBuilder str = new StringBuilder();
+    str.append("Schedule ID: |");
+    str.append(scheduleID);
+    str.append(" |");
+        return str.toString();
     }
 
     public int getScheduleID() {
