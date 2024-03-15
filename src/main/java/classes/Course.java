@@ -9,7 +9,7 @@ public class Course {
     private String description;
     private String professor;
     private Date[][] meetingTimes;
-    private char[] meetingDays;
+    private boolean[] meetingDays;
     private ArrayList<String> meetingLocations;
     private ArrayList<String> prerequisites; //ArrayList of course codes
     private ArrayList<String> corequisites; //ArrayList of course codes
@@ -19,7 +19,7 @@ public class Course {
                   String description,
                   String professor,
                   Date[][] meetingTimes,
-                  char[] meetingDays,
+                  boolean[] meetingDays,
                   ArrayList<String> meetingLocations,
                   ArrayList<String> prerequisites,
                   ArrayList<String> corequisites) {
@@ -70,10 +70,10 @@ public class Course {
         this.meetingTimes = meetingTimes;
     }
 
-    public char[] getMeetingDays(){
+    public boolean[] getMeetingDays(){
         return meetingDays;
     }
-    public void setMeetingDays(char[] meetingDays){
+    public void setMeetingDays(boolean[] meetingDays){
         this.meetingDays = meetingDays;
     }
 
