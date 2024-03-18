@@ -7,17 +7,17 @@ class ScheduleTest {
 
     @Test
     void addCourse() {
-        assertEquals(2, 1);
+        assertEquals(0, 1);
     }
 
     @Test
     void removeCourse() {
-        assertEquals(2,1);
+        assertEquals(0,1);
     }
 
     @Test
     void testToString() {
-        assertEquals(2, 1);
+        assertEquals(0, 1);
     }
 
 }
