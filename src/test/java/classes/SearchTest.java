@@ -26,7 +26,7 @@ class SearchTest {
         boolean[] days = {true, false, false, false, false};
         ArrayList<String> emptyList = new ArrayList<>();
         Course testCourse1 = new Course("1", "test1", "test course",
-                "James Borg", emptyTimes, days, emptyList, emptyList, emptyList);
+                "James Borg", emptyTimes, days, 0, 0, Course.Semester.FALL, 30, emptyList, emptyList, emptyList);
         ArrayList<Course> courses = new ArrayList<>();
         courses.add(testCourse1);
         Filter monday = new Filter(daysWanted, Filter.FilterType.DAY);
