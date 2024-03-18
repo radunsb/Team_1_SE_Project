@@ -1,8 +1,13 @@
 package classes;
 
 import classes.Course;
-
+import classes.Schedule;
+import classes.Student;
+import classes.Major;
+import java.util.ArrayList;
 import java.util.HashMap;
+
+import static classes.Student.Class.JUNIOR;
 
 public class Main {
 
@@ -15,8 +20,8 @@ public class Main {
     }
 
     public static void run(){
-        //TODO: read CSV here
-        //Pull test comment
+
+
     }
 
     public HashMap<String, Course> getCourseCatalog() {
