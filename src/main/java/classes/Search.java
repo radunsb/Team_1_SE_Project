@@ -86,18 +86,26 @@ public class Search {
                 days.add(4); break;
             default: break;
         }});
+        ArrayList<Course> toRemove = new ArrayList<>();
         for(Course course : courses){
             for(Integer day : days) {
                 if (!(course.getMeetingDays()[day])){
-                    courses.remove(course);
+                    toRemove.add(course);
                 }
             }
         }
+        courses.removeAll(toRemove);
         return courses;
     }
 
     public ArrayList<Course> filterTime(ArrayList<Course> courses, Filter filter){
-        return courses;
+        ArrayList<Course> toKeep = new ArrayList<>();
+        String startTime = filter.getInput().get(0);
+        String endTime = filter.getInput().get(1);
+        for(Course course : courses){
+
+        }
+        return toKeep;
     }
 
     public String getQuery() {
