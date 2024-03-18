@@ -73,7 +73,7 @@ public class Search {
 
     public ArrayList<Course> filterDay(ArrayList<Course> courses, Filter filter){
         ArrayList<Integer> days = new ArrayList<>();
-        filter.getInput().forEach(filt -> {switch(filt){
+        filter.getInput().forEach(filt -> {switch(filt.toUpperCase()){
             case "M":
                 days.add(0); break;
             case "T":
