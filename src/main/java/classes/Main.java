@@ -4,10 +4,9 @@ import classes.Course;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.*;
 
 public class Main {
 
@@ -23,19 +22,20 @@ public class Main {
         // Read the CSV
         try{
             readCSV();
-        } catch(FileNotFoundException e){
+        } catch(FileNotFoundException | ParseException e){
             System.out.println(e.getMessage());
         }
 
 //        Course c1 = courseCatalog.get("ACCT201A");
 //        System.out.println(c1.getName());
+//        System.out.println(c1.getMeetingTimes()[0][0]);
 
-//        for(Course c : courseCatalog.values()){
-//            System.out.println(c.getProfessor());
-//        }
+        for(Course c : courseCatalog.values()){
+            System.out.println(c.getProfessor());
+        }
     }
 
-    private static void readCSV() throws FileNotFoundException {
+    private static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new HashMap<String, Course>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));
@@ -72,9 +72,27 @@ public class Main {
             String startTime = line.next();
             String endTime = line.next();
 
+            Scanner sc1 = new Scanner(startTime);
+            sc1.useDelimiter(":");
+            int sHrs = sc1.nextInt();
+            int sMin = sc1.nextInt();
+
+            Scanner sc2 = new Scanner(endTime);
+            sc2.useDelimiter(":");
+            int eHrs = sc2.nextInt();
+            int eMin = sc2.nextInt();
+
             Date[][] times = new Date[2][5];
 
-
+            for(int i = 0; i < days.length; i++) {
+                if (days[i]) {
+                    times[0][i] = new Date(1970, Calendar.JANUARY, 1, sHrs, sMin);
+                    times[1][i] = new Date(1970, Calendar.JANUARY, 1, eHrs, eMin);
+                }else{
+                    times[0][i] = null;
+                    times[1][i] = null;
+                }
+            }
 
             String profLast = line.next();
             String profFirst = line.next();
@@ -85,8 +103,8 @@ public class Main {
                     courseName,
                     "Not Available",
                     profFirst+" "+profLast,
-                    null,
-                    null,
+                    times,
+                    days,
                     null,
                     null,
                     null
