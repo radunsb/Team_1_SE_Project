@@ -11,7 +11,7 @@ import java.util.*;
 public class Main {
 
     private static Schedule currentSchedule;
-    private static HashMap<String, Course> courseCatalog; //course codes -> courses
+    private static ArrayList<Course> courseCatalog;
 
 
     public static void main(String[] args) {
@@ -26,17 +26,21 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-//        Course c1 = courseCatalog.get("ACCT201A");
-//        System.out.println(c1.getName());
-//        System.out.println(c1.getMeetingTimes()[0][0]);
+        // Sanity Testing: I tried it with pretty much all of the attributes and they all seem good
+        // Since its kind of hard to unit test it lol
+//        for(Course c: courseCatalog){
+//            System.out.println(c.getCourseCode());
+//        }
 
-        for(Course c : courseCatalog.values()){
-            System.out.println(c.getProfessor());
-        }
     }
 
+    /**
+     * Reads the 2020-2021.csv file and parses the data into an ArrayList of course objects
+     * @throws FileNotFoundException if the file isn't found
+     * @throws ParseException if something weird happens (it shouldn't, hopefully. . .)
+     */
     private static void readCSV() throws FileNotFoundException, ParseException {
-        courseCatalog = new HashMap<String, Course>();
+        courseCatalog = new ArrayList<>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));
         // Get the header line and skip it
@@ -47,7 +51,13 @@ public class Main {
             line.useDelimiter(",");
 
             int year = line.nextInt();
-            int semester = line.nextInt();
+            int term = line.nextInt();
+            Course.Semester semester;
+            if(term == 10){
+                semester = Course.Semester.FALL;
+            }else{
+                semester = Course.Semester.SPRING;
+            }
             StringBuilder code = new StringBuilder();
             code.append(line.next());
             code.append(line.next());
@@ -68,36 +78,40 @@ public class Main {
                 }
             }
 
-            // TODO: Parse and format the times properly; Talk to Jackson to figure out format
             String startTime = line.next();
             String endTime = line.next();
 
-            Scanner sc1 = new Scanner(startTime);
-            sc1.useDelimiter(":");
-            int sHrs = sc1.nextInt();
-            int sMin = sc1.nextInt();
+            Date[][] times = null;
 
-            Scanner sc2 = new Scanner(endTime);
-            sc2.useDelimiter(":");
-            int eHrs = sc2.nextInt();
-            int eMin = sc2.nextInt();
+            // Some of the classes don't have times (Online courses)
+            if(!startTime.equals("")){
+                Scanner sc1 = new Scanner(startTime);
+                sc1.useDelimiter(":");
+                int sHrs = sc1.nextInt();
+                int sMin = sc1.nextInt();
 
-            Date[][] times = new Date[2][5];
+                Scanner sc2 = new Scanner(endTime);
+                sc2.useDelimiter(":");
+                int eHrs = sc2.nextInt();
+                int eMin = sc2.nextInt();
 
-            for(int i = 0; i < days.length; i++) {
-                if (days[i]) {
-                    times[0][i] = new Date(1970, Calendar.JANUARY, 1, sHrs, sMin);
-                    times[1][i] = new Date(1970, Calendar.JANUARY, 1, eHrs, eMin);
-                }else{
-                    times[0][i] = null;
-                    times[1][i] = null;
+                times = new Date[2][5];
+                for(int i = 0; i < days.length; i++) {
+                    if (days[i]) {
+                        times[0][i] = new Date(1970, Calendar.JANUARY, 1, sHrs, sMin);
+                        times[1][i] = new Date(1970, Calendar.JANUARY, 1, eHrs, eMin);
+                    }else{
+                        times[0][i] = null;
+                        times[1][i] = null;
+                    }
                 }
             }
 
             String profLast = line.next();
             String profFirst = line.next();
 
-            // If we want the comments off the csv file, they need to be dealt with here
+            // TODO: If we want the comments off the csv file, they need to be dealt with here
+            // TODO: Also need to write the logic for combining weird courses such as calculus -> will do later
 
             Course newCourse = new Course(code.toString(),
                     courseName,
@@ -105,18 +119,22 @@ public class Main {
                     profFirst+" "+profLast,
                     times,
                     days,
+                    year,
+                    credits,
+                    semester,
+                    capacity,
                     null,
                     null,
                     null
                     );
 
-            courseCatalog.put(code.toString(), newCourse);
+            courseCatalog.add(newCourse);
 
         }
 
     }
 
-    public HashMap<String, Course> getCourseCatalog() {
+    public ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
 
