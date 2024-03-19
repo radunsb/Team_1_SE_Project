@@ -43,7 +43,15 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(String query){
-        return null;
+        ArrayList<Course> newResults = new ArrayList<>();
+        query = query.toUpperCase();
+        for(Course course : results){
+            if(course.getName().toUpperCase().contains(query) || course.getCourseCode().toUpperCase().contains(query)){
+                newResults.add(course);
+            }
+        }
+        // TODO: talk to Ben about modifying class results variable and about global catalog variable
+        return newResults;
     }
 
     /**
