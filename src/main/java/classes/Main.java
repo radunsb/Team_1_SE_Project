@@ -1,10 +1,7 @@
 package classes;
 
-import classes.Course;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.*;
 
@@ -26,7 +23,7 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        // Sanity Testing: I tried it with pretty much all of the attributes and they all seem good
+        // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
         // Since its kind of hard to unit test it lol
 //        for(Course c: courseCatalog){
 //            System.out.println(c.getCourseCode());
