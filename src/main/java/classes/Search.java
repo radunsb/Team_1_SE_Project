@@ -7,13 +7,15 @@ import java.util.ArrayList;
 
 public class Search {
     private String query;
+    private ArrayList<Course> courseCatalog;
     private ArrayList<Course> results;
     private ArrayList<Filter> appliedFilters;
 
-    public Search(String query, ArrayList<Course> results, ArrayList<Filter> appliedFilters) {
+    public Search(String query, ArrayList<Course> courseCatalog, ArrayList<Filter> appliedFilters) {
         this.query = query;
-        this.results = results;
+        this.courseCatalog = courseCatalog;
         this.appliedFilters = appliedFilters;
+        this.results = courseCatalog;
     }
 
     /**
@@ -45,12 +47,12 @@ public class Search {
     public ArrayList<Course> search(String query){
         ArrayList<Course> newResults = new ArrayList<>();
         query = query.toUpperCase();
-        for(Course course : results){
+        for(Course course : courseCatalog){
             if(course.getName().toUpperCase().contains(query) || course.getCourseCode().toUpperCase().contains(query)){
                 newResults.add(course);
             }
         }
-        // TODO: talk to Ben about modifying class results variable and about global catalog variable
+        results = newResults;
         return newResults;
     }
 
