@@ -3,7 +3,9 @@ package classes;
 import classes.Course;
 import classes.Filter;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Search {
     private String query;
@@ -103,9 +105,23 @@ public class Search {
         String startTime = filter.getInput().get(0);
         String endTime = filter.getInput().get(1);
         for(Course course : courses){
-
+            for(Date[] times : course.getMeetingTimes()){
+                if(isTimeBetween(startTime, times[0], times[1]) && isTimeBetween(endTime, times[0], times[1])){
+                    toKeep.add(course);
+                }
+            }
         }
         return toKeep;
+    }
+
+    private Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        String start = dateFormat.format(startTime);
+        String end = dateFormat.format(endTime);
+        double startNum = Integer.parseInt((start.split(":"))[0]) + (Integer.parseInt((start.split(":"))[1])/60.0);
+        double endNum = Integer.parseInt((end.split(":"))[0]) + (Integer.parseInt((end.split(":"))[1])/60.0);
+        double userNum = Integer.parseInt((userInputTime.split(":"))[0]) + (Integer.parseInt((userInputTime.split(":"))[1])/60.0);
+        return (startNum <= userNum && userNum <= endNum);
     }
 
     public String getQuery() {
