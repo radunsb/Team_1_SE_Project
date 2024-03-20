@@ -34,6 +34,7 @@ public class Schedule {
      */
     public void removeCourse(Course course){
     String courseCode = course.getCourseCode();
+    String courseName = course.getName();
         for(int i = 0; i < courses.size(); i++){
             if(courses.get(i).getCourseCode().equals(courseCode)){
                 courses.remove(i);
@@ -53,6 +54,8 @@ public class Schedule {
         return str.toString();
         //hello there jackson
     }
+
+
 
     public int getScheduleID() {
         return scheduleID;

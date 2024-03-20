@@ -57,6 +57,25 @@ public class Student {
         schedules.add(s);
     }
 
+    public String switchSchedule(int s){
+        return schedules.get(s).toString();
+    }
+    public String switchSchedule(String name){
+        int place = 0;
+        while(!schedules.get(place).getScheduleName().equals(name)){
+            place ++;
+        }
+        return schedules.get(place).toString();
+    }
+
+    public String switchScheduleByCode(String code){
+        int place = 0;
+        while(!schedules.get(place).getScheduleName().equals(code)){
+            place ++;
+        }
+        return schedules.get(place).toString();
+    }
+
     /**
      * Adds the specified classes.Major object to the majors ArrayList
      * @param major is the specified major to add
