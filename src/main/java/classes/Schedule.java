@@ -109,10 +109,11 @@ public class Schedule {
         }
         // Loop that checks for conflict with users' timeslots and candidate timeslot
         // Set times for candidate
-        long candStartTime = candidate.getMeetingTimes()[0][0].getTime();
-        long candEndTime = candidate.getMeetingTimes()[0][1].getTime();
         for (Course check: courses) {
             if (candidate.getMeetingDays() == check.getMeetingDays()) {
+                // Set meeting times for candidate course
+                long candStartTime = candidate.getMeetingTimes()[0][0].getTime();
+                long candEndTime = candidate.getMeetingTimes()[0][1].getTime();
                 // Set meeting times for each course to check
                 long checkStartTime = check.getMeetingTimes()[0][0].getTime();
                 long checkEndTime = check.getMeetingTimes()[0][1].getTime();
