@@ -1,6 +1,9 @@
 package classes;
 
 import classes.Course;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -44,6 +47,19 @@ public class Schedule {
         StringBuilder str = new StringBuilder();
 
         return null;
+    }
+
+    public void saveSchedule(){
+        //save the current schedule to a csv file
+    }
+
+    public void loadSchedule(File csvToParse) throws FileNotFoundException {
+        Scanner inScan = new Scanner(csvToParse);
+        while(inScan.hasNext()){
+            //blah blah do stuff
+            inScan.next();
+        }
+        //read through the csv, setting the attributes of the Schedule to the parsed contents
     }
 
     public int getScheduleID() {
