@@ -7,13 +7,15 @@ import java.util.ArrayList;
 
 public class Search {
     private String query;
+    private ArrayList<Course> courseCatalog;
     private ArrayList<Course> results;
     private ArrayList<Filter> appliedFilters;
 
-    public Search(String query, ArrayList<Course> results, ArrayList<Filter> appliedFilters) {
+    public Search(String query, ArrayList<Course> courseCatalog, ArrayList<Filter> appliedFilters) {
         this.query = query;
-        this.results = results;
+        this.courseCatalog = courseCatalog;
         this.appliedFilters = appliedFilters;
+        this.results = courseCatalog;
     }
 
     /**
@@ -43,7 +45,15 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(String query){
-        return null;
+        ArrayList<Course> newResults = new ArrayList<>();
+        query = query.toUpperCase();
+        for(Course course : courseCatalog){
+            if(course.getName().toUpperCase().contains(query) || course.getCourseCode().toUpperCase().contains(query)){
+                newResults.add(course);
+            }
+        }
+        results = newResults;
+        return newResults;
     }
 
     /**
