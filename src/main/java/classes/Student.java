@@ -159,4 +159,9 @@ public class Student {
     public void setSchedules(ArrayList<Schedule> schedules) {
         this.schedules = schedules;
     }
+
+    public String toString() {
+        return username;
+    }
+
 }

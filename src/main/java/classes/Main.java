@@ -7,6 +7,7 @@ import java.util.*;
 
 public class Main {
 
+    private static ArrayList<Object> userValues;
     private static Schedule currentSchedule;
     private static ArrayList<Course> courseCatalog;
 
@@ -15,13 +16,70 @@ public class Main {
         run();
     }
 
-    public static void run(){
-        // Read the CSV
-        try{
-            readCSV();
-        } catch(FileNotFoundException | ParseException e){
-            System.out.println(e.getMessage());
+    public static void run() {
+
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Hello please enter 1 to create a new user");
+        int confirm = input.nextInt();
+        if (confirm == 1) {
+            userValues = new ArrayList<>();
+            System.out.println("alright lets make a new user");
+            Student ben = craftUser(input);
+            System.out.println("congratulations " + ben.toString() + " welcome to our app");
+
+        } else {
+            System.out.println("why would you not want to create a user");
         }
+
+    }
+
+    /**
+     * Prompts user to enter in account information and arranges info into
+     * an arraylist so a new student can be created
+     */
+    public static Student craftUser(Scanner s){
+        //ask for ID
+        System.out.println("please enter your student ID");
+        int id = s.nextInt();
+        //userValues.add(s.nextInt());
+
+        //ask for username
+        System.out.println("please enter a username");
+        String username = s.next();
+        //userValues.add(s.next());
+
+        //make everyone a Junior for right now
+        //userValues.add(Student.Class.JUNIOR);
+
+        //make everyone a compsci major
+        ArrayList<Major> majors = new ArrayList<>();
+        ArrayList<String> majorRequirments = new ArrayList<>();
+        Major compSci = new Major(1,"Computer Science", majorRequirments);
+
+        //give no one a minor
+        ArrayList<Minor> minors = new ArrayList<>();
+        ArrayList<String> minorRequirments = new ArrayList<>();
+        Minor n = new Minor(1,"nothing",minorRequirments);
+
+        //no course history right now
+        ArrayList<Course> courseHistory = new ArrayList<>();
+
+        //add empty schedule
+        ArrayList<Schedule> schedules = new ArrayList<Schedule>();
+
+        Student newStudent = new Student(id,username,Student.Class.JUNIOR,majors,minors,courseHistory,schedules);
+        System.out.println(newStudent.getSchedules());
+        return newStudent;
+    }
+
+
+        // Read the CSV
+//        try{
+//            readCSV();
+//        } catch(FileNotFoundException | ParseException e){
+//            System.out.println(e.getMessage());
+//        }
 
 
 
@@ -31,7 +89,7 @@ public class Main {
 //            System.out.println(c.getCourseCode());
 //        }
 
-    }
+    //}
 
     /**
      * Reads the 2020-2021.csv file and parses the data into an ArrayList of course objects
