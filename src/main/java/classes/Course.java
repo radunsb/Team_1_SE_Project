@@ -1,6 +1,7 @@
 package classes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 public class Course {
@@ -114,8 +115,16 @@ public class Course {
         return corequisites;
     }
 
-    public void setCorequisites(ArrayList<String> corequisites) {
-        this.corequisites = corequisites;
+    public void setCorequisites(ArrayList<String> corequisites) { this.corequisites = corequisites; }
+
+    public String toString() {
+        String code = getCourseCode();
+        String name = getName();
+        int credits = getCreditHrs();
+        Semester sem = getSemester();
+        int year = getYear();
+
+        return code +"--" +name +"--" +credits +"--" +sem +"--" +year;
     }
 
     public int getYear() {
