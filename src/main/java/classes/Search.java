@@ -116,9 +116,12 @@ public class Search {
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
         String start = dateFormat.format(startTime);
         String end = dateFormat.format(endTime);
-        double startNum = Integer.parseInt((start.split(":"))[0]) + (Integer.parseInt((start.split(":"))[1])/60.0);
-        double endNum = Integer.parseInt((end.split(":"))[0]) + (Integer.parseInt((end.split(":"))[1])/60.0);
-        double userNum = Integer.parseInt((userInputTime.split(":"))[0]) + (Integer.parseInt((userInputTime.split(":"))[1])/60.0);
+        double startNum = Integer.parseInt((start.split(":"))[0]) + (Integer.parseInt((start.split(":"))[1])/60.0)
+                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
+        double endNum = Integer.parseInt((end.split(":"))[0]) + (Integer.parseInt((end.split(":"))[1])/60.0)
+                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
+        double userNum = Integer.parseInt((userInputTime.split(":"))[0]) + (Integer.parseInt((userInputTime.split(":"))[1])/60.0)
+                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
         return (startNum <= userNum && userNum <= endNum);
     }
 
