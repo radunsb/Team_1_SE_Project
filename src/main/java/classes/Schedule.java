@@ -1,8 +1,6 @@
 package classes;
-
 import classes.Course;
 import java.util.*;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -120,7 +118,10 @@ public class Schedule {
                 long checkEndTime = check.getMeetingTimes()[0][1].getTime();
 
                 // Check corner cases for times of each
-                if (candStartTime < checkEndTime || candEndTime > checkStartTime) {
+                if (candStartTime < checkEndTime && candStartTime > checkStartTime && candEndTime > checkEndTime) {
+                    return check;
+                }
+                else if (candEndTime > checkStartTime && candStartTime < checkStartTime && candEndTime < checkEndTime) {
                     return check;
                 }
             }
