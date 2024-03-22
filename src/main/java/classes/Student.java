@@ -53,7 +53,7 @@ public class Student {
     }
 
     public void addNewSchedule(int scheduleID, String semester, String scheuleName){
-        Schedule s = new Schedule(scheduleID,semester, "mySchedule");
+        Schedule s = new Schedule(scheduleID,semester, scheuleName);
         schedules.add(s);
     }
 

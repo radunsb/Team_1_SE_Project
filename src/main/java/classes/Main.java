@@ -23,6 +23,8 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
+
+
         // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
         // Since its kind of hard to unit test it lol
 //        for(Course c: courseCatalog){
