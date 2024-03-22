@@ -106,22 +106,25 @@ public class Search {
             for(Date[] times : course.getMeetingTimes()){
                 if(isTimeBetween(startTime, times[0], times[1]) && isTimeBetween(endTime, times[0], times[1])){
                     toKeep.add(course);
+                    break;
                 }
             }
         }
         return toKeep;
     }
 
-    private Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
+    public Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
         String start = dateFormat.format(startTime);
         String end = dateFormat.format(endTime);
-        double startNum = Integer.parseInt((start.split(":"))[0]) + (Integer.parseInt((start.split(":"))[1])/60.0)
+        String userTime = userInputTime.split(" ")[0];
+        String userAMPM = userInputTime.split(" ")[1];
+        double startNum = Integer.parseInt((start.split(":"))[0])%12 + (Integer.parseInt((start.split(":"))[1])/60.0)
                 + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
-        double endNum = Integer.parseInt((end.split(":"))[0]) + (Integer.parseInt((end.split(":"))[1])/60.0)
-                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
-        double userNum = Integer.parseInt((userInputTime.split(":"))[0]) + (Integer.parseInt((userInputTime.split(":"))[1])/60.0)
-                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
+        double endNum = Integer.parseInt((end.split(":"))[0])%12 + (Integer.parseInt((end.split(":"))[1])/60.0)
+                + ((end.split(" ")[1].equals("PM")) ? 12 : 0);
+        double userNum = Integer.parseInt((userTime.split(":"))[0])%12 + (Integer.parseInt((userTime.split(":"))[1])/60.0)
+                + (userAMPM.equals("PM") ? 12 : 0);
         return (startNum <= userNum && userNum <= endNum);
     }
 
