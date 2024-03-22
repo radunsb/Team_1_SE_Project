@@ -1,9 +1,8 @@
 package classes;
 
-import classes.Course;
-import classes.Filter;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Search {
     private String query;
@@ -23,7 +22,8 @@ public class Search {
      * @return the results of the filter application
      */
     public ArrayList<Course> addFilter(Filter filter){
-        return null;
+        appliedFilters.add(filter);
+        return search(appliedFilters);
     }
 
     /**
@@ -34,7 +34,8 @@ public class Search {
      * @return the results of the filter removal
      */
     public ArrayList<Course> removeFilter(Filter filter){
-        return null;
+        appliedFilters.remove(filter);
+        return search(appliedFilters);
     }
 
     /**
@@ -52,7 +53,79 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(ArrayList<Filter> filters){
-        return null;
+        //get list of courses to further cut down with filters
+        ArrayList<Course> allCourses = this.results;
+        for(Filter filter : filters){
+            switch(filter.getType()){
+                case Filter.FilterType.DAY:
+                    allCourses = filterDay(allCourses, filter);
+                    break;
+                case Filter.FilterType.TIME:
+                    allCourses = filterTime(allCourses, filter);
+                    break;
+                default:
+                    break;
+            }
+        }
+        this.results = allCourses;
+        return allCourses;
+    }
+
+    public ArrayList<Course> filterDay(ArrayList<Course> courses, Filter filter){
+        ArrayList<Integer> days = new ArrayList<>();
+        filter.getInput().forEach(filt -> {switch(filt.toUpperCase()){
+            case "M":
+                days.add(0); break;
+            case "T":
+                days.add(1); break;
+            case "W":
+                days.add(2); break;
+            case "R":
+                days.add(3); break;
+            case "F":
+                days.add(4); break;
+            default: break;
+        }});
+        ArrayList<Course> toRemove = new ArrayList<>();
+        for(Course course : courses){
+            for(Integer day : days) {
+                if (!(course.getMeetingDays()[day])){
+                    toRemove.add(course);
+                }
+            }
+        }
+        courses.removeAll(toRemove);
+        return courses;
+    }
+
+    public ArrayList<Course> filterTime(ArrayList<Course> courses, Filter filter){
+        ArrayList<Course> toKeep = new ArrayList<>();
+        String startTime = filter.getInput().get(0);
+        String endTime = filter.getInput().get(1);
+        for(Course course : courses){
+            for(Date[] times : course.getMeetingTimes()){
+                if(isTimeBetween(startTime, times[0], times[1]) && isTimeBetween(endTime, times[0], times[1])){
+                    toKeep.add(course);
+                    break;
+                }
+            }
+        }
+        return toKeep;
+    }
+
+    public Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        String start = dateFormat.format(startTime);
+        String end = dateFormat.format(endTime);
+        String userTime = userInputTime.split(" ")[0];
+        String userAMPM = userInputTime.split(" ")[1];
+        double startNum = Integer.parseInt((start.split(":"))[0])%12 + (Integer.parseInt((start.split(":"))[1])/60.0)
+                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
+        double endNum = Integer.parseInt((end.split(":"))[0])%12 + (Integer.parseInt((end.split(":"))[1])/60.0)
+                + ((end.split(" ")[1].equals("PM")) ? 12 : 0);
+        double userNum = Integer.parseInt((userTime.split(":"))[0])%12 + (Integer.parseInt((userTime.split(":"))[1])/60.0)
+                + (userAMPM.equals("PM") ? 12 : 0);
+        return (startNum <= userNum && userNum <= endNum);
     }
 
     public String getQuery() {
@@ -78,4 +151,5 @@ public class Search {
     public void setAppliedFilters(ArrayList<Filter> appliedFilters) {
         this.appliedFilters = appliedFilters;
     }
+
 }
