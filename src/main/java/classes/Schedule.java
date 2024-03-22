@@ -102,28 +102,29 @@ public class Schedule {
      */
     private Course courseConflict(Course candidate) {
         // Loop to check if the class is already in the users' schedule
-        for (Course check: courses) {
+        for (Course check : courses) {
             if (check.getName().equals(candidate.getName())) {
                 return check;
             }
         }
         // Loop that checks for conflict with users' timeslots and candidate timeslot
         // Set times for candidate
-        for (Course check: courses) {
+        for (Course check : courses) {
             if (candidate.getMeetingDays() == check.getMeetingDays()) {
-                // Set meeting times for candidate course
-                long candStartTime = candidate.getMeetingTimes()[0][0].getTime();
-                long candEndTime = candidate.getMeetingTimes()[0][1].getTime();
-                // Set meeting times for each course to check
-                long checkStartTime = check.getMeetingTimes()[0][0].getTime();
-                long checkEndTime = check.getMeetingTimes()[0][1].getTime();
+                for (int i = 0; i < candidate.getMeetingTimes().length; i++) {
+                    // Set meeting times for candidate course
+                    long candStartTime = candidate.getMeetingTimes()[0][i].getTime();
+                    long candEndTime = candidate.getMeetingTimes()[1][i].getTime();
+                    // Set meeting times for each course to check
+                    long checkStartTime = check.getMeetingTimes()[0][i].getTime();
+                    long checkEndTime = check.getMeetingTimes()[1][i].getTime();
 
-                // Check corner cases for times of each
-                if (candStartTime < checkEndTime && candStartTime > checkStartTime && candEndTime > checkEndTime) {
-                    return check;
-                }
-                else if (candEndTime > checkStartTime && candStartTime < checkStartTime && candEndTime < checkEndTime) {
-                    return check;
+                    // Check corner cases for times of each
+                    if (candStartTime < checkEndTime && candStartTime > checkStartTime && candEndTime > checkEndTime) {
+                        return check;
+                    } else if (candEndTime > checkStartTime && candStartTime < checkStartTime && candEndTime < checkEndTime) {
+                        return check;
+                    }
                 }
             }
         }
