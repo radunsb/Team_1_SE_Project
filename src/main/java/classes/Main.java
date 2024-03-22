@@ -7,7 +7,6 @@ import java.util.*;
 
 public class Main {
 
-    private static ArrayList<Object> userValues;
     private static Schedule currentSchedule;
     private static ArrayList<Course> courseCatalog;
 
@@ -23,7 +22,6 @@ public class Main {
         System.out.println("Hello please enter 1 to create a new user");
         int confirm = input.nextInt();
         if (confirm == 1) {
-            userValues = new ArrayList<>();
             System.out.println("alright lets make a new user");
             Student ben = craftUser(input);
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
@@ -54,13 +52,9 @@ public class Main {
 
         //make everyone a compsci major
         ArrayList<Major> majors = new ArrayList<>();
-        ArrayList<String> majorRequirments = new ArrayList<>();
-        Major compSci = new Major(1,"Computer Science", majorRequirments);
 
         //give no one a minor
         ArrayList<Minor> minors = new ArrayList<>();
-        ArrayList<String> minorRequirments = new ArrayList<>();
-        Minor n = new Minor(1,"nothing",minorRequirments);
 
         //no course history right now
         ArrayList<Course> courseHistory = new ArrayList<>();
