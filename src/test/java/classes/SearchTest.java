@@ -44,4 +44,5 @@ class SearchTest {
         endCourses = newSearch.search(filters);
         assertEquals(0, endCourses.size());
     }
+
 }

@@ -1,8 +1,5 @@
 package classes;
 
-import classes.Course;
-import classes.Filter;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -70,6 +67,7 @@ public class Search {
                     break;
             }
         }
+        this.results = allCourses;
         return allCourses;
     }
 
@@ -115,7 +113,7 @@ public class Search {
     }
 
     private Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
         String start = dateFormat.format(startTime);
         String end = dateFormat.format(endTime);
         double startNum = Integer.parseInt((start.split(":"))[0]) + (Integer.parseInt((start.split(":"))[1])/60.0);
@@ -147,4 +145,5 @@ public class Search {
     public void setAppliedFilters(ArrayList<Filter> appliedFilters) {
         this.appliedFilters = appliedFilters;
     }
+
 }
