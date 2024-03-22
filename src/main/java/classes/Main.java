@@ -1,18 +1,15 @@
 package classes;
 
-import classes.Course;
-
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Scanner;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class Main {
 
     private static Schedule currentSchedule;
-    private static HashMap<String, Course> courseCatalog; //course codes -> courses
+    private static ArrayList<Course> courseCatalog;
 
 
     public static void main(String[] args) {
@@ -23,23 +20,29 @@ public class Main {
         // Read the CSV
         try{
             readCSV();
-        } catch(FileNotFoundException e){
+        } catch(FileNotFoundException | ParseException e){
             System.out.println(e.getMessage());
         }
 
-//        Course c1 = courseCatalog.get("ACCT201A");
-//        System.out.println(c1.getName());
+        // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
+        // Since its kind of hard to unit test it lol
+        for(Course c: courseCatalog){
+            if(c.getMeetingTimes() != null) {
+                System.out.println(c.getMeetingTimes()[0][0]);
+            }
+        }
 
-//        for(Course c : courseCatalog.values()){
-//            System.out.println(c.getProfessor());
-//        }
     }
 
-    private static void readCSV() throws FileNotFoundException {
-        courseCatalog = new HashMap<String, Course>();
+    /**
+     * Reads the 2020-2021.csv file and parses the data into an ArrayList of course objects
+     * @throws FileNotFoundException if the file isn't found
+     * @throws ParseException if something weird happens (it shouldn't, hopefully. . .)
+     */
+    private static void readCSV() throws FileNotFoundException, ParseException {
+        courseCatalog = new ArrayList<>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));
-        //scnr.useDelimiter(",");
         // Get the header line and skip it
         String headLine = scnr.nextLine();
 
@@ -48,7 +51,13 @@ public class Main {
             line.useDelimiter(",");
 
             int year = line.nextInt();
-            int semester = line.nextInt();
+            int term = line.nextInt();
+            Course.Semester semester;
+            if(term == 10){
+                semester = Course.Semester.FALL;
+            }else{
+                semester = Course.Semester.SPRING;
+            }
             StringBuilder code = new StringBuilder();
             code.append(line.next());
             code.append(line.next());
@@ -69,37 +78,54 @@ public class Main {
                 }
             }
 
-            // TODO: Parse and format the times properly; Talk to Jackson to figure out format
             String startTime = line.next();
             String endTime = line.next();
 
-            Date[][] times = new Date[5][2];
+            Date[][] times = null;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
 
-
+            // Some of the classes don't have times (Online courses)
+            if(!startTime.equals("")){
+                times = new Date[2][5];
+                for(int i = 0; i < days.length; i++) {
+                    if (days[i]) {
+                        times[0][i] = dateFormat.parse(startTime);
+                        times[1][i] = dateFormat.parse(endTime);
+                    }else{
+                        times[0][i] = null;
+                        times[1][i] = null;
+                    }
+                }
+            }
 
             String profLast = line.next();
             String profFirst = line.next();
 
-            // If we want the comments off the csv file, they need to be dealt with here
+            // TODO: If we want the comments off the csv file, they need to be dealt with here
+            // TODO: Also need to write the logic for combining weird courses such as calculus -> will do later
 
             Course newCourse = new Course(code.toString(),
                     courseName,
                     "Not Available",
                     profFirst+" "+profLast,
-                    null,
-                    null,
+                    times,
+                    days,
+                    year,
+                    credits,
+                    semester,
+                    capacity,
                     null,
                     null,
                     null
                     );
 
-            courseCatalog.put(code.toString(), newCourse);
+            courseCatalog.add(newCourse);
 
         }
 
     }
 
-    public HashMap<String, Course> getCourseCatalog() {
+    public ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
 

@@ -9,17 +9,30 @@ public class Course {
     private String description;
     private String professor;
     private Date[][] meetingTimes;
-    private char[] meetingDays;
+    private boolean[] meetingDays;
     private ArrayList<String> meetingLocations;
     private ArrayList<String> prerequisites; //ArrayList of course codes
     private ArrayList<String> corequisites; //ArrayList of course codes
+
+    private int year;
+    enum Semester{
+        FALL, SPRING
+    }
+    private Semester semester;
+    private int creditHrs;
+    private int capacity;
+
 
     public Course(String courseCode,
                   String name,
                   String description,
                   String professor,
                   Date[][] meetingTimes,
-                  char[] meetingDays,
+                  boolean[] meetingDays,
+                  int year,
+                  int creditHrs,
+                  Semester semester,
+                  int capacity,
                   ArrayList<String> meetingLocations,
                   ArrayList<String> prerequisites,
                   ArrayList<String> corequisites) {
@@ -29,6 +42,10 @@ public class Course {
         this.professor = professor;
         this.meetingTimes = meetingTimes;
         this.meetingDays = meetingDays;
+        this.year = year;
+        this.capacity = capacity;
+        this.creditHrs = creditHrs;
+        this.semester = semester;
         this.meetingLocations = meetingLocations;
         this.prerequisites = prerequisites;
         this.corequisites = corequisites;
@@ -70,10 +87,10 @@ public class Course {
         this.meetingTimes = meetingTimes;
     }
 
-    public char[] getMeetingDays(){
+    public boolean[] getMeetingDays(){
         return meetingDays;
     }
-    public void setMeetingDays(char[] meetingDays){
+    public void setMeetingDays(boolean[] meetingDays){
         this.meetingDays = meetingDays;
     }
 
@@ -99,5 +116,37 @@ public class Course {
 
     public void setCorequisites(ArrayList<String> corequisites) {
         this.corequisites = corequisites;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public Semester getSemester() {
+        return semester;
+    }
+
+    public void setSemester(Semester semester) {
+        this.semester = semester;
+    }
+
+    public int getCreditHrs() {
+        return creditHrs;
+    }
+
+    public void setCreditHrs(int creditHrs) {
+        this.creditHrs = creditHrs;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 }
