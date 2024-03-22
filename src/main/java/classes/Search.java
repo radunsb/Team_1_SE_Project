@@ -40,7 +40,7 @@ public class Search {
     }
 
     /**
-     * Searches courses based on the query provided
+     * Searches course codes and names for matches of the provided query
      * @param query is the string to search by
      * @return the results of the search
      */
