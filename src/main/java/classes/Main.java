@@ -40,17 +40,11 @@ public class Main {
         //ask for ID
         System.out.println("please enter your student ID");
         int id = s.nextInt();
-        //userValues.add(s.nextInt());
 
         //ask for username
         System.out.println("please enter a username");
         String username = s.next();
-        //userValues.add(s.next());
 
-        //make everyone a Junior for right now
-        //userValues.add(Student.Class.JUNIOR);
-
-        //make everyone a compsci major
         ArrayList<Major> majors = new ArrayList<>();
 
         //give no one a minor
