@@ -4,9 +4,11 @@ import classes.Course;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Schedule {
     private int scheduleID;
@@ -19,6 +21,7 @@ public class Schedule {
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;
+        this.courses = new ArrayList<>();
     }
 
     /**
@@ -26,7 +29,7 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-
+        courses.add(course);
     }
 
     /**
@@ -49,8 +52,17 @@ public class Schedule {
         return null;
     }
 
-    public void saveSchedule(){
+    public void saveSchedule() throws FileNotFoundException {
         //save the current schedule to a csv file
+        File csvOutputFile = new File(scheduleID + "_" + scheduleName);
+        ArrayList<String> codes = new ArrayList<String>();
+        for(Course course : courses){
+            codes.add(course.getCourseCode());
+        }
+        String codeString = String.join("$", codes);
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)){
+            pw.print(scheduleID + "$" + semester + "$" + scheduleName + "$" + codeString);
+        }
     }
 
     public void loadSchedule(File csvToParse) throws FileNotFoundException {
