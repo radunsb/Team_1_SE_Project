@@ -183,4 +183,109 @@ class SearchTest {
         assertEquals(0, endCourses.size());
     }
 
+    @Test
+    public void searchOneByName(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH101A", "precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol201A", "BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("MATH101A", "precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        assertEquals(expected.get(0).getCourseCode(), s.search("pre").get(0).getCourseCode());
+        assertEquals(expected.get(0).getCourseCode(), s.search("PRECALC").get(0).getCourseCode());
+        assertEquals(expected.get(0).getCourseCode(), s.search("calculus").get(0).getCourseCode());
+    }
+
+    @Test
+    public void searchMultipleByName(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH101A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol201A", "BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        expected.add(new Course("MATH101A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        ArrayList<Course> result = s.search("intro");
+        assertEquals(expected.get(0).getCourseCode(), result.get(0).getCourseCode());
+        assertEquals(expected.get(1).getCourseCode(), result.get(1).getCourseCode());
+        ArrayList<Course> result2 = s.search("INTR");
+        assertEquals(expected.get(0).getCourseCode(), result2.get(0).getCourseCode());
+        assertEquals(expected.get(1).getCourseCode(), result2.get(1).getCourseCode());
+    }
+
+    @Test
+    public void searchOneByCode(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH102A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol202A", "BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("MATH102A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        assertEquals(expected.get(0).getCourseCode(), s.search("MATH").get(0).getCourseCode());
+        assertEquals(expected.get(0).getCourseCode(), s.search("102A").get(0).getCourseCode());
+        assertEquals(expected.get(0).getCourseCode(), s.search("102a").get(0).getCourseCode());
+    }
+
+    @Test
+    public void searchMultipleByCode(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH101A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol201A", "BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        expected.add(new Course("MATH101A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        ArrayList<Course> result = s.search("101A");
+        assertEquals(expected.get(0).getCourseCode(), result.get(0).getCourseCode());
+        assertEquals(expected.get(1).getCourseCode(), result.get(1).getCourseCode());
+    }
+
+    @Test
+    public void searchByNameAndCode(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH102A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol202A", "BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        assertEquals(expected.get(0).getCourseCode(), s.search("comp").get(0).getCourseCode());
+    }
+
+    @Test
+    public void searchMultipleByNameAndCode(){
+        ArrayList<Course> courses = new ArrayList<>();
+        courses.add(new Course("ACCT101A", "INTRO TO ACCOUNTING", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("MATH102A", "intro to precalculus", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        courses.add(new Course("biol202A", "COM BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        Search s = new Search("",courses,null);
+
+        ArrayList<Course> expected = new ArrayList<>();
+        expected.add(new Course("comp201A", "computer science 1", null, null, null, null, 2020, 3, null, 30, null, null, null));
+        expected.add(new Course("biol202A", "COM BIOLOGY LAB", null, null, null, null, 2020, 3, null, 30, null, null, null));
+
+        assertEquals(expected.get(0).getCourseCode(), s.search("com").get(0).getCourseCode());
+        assertEquals(expected.get(1).getCourseCode(), s.search("com").get(1).getCourseCode());
+    }
+
 }
