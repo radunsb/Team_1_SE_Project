@@ -6,13 +6,15 @@ import java.util.Date;
 
 public class Search {
     private String query;
+    private ArrayList<Course> courseCatalog;
     private ArrayList<Course> results;
     private ArrayList<Filter> appliedFilters;
 
-    public Search(String query, ArrayList<Course> results, ArrayList<Filter> appliedFilters) {
+    public Search(String query, ArrayList<Course> courseCatalog, ArrayList<Filter> appliedFilters) {
         this.query = query;
-        this.results = results;
+        this.courseCatalog = courseCatalog;
         this.appliedFilters = appliedFilters;
+        this.results = courseCatalog;
     }
 
     /**
@@ -39,12 +41,20 @@ public class Search {
     }
 
     /**
-     * Searches courses based on the query provided
+     * Searches course codes and names for matches of the provided query
      * @param query is the string to search by
      * @return the results of the search
      */
     public ArrayList<Course> search(String query){
-        return null;
+        ArrayList<Course> newResults = new ArrayList<>();
+        query = query.toUpperCase();
+        for(Course course : courseCatalog){
+            if(course.getName().toUpperCase().contains(query) || course.getCourseCode().toUpperCase().contains(query)){
+                newResults.add(course);
+            }
+        }
+        results = newResults;
+        return newResults;
     }
 
     /**
