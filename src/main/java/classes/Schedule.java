@@ -52,10 +52,14 @@ public class Schedule {
         return null;
     }
 
-    public void saveSchedule() throws FileNotFoundException {
+    /**
+     * Takes the data within the current schedule, and saves it to a csv file so that
+     * it can be reloaded at a later date
+     */
+    public void saveSchedule(){
         //save the current schedule to a csv file
         File csvOutputFile = new File(scheduleID + "_" + scheduleName);
-        ArrayList<String> codes = new ArrayList<String>();
+        ArrayList<String> codes = new ArrayList<>();
         for(Course course : courses){
             codes.add(course.getCourseCode());
         }
@@ -63,15 +67,47 @@ public class Schedule {
         try (PrintWriter pw = new PrintWriter(csvOutputFile)){
             pw.print(scheduleID + "$" + semester + "$" + scheduleName + "$" + codeString);
         }
+        catch(FileNotFoundException fe){
+            System.out.println("The software was unable to to save your schedule");
+        }
     }
 
-    public void loadSchedule(File csvToParse) throws FileNotFoundException {
-        Scanner inScan = new Scanner(csvToParse);
-        while(inScan.hasNext()){
-            //blah blah do stuff
-            inScan.next();
+    /**
+     * Takes in a File and sets the current Schedule parameters to those specified
+     * by the file
+     * @param csvToParse File with the Schedule data to load
+     */
+    public void loadSchedule(File csvToParse) {
+        Scanner inScan;
+        int scheduleID;
+        String semester;
+        String scheduleName;
+        ArrayList<String> parts = new ArrayList<>();
+        try {
+            inScan = new Scanner(csvToParse);
+        } catch (FileNotFoundException fe) {
+            System.out.println("The specified schedule does not exist on the system");
+            return;
         }
-        //read through the csv, setting the attributes of the Schedule to the parsed contents
+        while (inScan.hasNext()) {
+            parts.add(inScan.next());
+        }
+        if(parts.size() < 3){
+            System.out.println("The specified schedule is in an unsupported format");
+            return;
+        }
+        Main main = new Main();
+        ArrayList<Filter> filt = new ArrayList<>();
+        Search search = new Search("", main.getCourseCatalog(), filt);
+        scheduleID = Integer.parseInt(parts.get(0));
+        semester = parts.get(1);
+        scheduleName = parts.get(2);
+        ArrayList<String> coursePrimaryKeys = (ArrayList<String>) parts.subList(3, parts.size());
+        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> search.search(course).getFirst()).toList();
+        this.scheduleID = scheduleID;
+        this.semester = semester;
+        this.scheduleName = scheduleName;
+        this.courses = courses;
     }
 
     public int getScheduleID() {
