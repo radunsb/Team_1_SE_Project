@@ -34,6 +34,11 @@ public class Main {
 
     }
 
+    private static void searchCourses(){
+        Scanner input = new Scanner(System.in);
+        // Do stuff
+    }
+
     /**
      * Reads the 2020-2021.csv file and parses the data into an ArrayList of course objects
      * @throws FileNotFoundException if the file isn't found
