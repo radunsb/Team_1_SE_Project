@@ -25,6 +25,7 @@ public class Main {
             System.out.println("alright lets make a new user");
             Student ben = craftUser(input);
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
+            navigateHome(input);
 
         } else {
             System.out.println("why would you not want to create a user");
@@ -59,6 +60,24 @@ public class Main {
         Student newStudent = new Student(id,username,Student.Class.JUNIOR,majors,minors,courseHistory,schedules);
         System.out.println(newStudent.getSchedules());
         return newStudent;
+    }
+
+    public static void navigateHome(Scanner s){
+        System.out.println();
+        System.out.println("Enter 1 to make a new schedule");
+        System.out.println();
+        System.out.println("Enter 2 to view Schedules");
+        System.out.println();
+        System.out.println("Enter 3 to search courses");
+        int state = s.nextInt();
+        if(state == 1){
+
+        }
+
+        //do logic for navigating
+
+
+
     }
 
 
