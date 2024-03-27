@@ -45,19 +45,6 @@ public class Schedule {
      */
     public String toString(){
         StringBuilder str = new StringBuilder();
-        System.out.println("\t\t\t\t\t\t\t\t\t" +scheduleName);
-        System.out.println("------------------------------------------------------------------------------------");
-        System.out.println("\t8:00a\t9:00a\t10:00a\t11:00a\t12:00p\t1:00p\t2:00p\t3:00\t4:00p\t6:30p");
-        System.out.print("M: ");
-        System.out.println();
-        System.out.print("T: ");
-        System.out.println();
-        System.out.print("W: ");
-        System.out.println();
-        System.out.print("R: ");
-        System.out.println();
-        System.out.print("F: ");
-        System.out.println();
 
         return null;
     }
@@ -119,7 +106,7 @@ public class Schedule {
                     long checkStartTime = check.getMeetingTimes()[0][i].getTime();
                     long checkEndTime = check.getMeetingTimes()[1][i].getTime();
 
-                    // Check corner cases for times of each
+                    // Check cases for times of each and make sure they don't overlap
                     if (candStartTime < checkEndTime && candStartTime > checkStartTime && candEndTime > checkEndTime) {
                         return check;
                     } else if (candEndTime > checkStartTime && candStartTime < checkStartTime && candEndTime < checkEndTime) {
