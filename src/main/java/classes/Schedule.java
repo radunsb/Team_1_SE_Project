@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class Schedule {
     private int scheduleID;
@@ -29,7 +28,7 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-        courses.add(course);
+
     }
 
     /**
@@ -103,7 +102,7 @@ public class Schedule {
         semester = parts.get(1);
         scheduleName = parts.get(2);
         ArrayList<String> coursePrimaryKeys = (ArrayList<String>) parts.subList(3, parts.size());
-        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> search.search(course).getFirst()).toList();
+        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> search.search(course).get(0)).toList();
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;
