@@ -8,6 +8,7 @@ import java.util.*;
 public class Main {
 
     private static Schedule currentSchedule;
+    private static Student currentStudent;
     private static ArrayList<Course> courseCatalog;
 
 
@@ -24,8 +25,9 @@ public class Main {
         if (confirm == 1) {
             System.out.println("alright lets make a new user");
             Student ben = craftUser(input);
+            currentStudent = ben;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
-            navigateHome(input);
+            navigateHome(input,ben);
 
         } else {
             System.out.println("why would you not want to create a user");
@@ -59,10 +61,13 @@ public class Main {
 
         Student newStudent = new Student(id,username,Student.Class.JUNIOR,majors,minors,courseHistory,schedules);
         System.out.println(newStudent.getSchedules());
+
+        currentStudent = newStudent;
+
         return newStudent;
     }
 
-    public static void navigateHome(Scanner s){
+    public static void navigateHome(Scanner s,Student current){
         System.out.println();
         System.out.println("Enter 1 to make a new schedule");
         System.out.println();
@@ -70,11 +75,19 @@ public class Main {
         System.out.println();
         System.out.println("Enter 3 to search courses");
         int state = s.nextInt();
-        if(state == 1){
 
+        //TODO add logic for navigating around the app
+
+        if(state == 1){
+            System.out.println("What would you like to call this schedule?");
+            String newScheduleName = s.next();
+            System.out.println("What Semester is this schedule for");
+            String newScheduleSemester = s.next();
+            current.addNewSchedule(1,newScheduleSemester,newScheduleName);
+            System.out.println(current.getSchedules().toString());
         }
 
-        //do logic for navigating
+
 
 
 
