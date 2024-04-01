@@ -56,7 +56,7 @@ public class Main {
             if(query.equals("F")){
                 System.out.println("-----Applied Filters-----");
                 for(int i = 0; i < filters.size(); i++){
-                    System.out.println(filters.get(i).getType() + " - " + filters.get(i).getInput());
+                    System.out.println("Filter " + i + ": " + filters.get(i).getType() + " - " + filters.get(i).getInput());
                 }
                 System.out.println("To remove a filter type 'R'");
                 System.out.println("To remove all filters type 'Rall'");
@@ -65,8 +65,9 @@ public class Main {
                 query = input.nextLine();
                 if(query.equals("R")){
                     System.out.println("Type the number of the filter to remove (or 'B' to go back): ");
-                    query = input.nextLine();
+                    int f = input.nextInt();
                     //TODO: remove the filter
+                    s.removeFilter(filters.get(f));
                 } else if(query.equals("Rall")){
                     filters.removeAll(filters);
                 } else if(query.equals("A")){
@@ -78,11 +79,51 @@ public class Main {
             } else {
                 results = s.search(query);
                 results = s.search(filters);
+                if(results.isEmpty()){
+                    System.out.println("No courses match your search.");
+                }
                 for(Course c : results){
-                    System.out.println(c.getCourseCode() + " " + c.getName());
+                    System.out.println(displayCourse(c));
                 }
             }
         }
+    }
+
+    private static String displayCourse(Course c){
+        String s = c.getCourseCode() + " " + c.getName();
+        for(int i = 0; i < c.getMeetingDays().length; i++){
+            boolean day = c.getMeetingDays()[i];
+            if(day){
+                if(i == 0){
+                    s += " M";
+                }else if(i == 1){
+                    s += " T";
+                }else if(i == 2){
+                    s += " W";
+                }else if(i == 3){
+                    s += " R";
+                }else if(i == 4){
+                    s += " F";
+                }
+            }
+        }
+        if(c.getMeetingTimes() != null) {
+            boolean b = false;
+            for(int k = 0; k < 5; k++) {
+                if(b){
+                    break;
+                }
+                for (int i = 0; i < 2; i++) {
+                    Date[] times = c.getMeetingTimes()[i];
+                    if (times[0] != null) {
+                        s += " " + times[0] + " " + times[1];
+                        b = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return s;
     }
 
     private static Filter addFilter(){
@@ -101,6 +142,7 @@ public class Main {
             }
             return new Filter(days, Filter.FilterType.DAY);
         } else if(type.equals("T")){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
             System.out.println("Enter start time (format: hh:mm:ss a)");
             Scanner times = new Scanner(System.in);
             ArrayList<String> filterTimes = new ArrayList<>();
@@ -164,14 +206,14 @@ public class Main {
 
             // Some of the classes don't have times (Online courses)
             if(!startTime.equals("")){
-                times = new Date[2][5];
+                times = new Date[5][2];
                 for(int i = 0; i < days.length; i++) {
                     if (days[i]) {
-                        times[0][i] = dateFormat.parse(startTime);
-                        times[1][i] = dateFormat.parse(endTime);
+                        times[i][0] = dateFormat.parse(startTime);
+                        times[i][1] = dateFormat.parse(endTime);
                     }else{
-                        times[0][i] = null;
-                        times[1][i] = null;
+                        times[i][0] = null;
+                        times[i][1] = null;
                     }
                 }
             }
