@@ -5,6 +5,7 @@ import classes.Course;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.lang.module.FindException;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -97,12 +98,25 @@ public class Schedule {
         }
         Main main = new Main();
         ArrayList<Filter> filt = new ArrayList<>();
+
         Search search = new Search("", main.getCourseCatalog(), filt);
         scheduleID = Integer.parseInt(parts.get(0));
         semester = parts.get(1);
         scheduleName = parts.get(2);
+        Filter semFilter = new Filter((ArrayList<String>) Collections.singletonList(semester), Filter.FilterType.SEMESTER);
+        filt.add(semFilter);
         ArrayList<String> coursePrimaryKeys = (ArrayList<String>) parts.subList(3, parts.size());
-        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> search.search(course).get(0)).toList();
+        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> {
+            search.search(course);
+            search.search(filt);
+            if(search.getResults().size() > 1){
+                throw new FindException("More than one entry found for a certain class. Schedule was unable to be loaded");
+            }
+            else if(search.getResults().isEmpty()){
+                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+            }
+            return search.getResults().get(0);
+        }).toList();
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;

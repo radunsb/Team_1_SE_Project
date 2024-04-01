@@ -73,6 +73,8 @@ public class Search {
                 case TIME:
                     allCourses = filterTime(allCourses, filter);
                     break;
+                case SEMESTER:
+                    allCourses = filterSemester(allCourses, filter);
                 default:
                     break;
             }
@@ -118,6 +120,19 @@ public class Search {
                     toKeep.add(course);
                     break;
                 }
+            }
+        }
+        return toKeep;
+    }
+
+    public ArrayList<Course> filterSemester(ArrayList<Course> courses, Filter filter){
+        ArrayList<Course> toKeep = new ArrayList<>();
+        Course.Semester sem = Course.Semester.valueOf((filter.getInput()).get(0).toUpperCase());
+        int year = Integer.parseInt((filter.getInput()).get(1));
+
+        for(Course course : courses){
+            if(course.getSemester() == sem && course.getYear() == year){
+                toKeep.add(course);
             }
         }
         return toKeep;

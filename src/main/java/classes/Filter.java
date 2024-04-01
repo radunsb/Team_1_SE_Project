@@ -7,7 +7,8 @@ public class Filter {
     private FilterType type; //see FilterType enum below
     public enum FilterType{
         TIME,
-        DAY
+        DAY,
+        SEMESTER
     }
 
     public Filter(ArrayList<String> input, FilterType type) {
