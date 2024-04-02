@@ -18,6 +18,7 @@ public class Main {
         run();
     }
 
+
     public static void run() {
 
         Scanner input = new Scanner(System.in);
@@ -33,7 +34,6 @@ public class Main {
 
            navigateHome(input,ben);
 
-
         } else {
             System.out.println("why would you not want to create a user");
         }
@@ -41,8 +41,7 @@ public class Main {
     }
 
     /**
-     * Prompts user to enter in account information and arranges info into
-     * an arraylist so a new student can be created
+     * Prompts user to enter in account information to create a new student
      */
     public static Student craftUser(Scanner s){
         //ask for ID
@@ -78,16 +77,11 @@ public class Main {
         while(true){
             System.out.println();
             System.out.println("Enter 1 to make a new schedule");
-            System.out.println();
             System.out.println("Enter 2 to view Schedules");
-            System.out.println();
             System.out.println("Enter 3 to search courses");
-            System.out.println();
             System.out.println("Enter 4 to edit Schedules");
-            System.out.println();
             System.out.println("Enter 4 to search courses");
-
-            System.out.println("\n\nEnter EXIT to log out");
+            System.out.println("\nEnter EXIT to log out");
             command = s.next();
 
             if(!command.equals("EXIT")){
@@ -95,7 +89,6 @@ public class Main {
             }else{
                 return;
             }
-
 
             //TODO add logic for navigating around the app
 
@@ -114,29 +107,56 @@ public class Main {
                 }
             }
             if(state == 3){
-
+                //do search method here
             }
 
             if(state == 4){
+                navigateSchedules(s,current);
+            }
+        }
+
+    }
+
+    public static void navigateSchedules(Scanner s, Student current){
+        int state = 0;
+        int temp;
+
+        while(state !=4){
+            if(state ==0){
                 for(int i = 0; i < current.getSchedules().size(); i++) {
                     System.out.print(i + 1 + ".) ");
                     System.out.println(current.getSchedules().get(i).toString());
                 }
-                    System.out.println("\nEnter the number of the schedule you would like to edit");
-                    int temp = s.nextInt() - 1;
-                    currentSchedule = current.getSchedules().get(temp);
-                System.out.println("Enter 1 to add a course to" + currentSchedule.toString());
-                System.out.println("Enter 2 to remove a course from" + currentSchedule.toString());
-                System.out.println("Enter 3 to return to home");
-                temp = s.nextInt();
+                System.out.println("\nEnter the number of the schedule you would like to edit");
+                temp = s.nextInt() - 1;
+                currentSchedule = current.getSchedules().get(temp);
+            }
 
-                if(temp == 1){
-                    System.out.println("Test String");
-                } else if (temp == 2) {
+            System.out.println("Enter 1 to add a course to " + currentSchedule.toString());
+            System.out.println("Enter 2 to remove a course from " + currentSchedule.toString());
+            System.out.println("Enter 3 to edit another schedule");
+            System.out.println("Enter 4 to return to home");
+            state = s.nextInt();
 
-                }else{
+            if(state == 1){
+                // go to search method
 
+                // add searched class to schedule
+
+            } else if (state == 2) {
+
+                // print out schedule in a list format
+                for(int i =0; i < currentSchedule.getCourses().size(); i++){
+                    System.out.println(i + 1 + ".)" +currentSchedule.getCourses().get(i).toString());
                 }
+                System.out.println("Enter the number of course you would like to remove from your schedule");
+                currentSchedule.getCourses().remove(s.nextInt() - 1);
+
+
+            }else if(state == 3){
+                state = 0;
+            }else{
+                state = 4;
             }
         }
 
