@@ -11,6 +11,8 @@ public class Main {
     private static Student currentStudent;
     private static ArrayList<Course> courseCatalog;
 
+    private static int schedCount;
+
 
     public static void main(String[] args) {
         run();
@@ -26,8 +28,11 @@ public class Main {
             System.out.println("alright lets make a new user");
             Student ben = craftUser(input);
             currentStudent = ben;
+            schedCount = 0;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
-            navigateHome(input,ben);
+
+           navigateHome(input,ben);
+
 
         } else {
             System.out.println("why would you not want to create a user");
@@ -60,7 +65,6 @@ public class Main {
         ArrayList<Schedule> schedules = new ArrayList<Schedule>();
 
         Student newStudent = new Student(id,username,Student.Class.JUNIOR,majors,minors,courseHistory,schedules);
-        System.out.println(newStudent.getSchedules());
 
         currentStudent = newStudent;
 
@@ -68,28 +72,63 @@ public class Main {
     }
 
     public static void navigateHome(Scanner s,Student current){
-        System.out.println();
-        System.out.println("Enter 1 to make a new schedule");
-        System.out.println();
-        System.out.println("Enter 2 to view Schedules");
-        System.out.println();
-        System.out.println("Enter 3 to search courses");
-        int state = s.nextInt();
+        int state;
+        String command = "";
 
-        //TODO add logic for navigating around the app
+        while(true){
+            System.out.println();
+            System.out.println("Enter 1 to make a new schedule");
+            System.out.println();
+            System.out.println("Enter 2 to view Schedules");
+            System.out.println();
+            System.out.println("Enter 3 to search courses");
+            System.out.println();
+            System.out.println("Enter 4 to edit Schedules");
+            System.out.println();
+            System.out.println("Enter 4 to search courses");
 
-        if(state == 1){
-            System.out.println("What would you like to call this schedule?");
-            String newScheduleName = s.next();
-            System.out.println("What Semester is this schedule for");
-            String newScheduleSemester = s.next();
-            current.addNewSchedule(1,newScheduleSemester,newScheduleName);
-            System.out.println(current.getSchedules().toString());
+            System.out.println("\n\nEnter EXIT to log out");
+            command = s.next();
+
+            if(!command.equals("EXIT")){
+                state = Integer.parseInt(command);
+            }else{
+                return;
+            }
+
+
+            //TODO add logic for navigating around the app
+
+            if(state == 1){
+                System.out.println("What would you like to call this schedule?");
+                String newScheduleName = s.next();
+                System.out.println("What Semester is this schedule for");
+                String newScheduleSemester = s.next();
+                current.addNewSchedule(schedCount,newScheduleSemester,newScheduleName);
+                schedCount ++;
+            }
+
+            if(state == 2){
+                for(int i = 0; i < current.getSchedules().size(); i++) {
+                    System.out.println(current.getSchedules().get(i).toString());
+                }
+            }
+            if(state == 3){
+
+            }
+
+            if(state == 4){
+                for(int i = 0; i < current.getSchedules().size(); i++) {
+                    System.out.print(i + 1 + ".) ");
+                    System.out.println(current.getSchedules().get(i).toString());
+                }
+                    System.out.println("\nEnter the number of the schedule you would like to edit");
+                    int temp = s.nextInt() - 1;
+                    currentSchedule = current.getSchedules().get(temp);
+                    System.out.println(currentSchedule.toString());
+
+            }
         }
-
-
-
-
 
     }
 
