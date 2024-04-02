@@ -115,8 +115,14 @@ public class Search {
         String startTime = filter.getInput().get(0);
         String endTime = filter.getInput().get(1);
         for(Course course : courses){
+            if(course.getMeetingTimes() == null){
+                break;
+            }
             for(Date[] times : course.getMeetingTimes()){
-                if(isTimeBetween(startTime, times[0], times[1]) && isTimeBetween(endTime, times[0], times[1])){
+                if(times[0] == null){
+                    break;
+                }
+                if(isTimeBetween(times[0], startTime, endTime) && isTimeBetween(times[1], startTime, endTime)){
                     toKeep.add(course);
                     break;
                 }
@@ -138,18 +144,21 @@ public class Search {
         return toKeep;
     }
 
-    public Boolean isTimeBetween(String userInputTime, Date startTime, Date endTime){
+    public Boolean isTimeBetween(Date timeToCheck, String startBound, String endBound){
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        String start = dateFormat.format(startTime);
-        String end = dateFormat.format(endTime);
-        String userTime = userInputTime.split(" ")[0];
-        String userAMPM = userInputTime.split(" ")[1];
-        double startNum = Integer.parseInt((start.split(":"))[0])%12 + (Integer.parseInt((start.split(":"))[1])/60.0)
-                + ((start.split(" ")[1].equals("PM")) ? 12 : 0);
-        double endNum = Integer.parseInt((end.split(":"))[0])%12 + (Integer.parseInt((end.split(":"))[1])/60.0)
-                + ((end.split(" ")[1].equals("PM")) ? 12 : 0);
-        double userNum = Integer.parseInt((userTime.split(":"))[0])%12 + (Integer.parseInt((userTime.split(":"))[1])/60.0)
-                + (userAMPM.equals("PM") ? 12 : 0);
+        String courseTime = dateFormat.format(timeToCheck);
+        String courseAMPM = courseTime.split(" ")[1];
+        courseTime = courseTime.split(" ")[0];
+        String startTime = startBound.split(" ")[0];
+        String startAMPM = startBound.split(" ")[1];
+        String endTime = endBound.split(" ")[0];
+        String endAMPM = endBound.split(" ")[1];
+        double startNum = Integer.parseInt((startTime.split(":"))[0])%12 + (Integer.parseInt((startTime.split(":"))[1])/60.0)
+                + (startAMPM.equals("PM") ? 12 : 0);
+        double endNum = Integer.parseInt((endTime.split(":"))[0])%12 + (Integer.parseInt((endTime.split(":"))[1])/60.0)
+                + ((endAMPM.equals("PM")) ? 12 : 0);
+        double userNum = Integer.parseInt((courseTime.split(":"))[0])%12 + (Integer.parseInt((courseTime.split(":"))[1])/60.0)
+                + (courseAMPM.equals("PM") ? 12 : 0);
         return (startNum <= userNum && userNum <= endNum);
     }
 
