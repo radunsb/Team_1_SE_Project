@@ -13,13 +13,16 @@ import java.util.ArrayList;
 public class Schedule {
     private int scheduleID;
     private String semester;
+
+    private int year;
     private String scheduleName;
     private ArrayList<Course> courses;
     //alex is nice
 
-    public Schedule(int scheduleID, String semester, String scheduleName) {
+    public Schedule(int scheduleID, String semester, int year, String scheduleName) {
         this.scheduleID = scheduleID;
         this.semester = semester;
+        this.year = year;
         this.scheduleName = scheduleName;
         this.courses = new ArrayList<>();
     }
@@ -29,7 +32,7 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-
+        courses.add(course);
     }
 
     /**
@@ -63,9 +66,9 @@ public class Schedule {
         for(Course course : courses){
             codes.add(course.getCourseCode());
         }
-        String codeString = String.join("$", codes);
+        String codeString = String.join(",", codes);
         try (PrintWriter pw = new PrintWriter(csvOutputFile)){
-            pw.print(scheduleID + "$" + semester + "$" + scheduleName + "$" + codeString);
+            pw.print(scheduleID + "," + semester + "," + year + "," + scheduleName + "," + codeString);
         }
         catch(FileNotFoundException fe){
             System.out.println("The software was unable to to save your schedule");
@@ -81,6 +84,7 @@ public class Schedule {
         Scanner inScan;
         int scheduleID;
         String semester;
+        String year;
         String scheduleName;
         ArrayList<String> parts = new ArrayList<>();
         try {
@@ -89,8 +93,12 @@ public class Schedule {
             System.out.println("The specified schedule does not exist on the system");
             return;
         }
+        inScan.useDelimiter(",");
         while (inScan.hasNext()) {
             parts.add(inScan.next());
+        }
+        for(String part : parts){
+            System.out.println(part);
         }
         if(parts.size() < 3){
             System.out.println("The specified schedule is in an unsupported format");
@@ -98,15 +106,18 @@ public class Schedule {
         }
         Main main = new Main();
         ArrayList<Filter> filt = new ArrayList<>();
-
         Search search = new Search("", main.getCourseCatalog(), filt);
         scheduleID = Integer.parseInt(parts.get(0));
         semester = parts.get(1);
-        scheduleName = parts.get(2);
-        Filter semFilter = new Filter((ArrayList<String>) Collections.singletonList(semester), Filter.FilterType.SEMESTER);
+        year = parts.get(2);
+        scheduleName = parts.get(3);
+        ArrayList<String> filterInput = new ArrayList<>();
+        filterInput.add(semester);
+        filterInput.add(year);
+        Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
         filt.add(semFilter);
-        ArrayList<String> coursePrimaryKeys = (ArrayList<String>) parts.subList(3, parts.size());
-        ArrayList<Course> courses = (ArrayList<Course>) coursePrimaryKeys.stream().map(course -> {
+        List<String> coursePrimaryKeys = parts.subList(4, parts.size());
+        List<Course> courses = coursePrimaryKeys.stream().map(course -> {
             search.search(course);
             search.search(filt);
             if(search.getResults().size() > 1){
@@ -120,7 +131,7 @@ public class Schedule {
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;
-        this.courses = courses;
+        this.courses = new ArrayList<>(courses);
     }
 
     public int getScheduleID() {

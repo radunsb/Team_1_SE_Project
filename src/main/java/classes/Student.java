@@ -52,8 +52,8 @@ public class Student {
 
     }
 
-    public void addNewSchedule(int scheduleID, String semester, String scheuleName){
-        Schedule s = new Schedule(scheduleID,semester, "mySchedule");
+    public void addNewSchedule(int scheduleID, String semester, int year, String scheuleName){
+        Schedule s = new Schedule(scheduleID,semester, year,"mySchedule");
         schedules.add(s);
     }
 

@@ -29,14 +29,12 @@ class ScheduleTest {
 
     @Test
     void testSaveSchedule() throws FileNotFoundException {
-        Date[][] times = {{},{},{},{},{}};
-        boolean[] days = {false, false, false, false, false};
-        ArrayList<String> emptyString = new ArrayList<>();
-        Course newCourse = new Course("COMP244B", "Computer Stuff", "James Borg",
-                "James Borg", times, days, 2007, 3, Course.Semester.FALL,
-                30, emptyString, emptyString, emptyString);
-        Schedule sched = new Schedule(1, "Fall2024", "Potatoes");
-        sched.addCourse(newCourse);
+        Main.run();
+        Main main = new Main();
+        Search newSearch = new Search("Introduction to Sculpture", main.getCourseCatalog(), new ArrayList<>());
+        ArrayList<Course> courses = newSearch.search(newSearch.getQuery());
+        Schedule sched = new Schedule(1, "Fall", 2020, "Potatoes");
+        sched.addCourse(courses.get(0));
         sched.saveSchedule();
         File outputFile = new File(sched.getScheduleID() + "_" + sched.getScheduleName());
         assertTrue(outputFile.exists());
@@ -46,7 +44,20 @@ class ScheduleTest {
             thingy.append(scan.next());
         }
         String endString = thingy.toString();
-        assertEquals("1$Fall2024$Potatoes$COMP244B", endString);
+        assertEquals("1,Fall,2020,Potatoes,ART111A", endString);
     }
 
+    @Test
+    void testLoadSchedule() throws FileNotFoundException{
+        Main.run();
+        testSaveSchedule();
+        File inputFile = new File("1_Potatoes");
+        Schedule sched = new Schedule(2, "FALL", 2020, "TempName");
+        sched.loadSchedule(inputFile);
+        Scanner inScan = new Scanner(inputFile);
+        System.out.println(inScan.next());
+        assertEquals(1, sched.getScheduleID());
+        Course artCourse = sched.getCourses().get(0);
+        assertEquals("ART111A", artCourse.getCourseCode());
+    }
 }
