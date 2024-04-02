@@ -9,20 +9,170 @@ import java.util.*;
 public class Main {
 
     private static Schedule currentSchedule;
+    private static Student currentStudent;
     private static ArrayList<Course> courseCatalog;
+
+    private static int schedCount;
 
 
     public static void main(String[] args) {
         run();
     }
 
-    public static void run(){
-        // Read the CSV
-        try{
-            readCSV();
-        } catch(FileNotFoundException | ParseException e){
-            System.out.println(e.getMessage());
+//hi
+    public static void run() {
+
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Hello please enter 1 to create a new user");
+        System.out.println("Or Enter 2 to log in as an existing user");
+        int confirm = input.nextInt();
+        if (confirm == 1) {
+            System.out.println("alright lets make a new user");
+            Student ben = craftUser(input);
+            currentStudent = ben;
+            schedCount = 0;
+            System.out.println("congratulations " + ben.toString() + " welcome to our app");
+
+           navigateHome(input,ben);
+
+        } else {
+            System.out.println("why would you not want to create a user");
         }
+
+    }
+
+    /**
+     * Prompts user to enter in account information to create a new student
+     */
+    public static Student craftUser(Scanner s){
+        //ask for ID
+        System.out.println("please enter your student ID");
+        int id = s.nextInt();
+
+        //ask for username
+        System.out.println("please enter a username");
+        String username = s.next();
+
+        ArrayList<Major> majors = new ArrayList<>();
+
+        //give no one a minor
+        ArrayList<Minor> minors = new ArrayList<>();
+
+        //no course history right now
+        ArrayList<Course> courseHistory = new ArrayList<>();
+
+        //add empty schedule
+        ArrayList<Schedule> schedules = new ArrayList<Schedule>();
+
+        Student newStudent = new Student(id,username,Student.Class.JUNIOR,majors,minors,courseHistory,schedules);
+
+        currentStudent = newStudent;
+
+        return newStudent;
+    }
+
+    public static void navigateHome(Scanner s,Student current){
+        int state;
+        String command = "";
+
+        while(true){
+            System.out.println();
+            System.out.println("Enter 1 to make a new schedule");
+            System.out.println("Enter 2 to view Schedules");
+            System.out.println("Enter 3 to search courses");
+            System.out.println("Enter 4 to edit Schedules");
+            System.out.println("Enter 4 to search courses");
+            System.out.println("\nEnter EXIT to log out");
+            command = s.next();
+
+            if(!command.equals("EXIT")){
+                state = Integer.parseInt(command);
+            }else{
+                return;
+            }
+
+            //TODO add logic for navigating around the app
+
+            if(state == 1){
+                System.out.println("What would you like to call this schedule?");
+                String newScheduleName = s.next();
+                System.out.println("What Semester is this schedule for");
+                String newScheduleSemester = s.next();
+                current.addNewSchedule(schedCount,newScheduleSemester,newScheduleName);
+                schedCount ++;
+            }
+
+            if(state == 2){
+                for(int i = 0; i < current.getSchedules().size(); i++) {
+                    System.out.println(current.getSchedules().get(i).toString());
+                }
+            }
+            if(state == 3){
+                //do search method here
+            }
+
+            if(state == 4){
+                navigateSchedules(s,current);
+            }
+        }
+
+    }
+
+    public static void navigateSchedules(Scanner s, Student current){
+        int state = 0;
+        int temp;
+
+        while(state !=4){
+            if(state ==0){
+                for(int i = 0; i < current.getSchedules().size(); i++) {
+                    System.out.print(i + 1 + ".) ");
+                    System.out.println(current.getSchedules().get(i).toString());
+                }
+                System.out.println("\nEnter the number of the schedule you would like to edit");
+                temp = s.nextInt() - 1;
+                currentSchedule = current.getSchedules().get(temp);
+            }
+
+            System.out.println("Enter 1 to add a course to " + currentSchedule.toString());
+            System.out.println("Enter 2 to remove a course from " + currentSchedule.toString());
+            System.out.println("Enter 3 to edit another schedule");
+            System.out.println("Enter 4 to return to home");
+            state = s.nextInt();
+
+            if(state == 1){
+                // go to search method
+
+                // add searched class to schedule
+
+            } else if (state == 2) {
+
+                // print out schedule in a list format
+                for(int i =0; i < currentSchedule.getCourses().size(); i++){
+                    System.out.println(i + 1 + ".)" +currentSchedule.getCourses().get(i).toString());
+                }
+                System.out.println("Enter the number of course you would like to remove from your schedule");
+                currentSchedule.getCourses().remove(s.nextInt() - 1);
+
+
+            }else if(state == 3){
+                state = 0;
+            }else{
+                state = 4;
+            }
+        }
+
+    }
+
+
+        // Read the CSV
+//        try{
+//            readCSV();
+//        } catch(FileNotFoundException | ParseException e){
+//            System.out.println(e.getMessage());
+//        }
+
+
 
         // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
         // Since its kind of hard to unit test it lol
@@ -34,7 +184,7 @@ public class Main {
         }
         */
 
-    }
+    //}
 
     /**
      * Reads the 2020-2021.csv file and parses the data into an ArrayList of course objects

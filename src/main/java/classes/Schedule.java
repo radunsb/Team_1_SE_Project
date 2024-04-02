@@ -10,6 +10,8 @@ import java.util.*;
 
 import java.util.ArrayList;
 
+import static classes.Student.Class.JUNIOR;
+
 public class Schedule {
     private int scheduleID;
     private String semester;
@@ -17,7 +19,7 @@ public class Schedule {
     private int year;
     private String scheduleName;
     private ArrayList<Course> courses;
-    //alex is nice
+
 
     public Schedule(int scheduleID, String semester, int year, String scheduleName) {
         this.scheduleID = scheduleID;
@@ -47,7 +49,12 @@ public class Schedule {
      */
     public void removeCourse(Course course){
     String courseCode = course.getCourseCode();
-
+    String courseName = course.getName();
+        for(int i = 0; i < courses.size(); i++){
+            if(courses.get(i).getCourseCode().equals(courseCode)){
+                courses.remove(i);
+            }
+        }
     }
 
     /**
@@ -55,6 +62,13 @@ public class Schedule {
      * @return a string representation of a schedule in a weekly timeslot format
      */
     public String toString(){
+    StringBuilder str = new StringBuilder();
+    str.append("Schedule ID: |");
+    str.append(scheduleID);
+    str.append(" |");
+        return str.toString();
+        //hello there jackson
+    }
 
         StringBuilder str = new StringBuilder();
         System.out.println("\t\t\t\t\t\t\t\t\t" +scheduleName);
@@ -71,8 +85,6 @@ public class Schedule {
         System.out.print("F: ");
         System.out.println();
 
-        return null;
-    }
 
     /**
      * Takes the data within the current schedule, and saves it to a csv file so that
@@ -194,6 +206,7 @@ public class Schedule {
     }
 
     public String getSemester() {
+        //hello
         return semester;
     }
 
@@ -217,3 +230,12 @@ public class Schedule {
         this.courses = courses;
     }
 }
+
+
+
+
+//ArrayList<Major> M = new ArrayList<Major>();
+//ArrayList<Minor> m = new ArrayList<Minor>();
+//ArrayList<Course> C = new ArrayList<Course>();
+//ArrayList<Schedule> s = new ArrayList<Schedule>();
+//Student Ben = new Student(1234,"Ben",JUNIOR,M,m,C,s);
