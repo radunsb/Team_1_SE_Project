@@ -125,8 +125,18 @@ public class Main {
                     System.out.println("\nEnter the number of the schedule you would like to edit");
                     int temp = s.nextInt() - 1;
                     currentSchedule = current.getSchedules().get(temp);
-                    System.out.println(currentSchedule.toString());
+                System.out.println("Enter 1 to add a course to" + currentSchedule.toString());
+                System.out.println("Enter 2 to remove a course from" + currentSchedule.toString());
+                System.out.println("Enter 3 to return to home");
+                temp = s.nextInt();
 
+                if(temp == 1){
+                    System.out.println("Test String");
+                } else if (temp == 2) {
+
+                }else{
+
+                }
             }
         }
 
