@@ -3,6 +3,7 @@ package classes;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Main {
@@ -175,9 +176,13 @@ public class Main {
 
         // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
         // Since its kind of hard to unit test it lol
-//        for(Course c: courseCatalog){
-//            System.out.println(c.getCourseCode());
-//        }
+        /*
+        for(Course c: courseCatalog){
+            if(c.getMeetingTimes() != null) {
+                System.out.println(c.getMeetingTimes()[0][0]);
+            }
+        }
+        */
 
     //}
 
@@ -229,24 +234,15 @@ public class Main {
             String endTime = line.next();
 
             Date[][] times = null;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
 
             // Some of the classes don't have times (Online courses)
             if(!startTime.equals("")){
-                Scanner sc1 = new Scanner(startTime);
-                sc1.useDelimiter(":");
-                int sHrs = sc1.nextInt();
-                int sMin = sc1.nextInt();
-
-                Scanner sc2 = new Scanner(endTime);
-                sc2.useDelimiter(":");
-                int eHrs = sc2.nextInt();
-                int eMin = sc2.nextInt();
-
                 times = new Date[2][5];
                 for(int i = 0; i < days.length; i++) {
                     if (days[i]) {
-                        times[0][i] = new Date(1970, Calendar.JANUARY, 1, sHrs, sMin);
-                        times[1][i] = new Date(1970, Calendar.JANUARY, 1, eHrs, eMin);
+                        times[0][i] = dateFormat.parse(startTime);
+                        times[1][i] = dateFormat.parse(endTime);
                     }else{
                         times[0][i] = null;
                         times[1][i] = null;

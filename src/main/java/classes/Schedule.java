@@ -1,6 +1,11 @@
 package classes;
 
 import classes.Course;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.lang.module.FindException;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -10,14 +15,18 @@ import static classes.Student.Class.JUNIOR;
 public class Schedule {
     private int scheduleID;
     private String semester;
+
+    private int year;
     private String scheduleName;
     private ArrayList<Course> courses;
 
 
-    public Schedule(int scheduleID, String semester, String scheduleName) {
+    public Schedule(int scheduleID, String semester, int year, String scheduleName) {
         this.scheduleID = scheduleID;
         this.semester = semester;
+        this.year = year;
         this.scheduleName = scheduleName;
+        this.courses = new ArrayList<>();
     }
 
     /**
@@ -25,7 +34,13 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-    courses.add(course);
+        Course check = courseConflict(course);
+        if (check.equals(course)) {
+            courses.add(course);
+        }
+        else {
+            System.out.println("The following course conflicts with your candidate course: " +check.toString());
+        }
     }
 
     /**
@@ -55,7 +70,132 @@ public class Schedule {
         //hello there jackson
     }
 
+        StringBuilder str = new StringBuilder();
+        System.out.println("\t\t\t\t\t\t\t\t\t" +scheduleName);
+        System.out.println("------------------------------------------------------------------------------------");
+        System.out.println("\t8:00a\t9:00a\t10:00a\t11:00a\t12:00p\t1:00p\t2:00p\t3:00\t4:00p\t6:30p");
+        System.out.print("M: ");
+        System.out.println();
+        System.out.print("T: ");
+        System.out.println();
+        System.out.print("W: ");
+        System.out.println();
+        System.out.print("R: ");
+        System.out.println();
+        System.out.print("F: ");
+        System.out.println();
 
+
+    /**
+     * Takes the data within the current schedule, and saves it to a csv file so that
+     * it can be reloaded at a later date
+     */
+    public void saveSchedule(){
+        //save the current schedule to a csv file
+        File csvOutputFile = new File(scheduleID + "_" + scheduleName);
+        ArrayList<String> codes = new ArrayList<>();
+        for(Course course : courses){
+            codes.add(course.getCourseCode());
+        }
+        String codeString = String.join(",", codes);
+        try (PrintWriter pw = new PrintWriter(csvOutputFile)){
+            pw.print(scheduleID + "," + semester + "," + year + "," + scheduleName + "," + codeString);
+        }
+        catch(FileNotFoundException fe){
+            System.out.println("The software was unable to to save your schedule");
+        }
+    }
+
+    /**
+     * Takes in a File and sets the current Schedule parameters to those specified
+     * by the file
+     * @param csvToParse File with the Schedule data to load
+     */
+    public void loadSchedule(File csvToParse) {
+        Scanner inScan;
+        int scheduleID;
+        String semester;
+        String year;
+        String scheduleName;
+        ArrayList<String> parts = new ArrayList<>();
+        try {
+            inScan = new Scanner(csvToParse);
+        } catch (FileNotFoundException fe) {
+            System.out.println("The specified schedule does not exist on the system");
+            return;
+        }
+        inScan.useDelimiter(",");
+        while (inScan.hasNext()) {
+            parts.add(inScan.next());
+        }
+        for(String part : parts){
+            System.out.println(part);
+        }
+        if(parts.size() < 3){
+            System.out.println("The specified schedule is in an unsupported format");
+            return;
+        }
+        Main main = new Main();
+        ArrayList<Filter> filt = new ArrayList<>();
+        Search search = new Search("", main.getCourseCatalog(), filt);
+        scheduleID = Integer.parseInt(parts.get(0));
+        semester = parts.get(1);
+        year = parts.get(2);
+        scheduleName = parts.get(3);
+        ArrayList<String> filterInput = new ArrayList<>();
+        filterInput.add(semester);
+        filterInput.add(year);
+        Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
+        filt.add(semFilter);
+        List<String> coursePrimaryKeys = parts.subList(4, parts.size());
+        List<Course> courses = coursePrimaryKeys.stream().map(course -> {
+            search.search(course);
+            search.search(filt);
+            if(search.getResults().size() > 1){
+                throw new FindException("More than one entry found for a certain class. Schedule was unable to be loaded");
+            }
+            else if(search.getResults().isEmpty()){
+                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+            }
+            return search.getResults().get(0);
+        }).toList();
+        this.scheduleID = scheduleID;
+        this.semester = semester;
+        this.scheduleName = scheduleName;
+        this.courses = new ArrayList<>(courses);
+    }
+
+    /**
+     * This method will check the candidate course with the users current schedule for conflicts with classes
+     *
+     * @param candidate possible class to be added to the schedule
+     * @return returns the candidate if no conflict is detected, otherwise returns the course that the candidate conflicts with
+     */
+    private Course courseConflict(Course candidate) {
+        // Loop to check if the class is already in the users' schedule
+        for (Course check: courses) {
+            if (check.getName().equals(candidate.getName())) {
+                return check;
+            }
+        }
+        // Loop that checks for conflict with users' timeslots and candidate timeslot
+        // Set times for candidate
+        long candStartTime = candidate.getMeetingTimes()[0][0].getTime();
+        long candEndTime = candidate.getMeetingTimes()[0][1].getTime();
+        for (Course check: courses) {
+            if (candidate.getMeetingDays() == check.getMeetingDays()) {
+                // Set meeting times for each course to check
+                long checkStartTime = check.getMeetingTimes()[0][0].getTime();
+                long checkEndTime = check.getMeetingTimes()[0][1].getTime();
+
+                // Check corner cases for times of each
+                if (candStartTime < checkEndTime || candEndTime > checkStartTime) {
+                    return check;
+                }
+            }
+        }
+        return candidate;
+    }
 
     public int getScheduleID() {
         return scheduleID;

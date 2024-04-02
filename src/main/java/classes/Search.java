@@ -1,9 +1,8 @@
 package classes;
 
-import classes.Course;
-import classes.Filter;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Search {
     private String query;
@@ -25,7 +24,8 @@ public class Search {
      * @return the results of the filter application
      */
     public ArrayList<Course> addFilter(Filter filter){
-        return null;
+        appliedFilters.add(filter);
+        return search(appliedFilters);
     }
 
     /**
@@ -36,11 +36,12 @@ public class Search {
      * @return the results of the filter removal
      */
     public ArrayList<Course> removeFilter(Filter filter){
-        return null;
+        appliedFilters.remove(filter);
+        return search(appliedFilters);
     }
 
     /**
-     * Searches courses based on the query provided
+     * Searches course codes and names for matches of the provided query
      * @param query is the string to search by
      * @return the results of the search
      */
@@ -62,7 +63,103 @@ public class Search {
      * @return the results of the search
      */
     public ArrayList<Course> search(ArrayList<Filter> filters){
-        return null;
+        //get list of courses to further cut down with filters
+        ArrayList<Course> allCourses = this.results;
+        for(Filter filter : filters){
+            switch(filter.getType()){
+                case DAY:
+                    allCourses = filterDay(allCourses, filter);
+                    break;
+                case TIME:
+                    allCourses = filterTime(allCourses, filter);
+                    break;
+                case SEMESTER:
+                    allCourses = filterSemester(allCourses, filter);
+                default:
+                    break;
+            }
+        }
+        this.results = allCourses;
+        return allCourses;
+    }
+
+    public ArrayList<Course> filterDay(ArrayList<Course> courses, Filter filter){
+        ArrayList<Integer> days = new ArrayList<>();
+        filter.getInput().forEach(filt -> {switch(filt.toUpperCase()){
+            case "M":
+                days.add(0); break;
+            case "T":
+                days.add(1); break;
+            case "W":
+                days.add(2); break;
+            case "R":
+                days.add(3); break;
+            case "F":
+                days.add(4); break;
+            default: break;
+        }});
+        ArrayList<Course> toRemove = new ArrayList<>();
+        for(Course course : courses){
+            for(Integer day : days) {
+                if (!(course.getMeetingDays()[day])){
+                    toRemove.add(course);
+                }
+            }
+        }
+        courses.removeAll(toRemove);
+        return courses;
+    }
+
+    public ArrayList<Course> filterTime(ArrayList<Course> courses, Filter filter){
+        ArrayList<Course> toKeep = new ArrayList<>();
+        String startTime = filter.getInput().get(0);
+        String endTime = filter.getInput().get(1);
+        for(Course course : courses){
+            if(course.getMeetingTimes() == null){
+                break;
+            }
+            for(Date[] times : course.getMeetingTimes()){
+                if(times[0] == null){
+                    break;
+                }
+                if(isTimeBetween(times[0], startTime, endTime) && isTimeBetween(times[1], startTime, endTime)){
+                    toKeep.add(course);
+                    break;
+                }
+            }
+        }
+        return toKeep;
+    }
+
+    public ArrayList<Course> filterSemester(ArrayList<Course> courses, Filter filter){
+        ArrayList<Course> toKeep = new ArrayList<>();
+        Course.Semester sem = Course.Semester.valueOf((filter.getInput()).get(0).toUpperCase());
+        int year = Integer.parseInt((filter.getInput()).get(1));
+
+        for(Course course : courses){
+            if(course.getSemester() == sem && course.getYear() == year){
+                toKeep.add(course);
+            }
+        }
+        return toKeep;
+    }
+
+    public Boolean isTimeBetween(Date timeToCheck, String startBound, String endBound){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        String courseTime = dateFormat.format(timeToCheck);
+        String courseAMPM = courseTime.split(" ")[1];
+        courseTime = courseTime.split(" ")[0];
+        String startTime = startBound.split(" ")[0];
+        String startAMPM = startBound.split(" ")[1];
+        String endTime = endBound.split(" ")[0];
+        String endAMPM = endBound.split(" ")[1];
+        double startNum = Integer.parseInt((startTime.split(":"))[0])%12 + (Integer.parseInt((startTime.split(":"))[1])/60.0)
+                + (startAMPM.equals("PM") ? 12 : 0);
+        double endNum = Integer.parseInt((endTime.split(":"))[0])%12 + (Integer.parseInt((endTime.split(":"))[1])/60.0)
+                + ((endAMPM.equals("PM")) ? 12 : 0);
+        double userNum = Integer.parseInt((courseTime.split(":"))[0])%12 + (Integer.parseInt((courseTime.split(":"))[1])/60.0)
+                + (courseAMPM.equals("PM") ? 12 : 0);
+        return (startNum <= userNum && userNum <= endNum);
     }
 
     public String getQuery() {
@@ -88,4 +185,5 @@ public class Search {
     public void setAppliedFilters(ArrayList<Filter> appliedFilters) {
         this.appliedFilters = appliedFilters;
     }
+
 }
