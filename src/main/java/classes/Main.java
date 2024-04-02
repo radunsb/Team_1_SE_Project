@@ -24,6 +24,7 @@ public class Main {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Hello please enter 1 to create a new user");
+        System.out.println("Or Enter 2 to log in as an existing user");
         int confirm = input.nextInt();
         if (confirm == 1) {
             System.out.println("alright lets make a new user");
