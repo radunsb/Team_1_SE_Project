@@ -32,7 +32,13 @@ public class Schedule {
      * @param course is the course to add to the schedule
      */
     public void addCourse(Course course){
-        courses.add(course);
+        Course check = courseConflict(course);
+        if (check.equals(course)) {
+            courses.add(course);
+        }
+        else {
+            System.out.println("The following course conflicts with your candidate course: " +check.toString());
+        }
     }
 
     /**
@@ -51,6 +57,19 @@ public class Schedule {
     public String toString(){
 
         StringBuilder str = new StringBuilder();
+        System.out.println("\t\t\t\t\t\t\t\t\t" +scheduleName);
+        System.out.println("------------------------------------------------------------------------------------");
+        System.out.println("\t8:00a\t9:00a\t10:00a\t11:00a\t12:00p\t1:00p\t2:00p\t3:00\t4:00p\t6:30p");
+        System.out.print("M: ");
+        System.out.println();
+        System.out.print("T: ");
+        System.out.println();
+        System.out.print("W: ");
+        System.out.println();
+        System.out.print("R: ");
+        System.out.println();
+        System.out.print("F: ");
+        System.out.println();
 
         return null;
     }
@@ -132,6 +151,38 @@ public class Schedule {
         this.semester = semester;
         this.scheduleName = scheduleName;
         this.courses = new ArrayList<>(courses);
+    }
+
+    /**
+     * This method will check the candidate course with the users current schedule for conflicts with classes
+     *
+     * @param candidate possible class to be added to the schedule
+     * @return returns the candidate if no conflict is detected, otherwise returns the course that the candidate conflicts with
+     */
+    private Course courseConflict(Course candidate) {
+        // Loop to check if the class is already in the users' schedule
+        for (Course check: courses) {
+            if (check.getName().equals(candidate.getName())) {
+                return check;
+            }
+        }
+        // Loop that checks for conflict with users' timeslots and candidate timeslot
+        // Set times for candidate
+        long candStartTime = candidate.getMeetingTimes()[0][0].getTime();
+        long candEndTime = candidate.getMeetingTimes()[0][1].getTime();
+        for (Course check: courses) {
+            if (candidate.getMeetingDays() == check.getMeetingDays()) {
+                // Set meeting times for each course to check
+                long checkStartTime = check.getMeetingTimes()[0][0].getTime();
+                long checkEndTime = check.getMeetingTimes()[0][1].getTime();
+
+                // Check corner cases for times of each
+                if (candStartTime < checkEndTime || candEndTime > checkStartTime) {
+                    return check;
+                }
+            }
+        }
+        return candidate;
     }
 
     public int getScheduleID() {
