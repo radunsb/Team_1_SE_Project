@@ -6,8 +6,13 @@ public class Filter {
     private ArrayList<String> input;
     private FilterType type; //see FilterType enum below
     public enum FilterType{
+        //Format: [startTime, endTime]
+        //example: ["9:00 AM", "9:50 AM"]
         TIME,
-        DAY
+        //Format: [day1, day2... etc]
+        //example: ["M", "W", "F"]
+        DAY,
+        SEMESTER
     }
 
     public Filter(ArrayList<String> input, FilterType type) {

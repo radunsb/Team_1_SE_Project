@@ -26,11 +26,13 @@ public class Main {
 
         // Sanity Testing: I tried it with pretty much all the attributes, and they all seem good
         // Since its kind of hard to unit test it lol
+        /*
         for(Course c: courseCatalog){
             if(c.getMeetingTimes() != null) {
                 System.out.println(c.getMeetingTimes()[0][0]);
             }
         }
+        */
 
     }
 
