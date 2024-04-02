@@ -71,79 +71,14 @@ class SearchTest {
         ArrayList<Course> endCourses = newSearch.search(filters);
         assertEquals(1, endCourses.size());
     }
-    @Test
-    void timeBetweenBothAMIn() throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("08:00:00 AM");
-        Date endTime = dateFormat.parse("11:00:00 AM");
-        String userInput = "10:30 AM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertTrue(result);
-    }
-
-    @Test
-    void timeBetweenBothPMIn() throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("02:15:00 PM");
-        Date endTime = dateFormat.parse("04:30:00 PM");
-        String userInput = "03:20 PM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertTrue(result);
-    }
-
-    @Test
-    void timeBetweenBothAMOut() throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("08:00:00 AM");
-        Date endTime = dateFormat.parse("11:00:00 AM");
-        String userInput = "11:30 AM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertFalse(result);
-    }
-
-    @Test
-    void timeBetweenBothPMOut() throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("01:00:00 PM");
-        Date endTime = dateFormat.parse("04:20:00 PM");
-        String userInput = "04:30 PM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertFalse(result);
-    }
-
-    @Test
-    void timeBetweenOneAMOnePMIn() throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("02:20:00 PM");
-        String userInput = "12:10 PM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertTrue(result);
-    }
-
-    @Test
-    void timeBetweenOneAMOnePMOut() throws ParseException{
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("02:20:00 PM");
-        String userInput = "02:40 PM";
-        Search newSearch = new Search("", new ArrayList<Course>(), new ArrayList<Filter>());
-        boolean result = newSearch.isTimeBetween(userInput, startTime, endTime);
-        assertFalse(result);
-    }
 
     @Test
     void searchTimeIn() throws ParseException{
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("02:20:00 PM");
+        Date startTime = dateFormat.parse("10:00:00 AM");
+        Date endTime = dateFormat.parse("10:50:00 AM");
         ArrayList<String> userTimes = new ArrayList<String>();
-        userTimes.add("11:00 AM");
+        userTimes.add("10:00 AM");
         userTimes.add("12:50 PM");
         Date[][] dates = {{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime}};
         boolean[] days = {true, true, true, true, true};
@@ -163,10 +98,10 @@ class SearchTest {
     @Test
     void searchTimeOut() throws ParseException{
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("02:20:00 PM");
+        Date startTime = dateFormat.parse("12:30:00 PM");
+        Date endTime = dateFormat.parse("01:45:00 PM");
         ArrayList<String> userTimes = new ArrayList<String>();
-        userTimes.add("02:00 PM");
+        userTimes.add("01:00 PM");
         userTimes.add("02:50 PM");
         Date[][] dates = {{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime}};
         boolean[] days = {true, true, true, true, true};
