@@ -141,9 +141,9 @@ class SearchTest {
     void searchTimeIn() throws ParseException{
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
         Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("02:20:00 PM");
+        Date endTime = dateFormat.parse("11:30:00 AM");
         ArrayList<String> userTimes = new ArrayList<String>();
-        userTimes.add("11:00 AM");
+        userTimes.add("10:00 AM");
         userTimes.add("12:50 PM");
         Date[][] dates = {{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime}};
         boolean[] days = {true, true, true, true, true};
