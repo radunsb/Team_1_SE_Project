@@ -61,17 +61,10 @@ public class Schedule {
      * toString method for a schedule.
      * @return a string representation of a schedule in a weekly timeslot format
      */
-    public String toString(){
-    StringBuilder str = new StringBuilder();
-    str.append("Schedule ID: |");
-    str.append(scheduleID);
-    str.append(" |");
-        return str.toString();
-        //hello there jackson
-    }
+    public String toString() {
 
         StringBuilder str = new StringBuilder();
-        System.out.println("\t\t\t\t\t\t\t\t\t" +scheduleName);
+        System.out.println("\t\t\t\t\t\t\t\t\t" + scheduleName);
         System.out.println("------------------------------------------------------------------------------------");
         System.out.println("\t8:00a\t9:00a\t10:00a\t11:00a\t12:00p\t1:00p\t2:00p\t3:00\t4:00p\t6:30p");
         System.out.print("M: ");
@@ -85,7 +78,8 @@ public class Schedule {
         System.out.print("F: ");
         System.out.println();
 
-
+        return str.toString();
+    }
     /**
      * Takes the data within the current schedule, and saves it to a csv file so that
      * it can be reloaded at a later date
