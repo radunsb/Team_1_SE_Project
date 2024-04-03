@@ -32,51 +32,57 @@ public class Main {
 //            }
 //        }
 
-        searchCourses();
-
     }
 
     private static void searchCourses(){
+        //User input setup
         Scanner input = new Scanner(System.in);
         String query = "";
-        ArrayList<Course> results = new ArrayList<>();
+        ArrayList<Course> results;
         ArrayList<Filter> filters = new ArrayList<>();
-        Search s = new Search("",courseCatalog, filters);
+        // Create search instance
+        Search s = new Search("", courseCatalog, filters);
 
         while(!query.equals("Q")){
+            // Search info and navigation info
             System.out.println("-----Course Search-----");
             System.out.println("To leave the search type 'Q'");
             System.out.println("To apply or remove a filter type 'F'");
             System.out.println("Type a course code or name to search here: ");
             query = input.nextLine();
 
+            // Quit -> exit search
             if(query.equals("Q")){
                 return;
             }
+            // Filter navigation and info
             if(query.equals("F")){
+                // Print all applied filters with label numbers
                 System.out.println("-----Applied Filters-----");
                 for(int i = 0; i < filters.size(); i++){
-                    System.out.println("Filter " + i + ": " + filters.get(i).getType() + " - " + filters.get(i).getInput());
+                    System.out.println("Filter " + i + ": " + filters.get(i).getType());
                 }
                 System.out.println("To remove a filter type 'R'");
                 System.out.println("To remove all filters type 'Rall'");
                 System.out.println("To add a filter type 'A'");
                 System.out.println("To go back to search type 'B'");
                 query = input.nextLine();
+
                 if(query.equals("R")){
-                    System.out.println("Type the number of the filter to remove (or 'B' to go back): ");
-                    int f = input.nextInt();
-                    //TODO: remove the filter
-                    s.removeFilter(filters.get(f));
+                    // Remove filter
+                    removeFilter(s, filters);
                 } else if(query.equals("Rall")){
+                    // Clear the filter ArrayList
                     filters.removeAll(filters);
                 } else if(query.equals("A")){
-                    Filter f = addFilter();
+                    // Add filter
+                    Filter f = addFilter(filters);
                     if(f != null){
                         s.addFilter(f);
                     }
                 }
             } else {
+                // Search on the query
                 results = s.search(query);
                 results = s.search(filters);
                 if(results.isEmpty()){
@@ -125,31 +131,97 @@ public class Main {
         }
         return s;
     }
-
-    private static Filter addFilter(){
+    private static void removeFilter(Search s, ArrayList<Filter> filters){
+        Scanner input = new Scanner(System.in);
+        if(!filters.isEmpty()) {
+            System.out.println("Type the number of the filter to remove (or any non-integer character to go back): ");
+            int f = -1;
+            boolean isInt = true;
+            while (f == -1) {
+                try {
+                    f = input.nextInt();
+                } catch (Exception e) {
+                    isInt = false;
+                    break;
+                }
+                if (f >= filters.size() || f < 0) {
+                    System.out.println("Invalid Integer, try again");
+                    f = -1;
+                }
+            }
+            if(isInt) {
+                s.removeFilter(filters.get(f));
+            }
+        }else{
+            System.out.println("There are no applied filters.");
+        }
+    }
+    private static Filter addFilter(ArrayList<Filter> filters){
         Scanner in = new Scanner(System.in);
         System.out.println("To add a time filter typ 'T', to add a day filter type 'D'");
         String type = in.next();
+        boolean filterApplied = false;
 
+        // Day filter
         if(type.equals("D")){
-            ArrayList<String> days = new ArrayList<>();
-            System.out.println("Which days do you want to filter by? (format: 'M W F')");
-            String inDays = in.next();
-            Scanner parser = new Scanner(inDays);
-            parser.useDelimiter(" ");
-            while(parser.hasNext()){
-                days.add(parser.next());
+            // Check if already applied
+            for(Filter f : filters){
+                if(f.getType() == Filter.FilterType.DAY){
+                    System.out.println("Cannot have two day filters at once.");
+                    filterApplied = true;
+                }
             }
-            return new Filter(days, Filter.FilterType.DAY);
+            if(!filterApplied) {
+                // Get the filter
+                ArrayList<String> days = new ArrayList<>();
+                System.out.println("Which days do you want to filter by? (format: 'M W F')");
+                String inDays = in.next();
+                Scanner parser = new Scanner(inDays);
+                parser.useDelimiter(" ");
+                while (parser.hasNext()) {
+                    String day = parser.next().toUpperCase();
+                    if(day.equals("M") || day.equals("T") || day.equals("W") || day.equals("R") || day.equals("F")){
+                        days.add(day);
+                    }
+                }
+                return new Filter(days, Filter.FilterType.DAY);
+            }
         } else if(type.equals("T")){
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-            System.out.println("Enter start time (format: hh:mm:ss a)");
-            Scanner times = new Scanner(System.in);
-            ArrayList<String> filterTimes = new ArrayList<>();
-            filterTimes.add(times.next());
-            System.out.println("Enter end time:");
-            filterTimes.add(times.next());
-            return new Filter(filterTimes, Filter.FilterType.TIME);
+            // Check if already applied
+            for(Filter f : filters){
+                if(f.getType() == Filter.FilterType.DAY){
+                    System.out.println("Cannot have two time filters at once.");
+                    filterApplied = true;
+                }
+            }
+            if(!filterApplied) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                ArrayList<String> filterTimes = new ArrayList<>();
+                Scanner times = new Scanner(System.in);
+                while(true) {
+                    System.out.println("Enter start time (format: hh:mm a)");
+                    String start = times.nextLine();
+                    try{
+                        dateFormat.parse(start);
+                        filterTimes.add(start);
+                        break;
+                    }catch(Exception e){
+                        System.out.println("Invalid Time, try again");
+                    }
+                }
+                while(true){
+                    System.out.println("Enter end time:");
+                    String end = times.nextLine();
+                    try{
+                        dateFormat.parse(end);
+                        filterTimes.add(end);
+                        break;
+                    }catch(Exception e){
+                        System.out.println("Invalid Time, try again");
+                    }
+                }
+                return new Filter(filterTimes, Filter.FilterType.TIME);
+            }
         }
         return null;
     }
