@@ -88,8 +88,18 @@ public class Main {
                 if(results.isEmpty()){
                     System.out.println("No courses match your search.");
                 }
-                for(Course c : results){
-                    System.out.println(displayCourse(c));
+                for(int i = 0; i < results.size(); i++){
+                    System.out.println(i + " - " + displayCourse(results.get(i)));
+                }
+                System.out.println("To add a course to your schedule, type the number to the left of the course code (type 'B' to go back):");
+                try{
+                    int classToAdd = input.nextInt();
+                    if(classToAdd > 0 && classToAdd < results.size()){
+                        currentSchedule.addCourse(results.get(classToAdd));
+                        System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
+                    }
+                }catch(Exception e){
+                    // do nothing
                 }
             }
         }
