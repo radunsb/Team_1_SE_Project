@@ -53,8 +53,27 @@ public class Student {
     }
 
     public void addNewSchedule(int scheduleID, String semester, String scheuleName){
-        Schedule s = new Schedule(scheduleID,semester, "mySchedule");
+        Schedule s = new Schedule(scheduleID,semester, scheuleName);
         schedules.add(s);
+    }
+
+    public String switchSchedule(int s){
+        return schedules.get(s).toString();
+    }
+    public String switchSchedule(String name){
+        int place = 0;
+        while(!schedules.get(place).getScheduleName().equals(name)){
+            place ++;
+        }
+        return schedules.get(place).toString();
+    }
+
+    public String switchScheduleByCode(String code){
+        int place = 0;
+        while(!schedules.get(place).getScheduleName().equals(code)){
+            place ++;
+        }
+        return schedules.get(place).toString();
     }
 
     /**
@@ -140,4 +159,9 @@ public class Student {
     public void setSchedules(ArrayList<Schedule> schedules) {
         this.schedules = schedules;
     }
+
+    public String toString() {
+        return username;
+    }
+
 }
