@@ -115,16 +115,12 @@ public class Search {
         String startTime = filter.getInput().get(0);
         String endTime = filter.getInput().get(1);
         for(Course course : courses){
-            if(course.getMeetingTimes() == null){
-                break;
-            }
-            for(Date[] times : course.getMeetingTimes()){
-                if(times[0] == null){
-                    break;
-                }
-                if(isTimeBetween(times[0], startTime, endTime) && isTimeBetween(times[1], startTime, endTime)){
-                    toKeep.add(course);
-                    break;
+            if(course.getMeetingTimes() != null) {
+                for (Date[] times : course.getMeetingTimes()) {
+                    if (times[0] != null && isTimeBetween(times[0], startTime, endTime) && isTimeBetween(times[1], startTime, endTime)) {
+                        toKeep.add(course);
+                        break;
+                    }
                 }
             }
         }
@@ -157,9 +153,9 @@ public class Search {
                 + (startAMPM.equals("PM") ? 12 : 0);
         double endNum = Integer.parseInt((endTime.split(":"))[0])%12 + (Integer.parseInt((endTime.split(":"))[1])/60.0)
                 + ((endAMPM.equals("PM")) ? 12 : 0);
-        double userNum = Integer.parseInt((courseTime.split(":"))[0])%12 + (Integer.parseInt((courseTime.split(":"))[1])/60.0)
+        double checkNum = Integer.parseInt((courseTime.split(":"))[0])%12 + (Integer.parseInt((courseTime.split(":"))[1])/60.0)
                 + (courseAMPM.equals("PM") ? 12 : 0);
-        return (startNum <= userNum && userNum <= endNum);
+        return (startNum <= checkNum && checkNum <= endNum);
     }
 
     public String getQuery() {
