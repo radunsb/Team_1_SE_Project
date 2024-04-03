@@ -80,14 +80,14 @@ public class Main {
     public static void navigateHome(Scanner s, Student current) {
         int state;
         String command = "";
-
+        current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
             int year = Year.now().getValue();
             current.addNewSchedule(1, "Spring", year, "defaultSchedule");
             System.out.println("You did not have any schedules.\nHere is a default schedule\n");
-            currentSchedule = current.getSchedules().getFirst();
-        }
 
+        }
+        currentSchedule = current.getSchedules().getFirst();
 
         while (true) {
             System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
@@ -137,7 +137,7 @@ public class Main {
         int state = 0;
         int temp;
 
-        while (state != 5) {
+        while (state != 6) {
             if (state == 0) {
                 System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
                 System.out.println();
@@ -147,7 +147,8 @@ public class Main {
             System.out.println("Enter 2 to remove a course from " + currentSchedule.getScheduleName());
             System.out.println("Enter 3 to rename this schedule");
             System.out.println("Enter 4 to switch schedule");
-            System.out.println("Enter 5 to return to home");
+            System.out.println("Enter 5 to save your current schedule");
+            System.out.println("Enter 6 to return to home");
             state = s.nextInt();
 
             if (state == 1) {
@@ -170,6 +171,8 @@ public class Main {
                 System.out.println("Enter what you would like to name this schedule");
                 String newName = s.next();
                 currentSchedule.setScheduleName(newName);
+                currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
+                current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
 
             } else if (state == 4) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
@@ -188,8 +191,12 @@ public class Main {
                 } else {
                     currentSchedule = current.getSchedules().get(temp);
                 }
-            } else {
-                state = 5;
+            } else if (state == 5){
+                currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
+                current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
+            }
+            else {
+                state = 6;
             }
         }
 
@@ -266,6 +273,7 @@ public class Main {
                         input.nextLine();
                     }
                 }catch(Exception e){
+                  
                     // Clear the input and do nothing -> go back to search
                     input.nextLine();
                 }
@@ -431,7 +439,7 @@ public class Main {
      * @throws FileNotFoundException if the file isn't found
      * @throws ParseException if something weird happens (it shouldn't, hopefully. . .)
      */
-    private static void readCSV() throws FileNotFoundException, ParseException {
+    static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));

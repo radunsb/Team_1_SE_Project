@@ -5,7 +5,12 @@ import classes.Major;
 import classes.Minor;
 import classes.Schedule;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.module.FindException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Student {
     private int studentID;
@@ -55,6 +60,73 @@ public class Student {
     public void addNewSchedule(int scheduleID, String semester, int year, String scheduleName){
         Schedule s = new Schedule(scheduleID,semester,year, scheduleName);
         schedules.add(s);
+    }
+
+    public Schedule loadSchedule(String studentID, String childName) {
+        Scanner inScan;
+        int scheduleID;
+        String semester;
+        String year;
+        String scheduleName;
+        ArrayList<String> parts = new ArrayList<>();
+        try {
+            File csvToParse = new File(studentID + "/" + childName);
+            inScan = new Scanner(csvToParse);
+        } catch (FileNotFoundException fe) {
+            System.out.println("The specified schedule does not exist on the system");
+            return null;
+        }
+        inScan.useDelimiter(",");
+        while (inScan.hasNext()) {
+            parts.add(inScan.next());
+        }
+        for(String part : parts){
+            System.out.println(part);
+        }
+        if(parts.size() < 3){
+            System.out.println("The specified schedule is in an unsupported format");
+            return null;
+        }
+        Main main = new Main();
+        ArrayList<Filter> filt = new ArrayList<>();
+        Search search = new Search("", main.getCourseCatalog(), filt);
+        scheduleID = Integer.parseInt(parts.get(0));
+        semester = parts.get(1);
+        year = parts.get(2);
+        scheduleName = parts.get(3);
+        ArrayList<String> filterInput = new ArrayList<>();
+        filterInput.add(semester);
+        filterInput.add(year);
+        Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
+        filt.add(semFilter);
+        List<String> coursePrimaryKeys = parts.subList(4, parts.size());
+        List<Course> courses = coursePrimaryKeys.stream().map(course -> {
+            search.search(course);
+            search.search(filt);
+            if(search.getResults().size() > 1){
+                throw new FindException("More than one entry found for a certain class. Schedule was unable to be loaded");
+            }
+            else if(search.getResults().isEmpty()){
+                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+            }
+            return search.getResults().get(0);
+        }).toList();
+        Schedule sched = new Schedule(scheduleID,semester,Integer.parseInt(year),scheduleName);
+        sched.setCourses(new ArrayList<>(courses));
+        return sched;
+    }
+
+    public ArrayList<Schedule> loadAllSchedules(String studentID){
+        ArrayList<Schedule> toReturn = new ArrayList<>();
+        File userFolder = new File(studentID);
+        File[] scheduleList = userFolder.listFiles();
+        if(scheduleList != null) {
+            for (File sched : scheduleList) {
+                Schedule schedule = loadSchedule(studentID, sched.getName());
+                toReturn.add(schedule);
+            }
+        }
+        return toReturn;
     }
 
     public String switchSchedule(int s){
