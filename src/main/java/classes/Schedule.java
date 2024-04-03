@@ -81,10 +81,13 @@ public class Schedule {
     /**
      * Takes the data within the current schedule, and saves it to a csv file so that
      * it can be reloaded at a later date
+     * @param studentID id of current student, is made the name of the outside directory to save in
      */
-    public void saveSchedule(){
+    public void saveSchedule(String studentID){
         //save the current schedule to a csv file
-        File csvOutputFile = new File(scheduleID + "_" + scheduleName);
+        File studentFile = new File(studentID);
+        studentFile.mkdirs();
+        File csvOutputFile = new File(studentFile, scheduleID + "_" + scheduleName);
         ArrayList<String> codes = new ArrayList<>();
         for(Course course : courses){
             codes.add(course.getCourseCode());
@@ -101,9 +104,10 @@ public class Schedule {
     /**
      * Takes in a File and sets the current Schedule parameters to those specified
      * by the file
-     * @param csvToParse File with the Schedule data to load
+     * @param studentID directory labelled with the current student's ID
+     * @param childName name of the specific schedule that is being loaded
      */
-    public void loadSchedule(File csvToParse) {
+    public void loadSchedule(String studentID, String childName) {
         Scanner inScan;
         int scheduleID;
         String semester;
@@ -111,6 +115,7 @@ public class Schedule {
         String scheduleName;
         ArrayList<String> parts = new ArrayList<>();
         try {
+            File csvToParse = new File(studentID + "/" + childName);
             inScan = new Scanner(csvToParse);
         } catch (FileNotFoundException fe) {
             System.out.println("The specified schedule does not exist on the system");
@@ -156,6 +161,7 @@ public class Schedule {
         this.scheduleName = scheduleName;
         this.courses = new ArrayList<>(courses);
     }
+
 
     /**
      * This method will check the candidate course with the users current schedule for conflicts with classes
