@@ -80,14 +80,14 @@ public class Main {
     public static void navigateHome(Scanner s, Student current) {
         int state;
         String command = "";
-
+        current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
             int year = Year.now().getValue();
             current.addNewSchedule(1, "Spring", year, "defaultSchedule");
             System.out.println("You did not have any schedules.\nHere is a default schedule\n");
-            currentSchedule = current.getSchedules().getFirst();
-        }
 
+        }
+        currentSchedule = current.getSchedules().getFirst();
 
         while (true) {
             System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
@@ -137,7 +137,7 @@ public class Main {
         int state = 0;
         int temp;
 
-        while (state != 5) {
+        while (state != 6) {
             if (state == 0) {
                 System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
                 System.out.println();
@@ -147,7 +147,8 @@ public class Main {
             System.out.println("Enter 2 to remove a course from " + currentSchedule.getScheduleName());
             System.out.println("Enter 3 to rename this schedule");
             System.out.println("Enter 4 to switch schedule");
-            System.out.println("Enter 5 to return to home");
+            System.out.println("Enter 5 to save your current schedule");
+            System.out.println("Enter 6 to return to home");
             state = s.nextInt();
 
             if (state == 1) {
@@ -170,6 +171,8 @@ public class Main {
                 System.out.println("Enter what you would like to name this schedule");
                 String newName = s.next();
                 currentSchedule.setScheduleName(newName);
+                currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
+                current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
 
             } else if (state == 4) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
@@ -188,13 +191,20 @@ public class Main {
                 } else {
                     currentSchedule = current.getSchedules().get(temp);
                 }
-            } else {
-                state = 5;
+            } else if (state == 5){
+                currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
+                current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
+            }
+            else {
+                state = 6;
             }
         }
 
     }
 
+    /**
+     * handles user IO for the search menu, navigation, and functionality
+     */
     private static void searchCourses(){
         //User input setup
         Scanner input = new Scanner(System.in);
@@ -250,51 +260,65 @@ public class Main {
                     System.out.println("No courses match your search.");
                 }
                 for(int i = 0; i < results.size(); i++){
-                    System.out.println(i + " - " + displayCourse(results.get(i)));
+                    System.out.println(String.format("%4d", i) + " - " + displayCourse(results.get(i)));
                 }
                 System.out.println("To add a course to your schedule, type the number to the left of the course code (type 'B' to go back):");
                 try{
                     int classToAdd = input.nextInt();
                     if(classToAdd > 0 && classToAdd < results.size()){
+                        // Add course
                         currentSchedule.addCourse(results.get(classToAdd));
                         System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
+                        // Clear the input
                         input.nextLine();
                     }
                 }catch(Exception e){
-                    // do nothing
+                  
+                    // Clear the input and do nothing -> go back to search
+                    input.nextLine();
                 }
             }
         }
     }
 
+    /**
+     * Creates a string of the relevant info for a course in a nicely formatted way
+     * @param c is the course to format
+     * @return a string
+     */
     private static String displayCourse(Course c){
-        String s = c.getCourseCode() + " " + c.getName();
+
+        String s = c.getCourseCode() + " " + String.format("%1$40s", c.getName());
+        String days = "";
         for(int i = 0; i < c.getMeetingDays().length; i++){
             boolean day = c.getMeetingDays()[i];
             if(day){
                 if(i == 0){
-                    s += " M";
+                    days += " M";
                 }else if(i == 1){
-                    s += " T";
+                    days += " T";
                 }else if(i == 2){
-                    s += " W";
+                    days += " W";
                 }else if(i == 3){
-                    s += " R";
+                    days += " R";
                 }else if(i == 4){
-                    s += " F";
+                    days += " F";
                 }
             }
         }
+        s += String.format("%1$10s", days);
+        s += "  ";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(c.getMeetingTimes() != null) {
-            boolean b = false;
+            boolean b = false; // tells if we need to break -> i.e. we have the time
             for(int k = 0; k < 5; k++) {
                 if(b){
                     break;
                 }
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 5; i++) {
                     Date[] times = c.getMeetingTimes()[i];
                     if (times[0] != null) {
-                        s += " " + times[0] + " " + times[1];
+                        s += " " + dateFormat.format(times[0]) + " - " + dateFormat.format(times[1]);
                         b = true;
                         break;
                     }
@@ -303,11 +327,17 @@ public class Main {
         }
         return s;
     }
+
+    /**
+     * Removes a filter
+     * @param s is the Search instance
+     * @param filters is the list of applied filters
+     */
     private static void removeFilter(Search s, ArrayList<Filter> filters){
         Scanner input = new Scanner(System.in);
         if(!filters.isEmpty()) {
             System.out.println("Type the number of the filter to remove (or any non-integer character to go back): ");
-            int f = -1;
+            int f = -1; // starter value for error checking
             boolean isInt = true;
             while (f == -1) {
                 try {
@@ -328,6 +358,12 @@ public class Main {
             System.out.println("There are no applied filters.");
         }
     }
+
+    /**
+     * Adds a filter
+     * @param filters is the list of applied filters
+     * @return the filter to be added
+     */
     private static Filter addFilter(ArrayList<Filter> filters){
         Scanner in = new Scanner(System.in);
         System.out.println("To add a time filter typ 'T', to add a day filter type 'D'");
@@ -403,7 +439,7 @@ public class Main {
      * @throws FileNotFoundException if the file isn't found
      * @throws ParseException if something weird happens (it shouldn't, hopefully. . .)
      */
-    private static void readCSV() throws FileNotFoundException, ParseException {
+    static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
 
         Scanner scnr = new Scanner(new File("2020-2021.csv"));

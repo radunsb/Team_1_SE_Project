@@ -74,13 +74,13 @@ class SearchTest {
     @Test
     void searchTimeIn() throws ParseException{
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
-        Date startTime = dateFormat.parse("10:30:00 AM");
-        Date endTime = dateFormat.parse("11:30:00 AM");
+        Date startTime = dateFormat.parse("11:30:00 AM");
+        Date endTime = dateFormat.parse("12:30:00 PM");
         ArrayList<String> userTimes = new ArrayList<String>();
         userTimes.add("10:00 AM");
-        userTimes.add("12:50 PM");
-        Date[][] dates = {{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime},{startTime, endTime}};
-        boolean[] days = {true, true, true, true, true};
+        userTimes.add("1:50 PM");
+        Date[][] dates = {{null, null},{null, null},{startTime, endTime},{startTime, endTime},{startTime, endTime}};
+        boolean[] days = {false, false, true, true, true};
         ArrayList<String> emptyList = new ArrayList<>();
         Course testCourse1 = new Course("1", "test1", "test course",
                 "James Borg", dates, days, 0, 0, Course.Semester.FALL, 30, emptyList, emptyList, emptyList);
