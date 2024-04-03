@@ -195,6 +195,9 @@ public class Main {
 
     }
 
+    /**
+     * handles user IO for the search menu, navigation, and functionality
+     */
     private static void searchCourses(){
         //User input setup
         Scanner input = new Scanner(System.in);
@@ -250,23 +253,31 @@ public class Main {
                     System.out.println("No courses match your search.");
                 }
                 for(int i = 0; i < results.size(); i++){
-                    System.out.println(i + " - " + displayCourse(results.get(i)));
+                    System.out.println(String.format("%4d", i) + " - " + displayCourse(results.get(i)));
                 }
                 System.out.println("To add a course to your schedule, type the number to the left of the course code (type 'B' to go back):");
                 try{
                     int classToAdd = input.nextInt();
                     if(classToAdd > 0 && classToAdd < results.size()){
+                        // Add course
                         currentSchedule.addCourse(results.get(classToAdd));
                         System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
+                        // Clear the input
                         input.nextLine();
                     }
                 }catch(Exception e){
+                    // Clear the input and do nothing -> go back to search
                     input.nextLine();
                 }
             }
         }
     }
 
+    /**
+     * Creates a string of the relevant info for a course in a nicely formatted way
+     * @param c is the course to format
+     * @return a string
+     */
     private static String displayCourse(Course c){
 
         String s = c.getCourseCode() + " " + String.format("%1$40s", c.getName());
@@ -291,12 +302,12 @@ public class Main {
         s += "  ";
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(c.getMeetingTimes() != null) {
-            boolean b = false;
+            boolean b = false; // tells if we need to break -> i.e. we have the time
             for(int k = 0; k < 5; k++) {
                 if(b){
                     break;
                 }
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 5; i++) {
                     Date[] times = c.getMeetingTimes()[i];
                     if (times[0] != null) {
                         s += " " + dateFormat.format(times[0]) + " - " + dateFormat.format(times[1]);
@@ -308,11 +319,17 @@ public class Main {
         }
         return s;
     }
+
+    /**
+     * Removes a filter
+     * @param s is the Search instance
+     * @param filters is the list of applied filters
+     */
     private static void removeFilter(Search s, ArrayList<Filter> filters){
         Scanner input = new Scanner(System.in);
         if(!filters.isEmpty()) {
             System.out.println("Type the number of the filter to remove (or any non-integer character to go back): ");
-            int f = -1;
+            int f = -1; // starter value for error checking
             boolean isInt = true;
             while (f == -1) {
                 try {
@@ -333,6 +350,12 @@ public class Main {
             System.out.println("There are no applied filters.");
         }
     }
+
+    /**
+     * Adds a filter
+     * @param filters is the list of applied filters
+     * @return the filter to be added
+     */
     private static Filter addFilter(ArrayList<Filter> filters){
         Scanner in = new Scanner(System.in);
         System.out.println("To add a time filter typ 'T', to add a day filter type 'D'");
