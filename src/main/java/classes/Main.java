@@ -291,7 +291,7 @@ public class Main {
         s += "  ";
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(c.getMeetingTimes() != null) {
-            boolean b = false;
+            boolean b = false; // tells if we need to break -> i.e. we have the time
             for(int k = 0; k < 5; k++) {
                 if(b){
                     break;
