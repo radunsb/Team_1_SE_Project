@@ -296,7 +296,7 @@ public class Main {
                 if(b){
                     break;
                 }
-                for (int i = 0; i < 2; i++) {
+                for (int i = 0; i < 5; i++) {
                     Date[] times = c.getMeetingTimes()[i];
                     if (times[0] != null) {
                         s += " " + dateFormat.format(times[0]) + " - " + dateFormat.format(times[1]);
