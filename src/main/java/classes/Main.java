@@ -12,7 +12,6 @@ public class Main {
     private static Schedule currentSchedule;
     private static Student currentStudent;
     private static ArrayList<Course> courseCatalog;
-
     private static int schedCount;
 
 
