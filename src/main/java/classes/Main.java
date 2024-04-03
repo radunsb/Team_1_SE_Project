@@ -261,30 +261,35 @@ public class Main {
                         input.nextLine();
                     }
                 }catch(Exception e){
-                    // do nothing
+                    input.nextLine();
                 }
             }
         }
     }
 
     private static String displayCourse(Course c){
-        String s = c.getCourseCode() + " " + c.getName();
+
+        String s = c.getCourseCode() + " " + String.format("%1$40s", c.getName());
+        String days = "";
         for(int i = 0; i < c.getMeetingDays().length; i++){
             boolean day = c.getMeetingDays()[i];
             if(day){
                 if(i == 0){
-                    s += " M";
+                    days += " M";
                 }else if(i == 1){
-                    s += " T";
+                    days += " T";
                 }else if(i == 2){
-                    s += " W";
+                    days += " W";
                 }else if(i == 3){
-                    s += " R";
+                    days += " R";
                 }else if(i == 4){
-                    s += " F";
+                    days += " F";
                 }
             }
         }
+        s += String.format("%1$10s", days);
+        s += "  ";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(c.getMeetingTimes() != null) {
             boolean b = false;
             for(int k = 0; k < 5; k++) {
@@ -294,7 +299,7 @@ public class Main {
                 for (int i = 0; i < 2; i++) {
                     Date[] times = c.getMeetingTimes()[i];
                     if (times[0] != null) {
-                        s += " " + times[0] + " " + times[1];
+                        s += " " + dateFormat.format(times[0]) + " - " + dateFormat.format(times[1]);
                         b = true;
                         break;
                     }
