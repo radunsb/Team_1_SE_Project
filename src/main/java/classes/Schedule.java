@@ -33,11 +33,13 @@ public class Schedule {
      * @param c is the course to add to the schedule
      * @return true if the class was successfully added to courses, false if it was not
      */
-    public void addCourse(Course c) {
+    public boolean addCourse(Course c) {
         if (!courseConflict(c)) {
             courses.add(c);
             sortArr(courses);
+            return true;
         }
+        return false;
     }
     /**
      * Sorts through current schedule and checks for conflict with other classes.
@@ -46,32 +48,26 @@ public class Schedule {
      */
     private boolean courseConflict(Course candidate) {
         // check if the class is already in the users' schedule
-        if (courses.contains(candidate)) {
-            System.out.println("The class " +candidate.getCourseCode() +" is already in your schedule.");
-            return true;
+        for(Course c : courses){
+            if(c.getCourseCode().equals(candidate.getCourseCode())){
+                return true;
+            }
         }
-        // Set meeting times for candidate course
-        Date candStartTime = candidate.getMeetingTimes()[0][0];
-        Date candEndTime = candidate.getMeetingTimes()[0][1];
-        // Loop that checks for conflict with users' timeslots and candidate timeslot
-        for (Course check : courses) {
-            if (Arrays.equals(check.getMeetingDays(), candidate.getMeetingDays())) {
-                // Set meeting times for each course to check
-                Date checkStartTime = check.getMeetingTimes()[0][0];
-                Date checkEndTime = check.getMeetingTimes()[0][1];
-
-                // Check cases for times of each and make sure they don't overlap
-                if (candStartTime.equals(checkStartTime)) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
-                }
-                if (candStartTime.compareTo(checkEndTime) < 0 && candStartTime.compareTo(checkStartTime) > 0 && candEndTime.compareTo(checkEndTime) > 0) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
-                }
-                if (candEndTime.compareTo(checkStartTime) > 0 && candStartTime.compareTo(checkStartTime) < 0 && candEndTime.compareTo(checkEndTime) < 0) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
+        // check if the candidate class has no meeting times
+        if(candidate.getMeetingTimes() == null){
+            return false;
+        }
+        // Search Object to use the isTimeBetween method
+        Search s = new Search("",null, null);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        for(Course c : courses){
+            for(int i = 0; i < 5; i++){
+                if(c.getMeetingTimes()[i][0] != null && candidate.getMeetingTimes()[i][0] != null){
+                    String start = dateFormat.format(c.getMeetingTimes()[i][0]);
+                    String end = dateFormat.format(c.getMeetingTimes()[i][1]);
+                    if(s.isTimeBetween(candidate.getMeetingTimes()[i][0], start, end) || s.isTimeBetween(candidate.getMeetingTimes()[i][1], start, end)){
+                        return true;
+                    }
                 }
             }
         }
