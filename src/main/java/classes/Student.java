@@ -115,7 +115,7 @@ public class Student {
                     additionalTimeslots.add(search.getResults().get(i));
                 }
             } else if (search.getResults().isEmpty()) {
-                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+                return null;
             }
             return search.getResults().get(0);
         }).toList());
