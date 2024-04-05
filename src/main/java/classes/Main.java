@@ -193,7 +193,7 @@ public class Main {
             }
 
             if (command.equals("2")) {
-                System.out.println(currentSchedule.toString());
+                System.out.println(currentSchedule.toStringEx());
             }
             if (command.equals("3")) {
                 //do search method here
@@ -300,6 +300,11 @@ public class Main {
         Search s = new Search("", courseCatalog, filters, semesterFilter);
 
         while(!query.equals("Q")){
+            System.out.println("--------------");
+            for(Course c : currentSchedule.getCourses()){
+                System.out.println(c);
+            }
+            System.out.println("--------------");
             // Search info and navigation info
             System.out.println("-----Course Search-----");
             System.out.println("To leave the search type 'Q'");
