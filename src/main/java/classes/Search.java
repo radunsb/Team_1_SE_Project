@@ -10,12 +10,23 @@ public class Search {
     private ArrayList<Course> results;
     private ArrayList<Filter> appliedFilters;
 
+    private Filter semesterFilter;
+
     public Search(String query, ArrayList<Course> courseCatalog, ArrayList<Filter> appliedFilters) {
         this.query = query;
         this.courseCatalog = courseCatalog;
         this.appliedFilters = appliedFilters;
         this.results = courseCatalog;
     }
+
+    public Search(String query, ArrayList<Course> courseCatalog, ArrayList<Filter> appliedFilters,
+        Filter semesterFilter){
+        this.query = query;
+        this.appliedFilters = appliedFilters;
+        this.courseCatalog = filterSemester(courseCatalog, semesterFilter);
+        this.results = courseCatalog;
+    }
+
 
     /**
      * Adds the specified filter to the appliedFilters ArrayList, applies the filter to

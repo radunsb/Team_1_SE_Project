@@ -82,8 +82,8 @@ public class Main {
         String command = "";
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
-            int year = Year.now().getValue();
-            current.addNewSchedule(1, "Spring", year, "defaultSchedule");
+            int year = 2020;
+            current.addNewSchedule(1, "Fall", year, "defaultSchedule");
             System.out.println("You did not have any schedules.\nHere is a default schedule\n");
 
         }
@@ -211,8 +211,11 @@ public class Main {
         String query = "";
         ArrayList<Course> results;
         ArrayList<Filter> filters = new ArrayList<>();
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),
+                ""+currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+
         // Create search instance
-        Search s = new Search("", courseCatalog, filters);
+        Search s = new Search("", courseCatalog, filters, semesterFilter);
 
         while(!query.equals("Q")){
             // Search info and navigation info
@@ -521,7 +524,6 @@ public class Main {
             courseCatalog.add(newCourse);
 
         }
-
     }
 
     public ArrayList<Course> getCourseCatalog() {

@@ -145,17 +145,20 @@ public class Schedule {
         Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
         filt.add(semFilter);
         List<String> coursePrimaryKeys = parts.subList(4, parts.size());
-        List<Course> courses = coursePrimaryKeys.stream().map(course -> {
+        List<Course> additionalTimeslots = new ArrayList<>();
+        List<Course> courses = new ArrayList<>(coursePrimaryKeys.stream().map(course -> {
             search.search(course);
             search.search(filt);
-            if(search.getResults().size() > 1){
-                throw new FindException("More than one entry found for a certain class. Schedule was unable to be loaded");
-            }
-            else if(search.getResults().isEmpty()){
+            if (search.getResults().size() > 1) {
+                for (int i = 1; i < search.getResults().size(); i++) {
+                    additionalTimeslots.add(search.getResults().get(i));
+                }
+            } else if (search.getResults().isEmpty()) {
                 throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
             }
             return search.getResults().get(0);
-        }).toList();
+        }).toList());
+        courses.addAll(additionalTimeslots);
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;
@@ -231,6 +234,10 @@ public class Schedule {
 
     public void setCourses(ArrayList<Course> courses) {
         this.courses = courses;
+    }
+
+    public int getYear(){
+        return year;
     }
 }
 
