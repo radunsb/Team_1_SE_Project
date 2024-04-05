@@ -106,20 +106,14 @@ public class Student {
         Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
         filt.add(semFilter);
         List<String> coursePrimaryKeys = parts.subList(4, parts.size());
-        List<Course> additionalTimeslots = new ArrayList<>();
         List<Course> courses = new ArrayList<>(coursePrimaryKeys.stream().map(course -> {
             search.search(course);
             search.search(filt);
-            if (search.getResults().size() > 1) {
-                for (int i = 1; i < search.getResults().size(); i++) {
-                    additionalTimeslots.add(search.getResults().get(i));
-                }
-            } else if (search.getResults().isEmpty()) {
+            if (search.getResults().isEmpty()) {
                 return null;
             }
             return search.getResults().get(0);
         }).toList());
-        courses.addAll(additionalTimeslots);
         Schedule sched = new Schedule(scheduleID,semester,Integer.parseInt(year),scheduleName);
         sched.setCourses(new ArrayList<>(courses));
         inScan.close();
