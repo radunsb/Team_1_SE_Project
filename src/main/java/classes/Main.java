@@ -143,6 +143,7 @@ public class Main {
 
         }
         currentSchedule = current.getSchedules().getFirst();
+        currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
 
         while (true) {
             System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
