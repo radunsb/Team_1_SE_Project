@@ -240,7 +240,12 @@ public class Main {
                 if(toRemove.equals("B")){
                     return;
                 }
-                else if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
+                for(Character c : toRemove.toCharArray()){
+                    if(!Character.isDigit(c)){
+                        return;
+                    }
+                }
+                if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
                     currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
 
 
