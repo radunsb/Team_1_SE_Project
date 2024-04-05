@@ -140,9 +140,9 @@ public class Main {
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
             int year = 2020;
-            current.addNewSchedule(1, "Fall", year, "defaultSchedule");
+            current.addNewSchedule(0, "Fall", year, "defaultSchedule");
             System.out.println("You did not have any schedules.\nHere is a default schedule\n");
-
+            schedCount++;
         }
         currentSchedule = current.getSchedules().getFirst();
         currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
@@ -269,7 +269,7 @@ public class Main {
             } else if (state.equals("4")) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
                     System.out.print(i + 1 + ".) ");
-                    System.out.println(current.getSchedules().get(i).toString());}
+                    System.out.println(current.getSchedules().get(i).toStringEx());}
 
                 System.out.println("\nEnter the number of the schedule you would like to edit");
                 temp = s.nextInt() - 1;
