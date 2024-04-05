@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.module.FindException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.time.Duration;
 
 public class Schedule {
     private int scheduleID;
@@ -40,6 +37,7 @@ public class Schedule {
         }
         return false;
     }
+
     /**
      * Sorts through current schedule and checks for conflict with other classes.
      * @param candidate is the course to add to the schedule
@@ -74,7 +72,6 @@ public class Schedule {
     }
 
 
-
     /**
      * Removes the specified classes.Course object from the courses ArrayList
      * @param course is the course to remove from the schedule
@@ -102,22 +99,7 @@ public class Schedule {
             }
         }
     }
-    // helper method to return duration between the start and end of a class
-    private long classDuration(Course e) {
-        return e.getMeetingTimes()[1][0].getTime() - e.getMeetingTimes()[0][0].getTime();
-    }
-    // helper method that returns the time between two classes
-    private long durationBetween(Course e, Course y) {
-        long eStart = e.getMeetingTimes()[0][0].getTime();
-        long yStart = y.getMeetingTimes()[0][0].getTime();
-        if (eStart < yStart) {
-            return yStart - e.getMeetingTimes()[1][0].getTime();
-        } else {
-            return eStart - y.getMeetingTimes()[1][0].getTime();
-        }
-    }
-
-        /**
+    /**
          * toString method for a schedule.
          * @return a string representation of a schedule in a weekly timeslot format
          */
@@ -127,13 +109,17 @@ public class Schedule {
             str.append("Schedule ID: | ");
             str.append(scheduleID);
             str.append(" |\n");
-            str.append("\t\t\t\t8:00\t\t\t\t\t\t9:00\t\t\t\t\t\t10:00\t\t\t\t\t\t11:00\t\t\t\t\t\t12:00\t\t\t\t\t\t1:00\t\t\t\t\t\t2:00\t\t\t\t\t\t3:00\t\t\t\t\t\t4:00\t\t\t\t\t\t5:00\t\t\t\t\t\t\n");
-            str.append("M:\t");
+
+            str.append("\t8:00a\t\t\t\t\t\t9:00a\t\t\t\t\t\t10:00a\t\t\t\t\t\t11:00a\t\t\t\t\t\t12:00p\t\t\t\t\t\t1:00p\t\t\t\t\t\t2:00p\t\t\t\t\t\t3:00p\t\t\t\t\t\t4:00\t\t\t\t\t\t6:30p");
+            str.append("\nM:\t");
+
             // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[0]) {
-                    str.append(e);
-                }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+            String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
+
+
+            for (Course e : courses) {
+                str.append(e);
             }
             str.append("\n\nT:\t");
             // print classes
@@ -270,14 +256,6 @@ public class Schedule {
         this.courses = new ArrayList<>(courses);
         inScan.close();
     }
-
-
-    /**
-     * This method will check the candidate course with the users current schedule for conflicts with classes
-     *
-     * @param candidate possible class to be added to the schedule
-     * @return returns the candidate if no conflict is detected, otherwise returns the course that the candidate conflicts with
-     */
 
     public int getScheduleID() {
         return scheduleID;
