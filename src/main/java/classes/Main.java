@@ -305,11 +305,11 @@ public class Main {
         Search s = new Search("", courseCatalog, filters, semesterFilter);
 
         while(!query.equals("Q")){
-            System.out.println("--------------");
+            System.out.println("---Your Schedule---");
             for(Course c : currentSchedule.getCourses()){
                 System.out.println(c);
             }
-            System.out.println("--------------");
+            System.out.println("-------------------");
             // Search info and navigation info
             System.out.println("-----Course Search-----");
             System.out.println("To leave the search type 'Q'");
