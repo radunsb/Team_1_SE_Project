@@ -12,6 +12,8 @@ public class Filter {
         //Format: [day1, day2... etc]
         //example: ["M", "W", "F"]
         DAY,
+        //Format: [Semester, Year]
+        //example: ["Fall", "2020"]
         SEMESTER
     }
 
