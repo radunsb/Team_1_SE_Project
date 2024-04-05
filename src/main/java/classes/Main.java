@@ -31,9 +31,23 @@ public class Main {
 
         Scanner input = new Scanner(System.in);
 
-        System.out.println("Hello please enter 1 to create a new user");
-        System.out.println("Or Enter 2 to log in as an existing user");
-        int confirm = input.nextInt();
+        int confirm = 0;
+
+        while(true){
+            try{
+                System.out.println("Hello please enter 1 to create a new user");
+                System.out.println("Or Enter 2 to log in as an existing user");
+                confirm = input.nextInt();
+                if(confirm == 1 || confirm == 2) {
+                    break;
+                }else{
+                    System.out.println("Invalid Input");
+                }
+            }catch(Exception e){
+                System.out.println("Invalid input");
+            }
+            input.nextLine();
+        }
         if (confirm == 1) {
             Student ben = craftUser(input);
             currentStudent = ben;
@@ -51,8 +65,17 @@ public class Main {
      */
     public static Student craftUser(Scanner s) {
         //ask for ID
-        System.out.println("please enter your student ID");
-        int id = s.nextInt();
+        int id = 0;
+        while(true) {
+            try {
+                System.out.println("please enter your student ID");
+                id = s.nextInt();
+                break;
+            }catch(Exception e){
+                System.out.println("Invalid input");
+                s.nextLine();
+            }
+        }
 
         //ask for username
         System.out.println("please enter a username");
@@ -96,36 +119,51 @@ public class Main {
             System.out.println("Enter 3 to search courses");
             System.out.println("Enter 4 to edit Schedules");
             System.out.println("\nEnter EXIT to log out");
+
             command = s.next();
 
-            if (!command.equals("EXIT")) {
-                state = Integer.parseInt(command);
-            } else {
+            if (command.equals("EXIT")) {
                 return;
             }
-
-            if (state == 1) {
+            if (command.equals("1")) {
                 System.out.println("What would you like to call this schedule?");
                 String newScheduleName = s.next();
-                System.out.println("What Semester is this schedule for");
-                String newScheduleSemester = s.next();
-                System.out.println("What year is this schedule for?");
-                int year = s.nextInt();
+                String newScheduleSemester = "Fall";
+                while(true) {
+                    System.out.println("What Semester is this schedule for");
+                    newScheduleSemester = s.next();
+                    if(newScheduleSemester.equalsIgnoreCase("SPRING") || newScheduleSemester.equalsIgnoreCase("FALL")){
+                        break;
+                    }else{
+                        System.out.println("Invalid semester: must be Spring or Fall");
+                        s.nextLine();
+                    }
+                }
+                int year = 2020;
+                while(true) {
+                    try {
+                        System.out.println("What year is this schedule for?");
+                        year = s.nextInt();
+                        break;
+                    }catch(Exception e){
+                        System.out.println("Invalid input");
+                        s.nextLine();
+                    }
+                }
                 current.addNewSchedule(schedCount, newScheduleSemester, year, newScheduleName);
                 currentSchedule = current.getSchedules().getLast();
                 System.out.println(currentSchedule.getScheduleName());
                 schedCount++;
             }
 
-            if (state == 2) {
+            if (command.equals("2")) {
                 System.out.println(currentSchedule.toString());
             }
-            if (state == 3) {
+            if (command.equals("3")) {
                 //do search method here
                 searchCourses();
             }
-
-            if (state == 4) {
+            if (command.equals("4")) {
                 navigateSchedules(s, current);
             }
         }
@@ -133,11 +171,11 @@ public class Main {
     }
 
     public static void navigateSchedules(Scanner s, Student current) {
-        int state = 0;
+        String state = "0";
         int temp;
 
-        while (state != 6) {
-            if (state == 0) {
+        while (!state.equals("6")) {
+            if (state.equals("0")) {
                 System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
                 System.out.println();
             }
@@ -148,14 +186,14 @@ public class Main {
             System.out.println("Enter 4 to switch schedule");
             System.out.println("Enter 5 to save your current schedule");
             System.out.println("Enter 6 to return to home");
-            state = s.nextInt();
+            state = s.next();
 
-            if (state == 1) {
+            if (state.equals("1")) {
                 // go to search method
-
                 // add searched class to schedule
+                searchCourses();
 
-            } else if (state == 2) {
+            } else if (state.equals("2")) {
 
                 // print out schedule in a list format
                 for (int i = 0; i < currentSchedule.getCourses().size(); i++) {
@@ -171,7 +209,7 @@ public class Main {
                     currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
 
 
-            } else if (state == 3) {
+            } else if (state.equals("3")) {
                 System.out.println("This schedules current name is " + currentSchedule.getScheduleName());
                 System.out.println("Enter what you would like to name this schedule");
                 String newName = s.next();
@@ -179,7 +217,7 @@ public class Main {
                 currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
                 current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
 
-            } else if (state == 4) {
+            } else if (state.equals("4")) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
                     System.out.print(i + 1 + ".) ");
                     System.out.println(current.getSchedules().get(i).toString());
@@ -196,15 +234,11 @@ public class Main {
                 } else {
                     currentSchedule = current.getSchedules().get(temp);
                 }
-            } else if (state == 5){
+            } else if (state.equals("5")){
                 currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
                 current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
             }
-            else {
-                state = 6;
-            }
         }
-
     }
 
     /**
