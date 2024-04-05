@@ -12,7 +12,6 @@ public class Main {
     private static Schedule currentSchedule;
     private static Student currentStudent;
     private static ArrayList<Course> courseCatalog;
-
     private static int schedCount;
 
 
@@ -276,6 +275,7 @@ public class Main {
                         input.nextLine();
                     }
                 }catch(Exception e){
+                  
                     // Clear the input and do nothing -> go back to search
                     input.nextLine();
                 }
