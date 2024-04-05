@@ -54,8 +54,41 @@ public class Main {
             schedCount = 0;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
             navigateHome(input, ben);
-        } else if (confirm == 0) {
-            System.out.println("This will be where you log in as an existing user");
+        } else{
+            while(true) {
+                System.out.println("To create a user instead, input C");
+                System.out.println("Please Enter Your ID");
+                String id = input.next();
+                if(id.equals("C")){
+                    Student ben = craftUser(input);
+                    currentStudent = ben;
+                    schedCount = 0;
+                    System.out.println("congratulations " + ben.toString() + " welcome to our app");
+                    navigateHome(input, ben);
+                    break;
+                }
+                System.out.println("Please Enter Your Name");
+                String name = input.next();
+                File lookForData = new File(id + "_" + name);
+                if(lookForData.exists()){
+                    ArrayList<Major> majors = new ArrayList<>();
+                    //give no one a minor
+                    ArrayList<Minor> minors = new ArrayList<>();
+                    //no course history right now
+                    ArrayList<Course> courseHistory = new ArrayList<>();
+                    //add empty schedule
+                    ArrayList<Schedule> schedules = new ArrayList<Schedule>();
+                    Student ben = new Student(Integer.parseInt(id), name, Student.Class.JUNIOR, majors, minors, courseHistory, schedules);
+                    currentStudent = ben;
+                    schedCount = Objects.requireNonNull(lookForData.listFiles()).length;
+                    navigateHome(input, ben);
+                    break;
+                }
+                else{
+                    System.out.println("User does not exist. Try again");
+                }
+            }
+
         }
 
     }
