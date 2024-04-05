@@ -62,6 +62,12 @@ public class Student {
         schedules.add(s);
     }
 
+    /**
+     * A way to load a schedule without actually setting the current schedule to it
+     * @param studentID "ID_NAME" of current student (directory of saves)
+     * @param childName "ID_NAME" of schedule we're trying to load
+     * @return the schedule found by the load
+     */
     public Schedule loadSchedule(String studentID, String childName) {
         Scanner inScan;
         int scheduleID;
@@ -100,20 +106,14 @@ public class Student {
         Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
         filt.add(semFilter);
         List<String> coursePrimaryKeys = parts.subList(4, parts.size());
-        List<Course> additionalTimeslots = new ArrayList<>();
         List<Course> courses = new ArrayList<>(coursePrimaryKeys.stream().map(course -> {
             search.search(course);
             search.search(filt);
-            if (search.getResults().size() > 1) {
-                for (int i = 1; i < search.getResults().size(); i++) {
-                    additionalTimeslots.add(search.getResults().get(i));
-                }
-            } else if (search.getResults().isEmpty()) {
-                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+            if (search.getResults().isEmpty()) {
+                return null;
             }
             return search.getResults().get(0);
         }).toList());
-        courses.addAll(additionalTimeslots);
         Schedule sched = new Schedule(scheduleID,semester,Integer.parseInt(year),scheduleName);
         sched.setCourses(new ArrayList<>(courses));
         inScan.close();
