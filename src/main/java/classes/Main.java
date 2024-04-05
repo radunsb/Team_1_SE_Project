@@ -348,7 +348,7 @@ public class Main {
         }
         s += String.format("%1$10s", days);
         s += "  ";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(c.getMeetingTimes() != null) {
             boolean b = false; // tells if we need to break -> i.e. we have the time
             for(int k = 0; k < 5; k++) {
