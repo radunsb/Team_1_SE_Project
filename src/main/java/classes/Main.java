@@ -51,7 +51,8 @@ public class Main {
         if (confirm == 1) {
             Student ben = craftUser(input);
             currentStudent = ben;
-            schedCount = 0;
+            File lookForData = new File(ben.getStudentID() + "_" + ben.getUsername());
+            schedCount = lookForData.exists() ? Objects.requireNonNull(lookForData.listFiles()).length : 0;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
             navigateHome(input, ben);
         } else{
@@ -62,7 +63,8 @@ public class Main {
                 if(id.equals("C")){
                     Student ben = craftUser(input);
                     currentStudent = ben;
-                    schedCount = 0;
+                    File lookForData = new File(ben.getStudentID() + "_" + ben.getUsername());
+                    schedCount = lookForData.exists() ? Objects.requireNonNull(lookForData.listFiles()).length : 0;
                     System.out.println("congratulations " + ben.toString() + " welcome to our app");
                     navigateHome(input, ben);
                     break;
