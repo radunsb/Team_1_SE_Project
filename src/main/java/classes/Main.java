@@ -480,7 +480,7 @@ public class Main {
         } else if(type.equals("T")){
             // Check if already applied
             for(Filter f : filters){
-                if(f.getType() == Filter.FilterType.DAY){
+                if(f.getType() == Filter.FilterType.TIME){
                     System.out.println("Cannot have two time filters at once.");
                     filterApplied = true;
                 }

@@ -62,6 +62,12 @@ public class Student {
         schedules.add(s);
     }
 
+    /**
+     * A way to load a schedule without actually setting the current schedule to it
+     * @param studentID "ID_NAME" of current student (directory of saves)
+     * @param childName "ID_NAME" of schedule we're trying to load
+     * @return the schedule found by the load
+     */
     public Schedule loadSchedule(String studentID, String childName) {
         Scanner inScan;
         int scheduleID;
