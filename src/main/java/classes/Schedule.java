@@ -163,6 +163,7 @@ public class Schedule {
         this.semester = semester;
         this.scheduleName = scheduleName;
         this.courses = new ArrayList<>(courses);
+        inScan.close();
     }
 
 

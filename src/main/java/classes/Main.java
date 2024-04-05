@@ -213,6 +213,15 @@ public class Main {
                 System.out.println("This schedules current name is " + currentSchedule.getScheduleName());
                 System.out.println("Enter what you would like to name this schedule");
                 String newName = s.next();
+                File toDelete = new File(current.getStudentID() + "_" + current.getUsername(),
+                        currentSchedule.getScheduleID() + "_" + currentSchedule.getScheduleName());
+
+                if(toDelete.delete()){
+                    System.out.println("Successfully renamed schedule!");
+                }
+                else{
+                    System.out.println("Was unable to replace old schedule");
+                }
                 currentSchedule.setScheduleName(newName);
                 currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
                 current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
@@ -560,7 +569,6 @@ public class Main {
                     null,
                     null
             );
-
             courseCatalog.add(newCourse);
 
         }

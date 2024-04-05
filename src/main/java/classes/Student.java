@@ -116,6 +116,7 @@ public class Student {
         courses.addAll(additionalTimeslots);
         Schedule sched = new Schedule(scheduleID,semester,Integer.parseInt(year),scheduleName);
         sched.setCourses(new ArrayList<>(courses));
+        inScan.close();
         return sched;
     }
 
