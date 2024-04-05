@@ -161,8 +161,7 @@ public class Main {
             }
             if (command.equals("3")) {
                 //do search method here
-                searchCourses();
-            }
+                searchCourses();}
             if (command.equals("4")) {
                 navigateSchedules(s, current);
             }
@@ -220,8 +219,7 @@ public class Main {
             } else if (state.equals("4")) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
                     System.out.print(i + 1 + ".) ");
-                    System.out.println(current.getSchedules().get(i).toString());
-                }
+                    System.out.println(current.getSchedules().get(i).toString());}
 
                 System.out.println("\nEnter the number of the schedule you would like to edit");
                 temp = s.nextInt() - 1;
@@ -308,7 +306,7 @@ public class Main {
                 try{
                     int classToAdd = input.nextInt();
                     if(classToAdd >= 0 && classToAdd < results.size()){
-                        // Add course
+                        // Add course to current schedule
                         currentSchedule.addCourse(results.get(classToAdd));
                         System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
                         // Clear the input
@@ -350,7 +348,7 @@ public class Main {
         }
         s += String.format("%1$10s", days);
         s += "  ";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm");
         if(c.getMeetingTimes() != null) {
             boolean b = false; // tells if we need to break -> i.e. we have the time
             for(int k = 0; k < 5; k++) {
