@@ -1,5 +1,6 @@
 package classes;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -119,12 +120,10 @@ public class Course {
 
     public String toString() {
         String code = getCourseCode();
-        String name = getName();
-        int credits = getCreditHrs();
-        Semester sem = getSemester();
-        int year = getYear();
 
-        return code +"--" +name +"--" +credits +"--" +sem +"--" +year;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        return "[" +code +"-" +dateFormat.format(getMeetingTimes()[0][0]) +":" +dateFormat.format(getMeetingTimes()[0][1]) +"] ";
+
     }
 
     public int getYear() {
