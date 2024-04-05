@@ -19,7 +19,6 @@ public class Schedule {
     private String scheduleName;
     private ArrayList<Course> courses;
 
-
     public Schedule(int scheduleID, String semester, int year, String scheduleName) {
         this.scheduleID = scheduleID;
         this.semester = semester;
@@ -132,6 +131,7 @@ public class Schedule {
             str.append("Schedule ID: | ");
             str.append(scheduleID);
             str.append(" |\n");
+            str.append("\t\t\t\t8:00\t\t\t\t\t\t9:00\t\t\t\t\t\t10:00\t\t\t\t\t\t11:00\t\t\t\t\t\t12:00\t\t\t\t\t\t1:00\t\t\t\t\t\t2:00\t\t\t\t\t\t3:00\t\t\t\t\t\t4:00\t\t\t\t\t\t5:00\t\t\t\t\t\t\n");
             str.append("M:\t");
             // print classes
             for (Course e: courses) {
@@ -167,8 +167,23 @@ public class Schedule {
                     str.append(e);
                 }
             }
+            str.append("\n\nOnline\t");
+            for (Course e: courses){
+                if(!areAllTrue(e.getMeetingDays())){
+                    str.append(e);
+                }
+            }
             return str.toString();
         }
+
+
+    public static boolean areAllTrue(boolean[] array)
+    {
+        for(boolean b : array) if(!b) return false;
+        return true;
+    }
+
+
 
 
     /**

@@ -123,7 +123,6 @@ public class Course {
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         return "[" +code +"-" +dateFormat.format(getMeetingTimes()[0][0]) +":" +dateFormat.format(getMeetingTimes()[0][1]) +"] ";
-
     }
 
     public int getYear() {
