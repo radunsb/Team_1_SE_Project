@@ -122,8 +122,14 @@ public class Course {
         String code = getCourseCode();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-        return "[" +code +"-" +dateFormat.format(getMeetingTimes()[0][0]) +":" +dateFormat.format(getMeetingTimes()[0][1]) +"] ";
-
+        if(getMeetingTimes() != null) {
+            for(int i = 0; i < 5; i++) {
+                if(getMeetingTimes()[i][0] != null) {
+                    return "[" + code + "-" + dateFormat.format(getMeetingTimes()[i][0]) + ":" + dateFormat.format(getMeetingTimes()[i][1]) + "] ";
+                }
+            }
+        }
+        return "[" + code + "] ";
     }
 
     public int getYear() {

@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.module.FindException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.time.Duration;
 
 public class Schedule {
     private int scheduleID;
@@ -18,7 +15,6 @@ public class Schedule {
     private int year;
     private String scheduleName;
     private ArrayList<Course> courses;
-
 
     public Schedule(int scheduleID, String semester, int year, String scheduleName) {
         this.scheduleID = scheduleID;
@@ -33,12 +29,15 @@ public class Schedule {
      * @param c is the course to add to the schedule
      * @return true if the class was successfully added to courses, false if it was not
      */
-    public void addCourse(Course c) {
+    public boolean addCourse(Course c) {
         if (!courseConflict(c)) {
             courses.add(c);
             sortArr(courses);
+            return true;
         }
+        return false;
     }
+
     /**
      * Sorts through current schedule and checks for conflict with other classes.
      * @param candidate is the course to add to the schedule
@@ -46,38 +45,31 @@ public class Schedule {
      */
     private boolean courseConflict(Course candidate) {
         // check if the class is already in the users' schedule
-        if (courses.contains(candidate)) {
-            System.out.println("The class " +candidate.getCourseCode() +" is already in your schedule.");
-            return true;
+        for(Course c : courses){
+            if(c.getCourseCode().equals(candidate.getCourseCode())){
+                return true;
+            }
         }
-        // Set meeting times for candidate course
-        Date candStartTime = candidate.getMeetingTimes()[0][0];
-        Date candEndTime = candidate.getMeetingTimes()[0][1];
-        // Loop that checks for conflict with users' timeslots and candidate timeslot
-        for (Course check : courses) {
-            if (Arrays.equals(check.getMeetingDays(), candidate.getMeetingDays())) {
-                // Set meeting times for each course to check
-                Date checkStartTime = check.getMeetingTimes()[0][0];
-                Date checkEndTime = check.getMeetingTimes()[0][1];
-
-                // Check cases for times of each and make sure they don't overlap
-                if (candStartTime.equals(checkStartTime)) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
-                }
-                if (candStartTime.compareTo(checkEndTime) < 0 && candStartTime.compareTo(checkStartTime) > 0 && candEndTime.compareTo(checkEndTime) > 0) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
-                }
-                if (candEndTime.compareTo(checkStartTime) > 0 && candStartTime.compareTo(checkStartTime) < 0 && candEndTime.compareTo(checkEndTime) < 0) {
-                    System.out.println("The class " + check + " conflicts with your schedule.");
-                    return true;
+        // check if the candidate class has no meeting times
+        if(candidate.getMeetingTimes() == null){
+            return false;
+        }
+        // Search Object to use the isTimeBetween method
+        Search s = new Search("",null, null);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm:ss a");
+        for(Course c : courses){
+            for(int i = 0; i < 5; i++){
+                if(c.getMeetingTimes()[i][0] != null && candidate.getMeetingTimes()[i][0] != null){
+                    String start = dateFormat.format(c.getMeetingTimes()[i][0]);
+                    String end = dateFormat.format(c.getMeetingTimes()[i][1]);
+                    if(s.isTimeBetween(candidate.getMeetingTimes()[i][0], start, end) || s.isTimeBetween(candidate.getMeetingTimes()[i][1], start, end)){
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
-
 
 
     /**
@@ -107,22 +99,7 @@ public class Schedule {
             }
         }
     }
-    // helper method to return duration between the start and end of a class
-    private long classDuration(Course e) {
-        return e.getMeetingTimes()[1][0].getTime() - e.getMeetingTimes()[0][0].getTime();
-    }
-    // helper method that returns the time between two classes
-    private long durationBetween(Course e, Course y) {
-        long eStart = e.getMeetingTimes()[0][0].getTime();
-        long yStart = y.getMeetingTimes()[0][0].getTime();
-        if (eStart < yStart) {
-            return yStart - e.getMeetingTimes()[1][0].getTime();
-        } else {
-            return eStart - y.getMeetingTimes()[1][0].getTime();
-        }
-    }
-
-        /**
+    /**
          * toString method for a schedule.
          * @return a string representation of a schedule in a weekly timeslot format
          */
@@ -132,12 +109,17 @@ public class Schedule {
             str.append("Schedule ID: | ");
             str.append(scheduleID);
             str.append(" |\n");
-            str.append("M:\t");
+
+            str.append("\t8:00a\t\t\t\t\t\t9:00a\t\t\t\t\t\t10:00a\t\t\t\t\t\t11:00a\t\t\t\t\t\t12:00p\t\t\t\t\t\t1:00p\t\t\t\t\t\t2:00p\t\t\t\t\t\t3:00p\t\t\t\t\t\t4:00\t\t\t\t\t\t6:30p");
+            str.append("\nM:\t");
+
             // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[0]) {
-                    str.append(e);
-                }
+            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+            String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
+
+
+            for (Course e : courses) {
+                str.append(e);
             }
             str.append("\n\nT:\t");
             // print classes
@@ -167,8 +149,23 @@ public class Schedule {
                     str.append(e);
                 }
             }
+            str.append("\n\nOnline\t");
+            for (Course e: courses){
+                if(!areAllTrue(e.getMeetingDays())){
+                    str.append(e);
+                }
+            }
             return str.toString();
         }
+
+
+    public static boolean areAllTrue(boolean[] array)
+    {
+        for(boolean b : array) if(!b) return false;
+        return true;
+    }
+
+
 
 
     /**

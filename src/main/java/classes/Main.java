@@ -350,13 +350,15 @@ public class Main {
                     int classToAdd = input.nextInt();
                     if(classToAdd >= 0 && classToAdd < results.size()){
                         // Add course to current schedule
-                        currentSchedule.addCourse(results.get(classToAdd));
-                        System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
+                        if(!currentSchedule.addCourse(results.get(classToAdd))) {
+                            System.out.println("Could not add " + results.get(classToAdd) + " to your schedule due to time conflict or a duplicate course.");
+                        }else{
+                            System.out.println(results.get(classToAdd) + " was added to your schedule.");
+                        }
                         // Clear the input
                         input.nextLine();
                     }
                 }catch(Exception e){
-                  
                     // Clear the input and do nothing -> go back to search
                     input.nextLine();
                 }
