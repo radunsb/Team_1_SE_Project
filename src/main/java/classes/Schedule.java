@@ -91,7 +91,9 @@ public class Schedule {
         str.append("Schedule ID: | ");
         str.append(scheduleID);
         str.append(" |\n");
-
+        str.append("Name: | ");
+        str.append(scheduleName);
+        str.append(" |\n");
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         String[] endTimes = {"8:59 AM", "9:59 AM","10:59 AM","11:59 AM","12:59 PM","1:59 PM","2:59 PM","3:59 PM","4:59 PM","5:59 PM","6:59 PM","7:59 PM"};
         String[] times = {"8:00 AM", "9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM"};
