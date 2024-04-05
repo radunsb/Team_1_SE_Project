@@ -54,8 +54,41 @@ public class Main {
             schedCount = 0;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
             navigateHome(input, ben);
-        } else if (confirm == 0) {
-            System.out.println("This will be where you log in as an existing user");
+        } else{
+            while(true) {
+                System.out.println("To create a user instead, input C");
+                System.out.println("Please Enter Your ID");
+                String id = input.next();
+                if(id.equals("C")){
+                    Student ben = craftUser(input);
+                    currentStudent = ben;
+                    schedCount = 0;
+                    System.out.println("congratulations " + ben.toString() + " welcome to our app");
+                    navigateHome(input, ben);
+                    break;
+                }
+                System.out.println("Please Enter Your Name");
+                String name = input.next();
+                File lookForData = new File(id + "_" + name);
+                if(lookForData.exists()){
+                    ArrayList<Major> majors = new ArrayList<>();
+                    //give no one a minor
+                    ArrayList<Minor> minors = new ArrayList<>();
+                    //no course history right now
+                    ArrayList<Course> courseHistory = new ArrayList<>();
+                    //add empty schedule
+                    ArrayList<Schedule> schedules = new ArrayList<Schedule>();
+                    Student ben = new Student(Integer.parseInt(id), name, Student.Class.JUNIOR, majors, minors, courseHistory, schedules);
+                    currentStudent = ben;
+                    schedCount = Objects.requireNonNull(lookForData.listFiles()).length;
+                    navigateHome(input, ben);
+                    break;
+                }
+                else{
+                    System.out.println("User does not exist. Try again");
+                }
+            }
+
         }
 
     }
@@ -110,6 +143,7 @@ public class Main {
 
         }
         currentSchedule = current.getSchedules().getFirst();
+        currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
 
         while (true) {
             System.out.println("You are currently editing: " + currentSchedule.getScheduleName());
@@ -213,6 +247,15 @@ public class Main {
                 System.out.println("This schedules current name is " + currentSchedule.getScheduleName());
                 System.out.println("Enter what you would like to name this schedule");
                 String newName = s.next();
+                File toDelete = new File(current.getStudentID() + "_" + current.getUsername(),
+                        currentSchedule.getScheduleID() + "_" + currentSchedule.getScheduleName());
+
+                if(toDelete.delete()){
+                    System.out.println("Successfully renamed schedule!");
+                }
+                else{
+                    System.out.println("Was unable to replace old schedule");
+                }
                 currentSchedule.setScheduleName(newName);
                 currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
                 current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
@@ -560,7 +603,6 @@ public class Main {
                     null,
                     null
             );
-
             courseCatalog.add(newCourse);
 
         }

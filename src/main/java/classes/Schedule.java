@@ -82,6 +82,7 @@ public class Schedule {
      * Takes the data within the current schedule, and saves it to a csv file so that
      * it can be reloaded at a later date
      * @param studentID id of current student, is made the name of the outside directory to save in
+     * is of the format "ID_Name"
      */
     public void saveSchedule(String studentID){
         //save the current schedule to a csv file
@@ -163,6 +164,7 @@ public class Schedule {
         this.semester = semester;
         this.scheduleName = scheduleName;
         this.courses = new ArrayList<>(courses);
+        inScan.close();
     }
 
 
