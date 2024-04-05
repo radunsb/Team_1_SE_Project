@@ -124,7 +124,7 @@ public class Course {
         if(getMeetingTimes() != null) {
             for(int i = 0; i < 5; i++) {
                 if(getMeetingTimes()[i][0] != null) {
-                    return "[" + code + "-" + dateFormat.format(getMeetingTimes()[i][0]) + ":" + dateFormat.format(getMeetingTimes()[i][1]) + "] ";
+                    return "[" + code + ":" + dateFormat.format(getMeetingTimes()[i][0]) + "-" + dateFormat.format(getMeetingTimes()[i][1]) + "] ";
                 }
             }
         }
