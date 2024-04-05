@@ -120,7 +120,6 @@ public class Course {
 
     public String toString() {
         String code = getCourseCode();
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
         if(getMeetingTimes() != null) {
             for(int i = 0; i < 5; i++) {
