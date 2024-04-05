@@ -162,7 +162,13 @@ public class Main {
                     System.out.println(i + 1 + ".)" + currentSchedule.getCourses().get(i).toString());
                 }
                 System.out.println("Enter the number of course you would like to remove from your schedule");
-                currentSchedule.getCourses().remove(s.nextInt() - 1);
+                System.out.println("Or, press B to go back");
+                String toRemove = s.next();
+                if(toRemove.equals("B")){
+                    return;
+                }
+                else if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
+                    currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
 
 
             } else if (state == 3) {
@@ -267,7 +273,7 @@ public class Main {
                 System.out.println("To add a course to your schedule, type the number to the left of the course code (type 'B' to go back):");
                 try{
                     int classToAdd = input.nextInt();
-                    if(classToAdd > 0 && classToAdd < results.size()){
+                    if(classToAdd >= 0 && classToAdd < results.size()){
                         // Add course
                         currentSchedule.addCourse(results.get(classToAdd));
                         System.out.println(results.get(classToAdd).getCourseCode() + " was added to your schedule.");
