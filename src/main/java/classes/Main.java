@@ -350,7 +350,7 @@ public class Main {
                     int classToAdd = input.nextInt();
                     if(classToAdd >= 0 && classToAdd < results.size()){
                         // Add course to current schedule
-                        if(!currentSchedule.addCourse(results.get(classToAdd))) {
+                        if(!currentSchedule.addCourse(results.get(classToAdd)) && !currentSchedule.getCourses().contains(results.get(classToAdd))) {
                             System.out.println("Could not add " + results.get(classToAdd) + " to your schedule due to time conflict or a duplicate course.");
                         }else{
                             System.out.println(results.get(classToAdd) + " was added to your schedule.");

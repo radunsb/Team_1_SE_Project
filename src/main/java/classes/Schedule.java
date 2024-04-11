@@ -103,7 +103,7 @@ public class Schedule {
          * toString method for a schedule.
          * @return a string representation of a schedule in a weekly timeslot format
          */
-        public String toString () {
+        public String toString() throws NullPointerException {
             StringBuilder str = new StringBuilder();
             // Prints the schedule ID
             str.append("Schedule ID: | ");
@@ -115,7 +115,14 @@ public class Schedule {
 
             // print classes
             SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+            try{
+                String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
+            }catch(Exception e){
+                return "Sorry the schedule is empty";
+            }
             String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
+            Search s = new Search("",null, null);
+
 
 
             for (Course e : courses) {
@@ -158,15 +165,17 @@ public class Schedule {
             return str.toString();
         }
 
+        public String makeSchedRow(){
+
+            return  "";
+        }
+
 
     public static boolean areAllTrue(boolean[] array)
     {
         for(boolean b : array) if(!b) return false;
         return true;
     }
-
-
-
 
     /**
      * Takes the data within the current schedule, and saves it to a csv file so that
