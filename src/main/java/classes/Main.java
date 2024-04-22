@@ -133,7 +133,6 @@ public class Main {
     }
 
     public static void navigateHome(Scanner s, Student current) {
-        int state;
         String command = "";
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {

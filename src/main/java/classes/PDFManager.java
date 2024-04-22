@@ -35,7 +35,7 @@ public class PDFManager {
         cosDoc = parser.getDocument();
         pdfStripper = new PDFTextStripper();
         pdDoc = new PDDocument(cosDoc);
-        pdfStripper.setStartPage(0);
+        pdfStripper.setStartPage(2);
         pdfStripper.setEndPage(pdDoc.getNumberOfPages());
         Text = pdfStripper.getText(pdDoc);
         pdDoc.close();
