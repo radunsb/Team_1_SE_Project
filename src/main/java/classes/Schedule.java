@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.module.FindException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ public class Schedule {
         this.courses = new ArrayList<>();
     }
 
+    // variable that holds most recent class added to the schedule
+    Course recent;
     /**
      * Adds the specified classes.Course object to the courses ArrayList
      * @param c is the course to add to the schedule
@@ -32,7 +35,7 @@ public class Schedule {
     public boolean addCourse(Course c) {
         if (!courseConflict(c)) {
             courses.add(c);
-            //sortArr(courses);
+            recent = c;
             return true;
         }
         return false;
@@ -46,7 +49,7 @@ public class Schedule {
     private boolean courseConflict(Course candidate) {
         // check if the class is already in the users' schedule
         for(Course c : courses){
-            if(c.getCourseCode().equals(candidate.getCourseCode())){
+            if(c.getName().equals(candidate.getName())){
                 return true;
             }
         }
@@ -83,6 +86,9 @@ public class Schedule {
             if(courses.get(i).getCourseCode().equals(courseCode)){
                 courses.remove(i);
             }
+        }
+        if (!courses.isEmpty()) {
+            recent = courses.getLast();
         }
     }
 
@@ -139,91 +145,6 @@ public class Schedule {
         }
         return str.toString();
     }
-
-    // helper method that sorts the class day arrays
-    private void sortArr(ArrayList<Course> list) {
-        Course hold;
-        Course earlier;
-        for (int i = 0; i <= list.size(); i++) {
-            if (list.get(i + 1).getMeetingTimes()[0][0].getTime() < list.get(i).getMeetingTimes()[0][0].getTime()) {
-                earlier = list.get(i + 1);
-                hold = list.get(i);
-                list.set(i, earlier);
-                list.set(i + 1, hold);
-            }
-        }
-    }
-    /**
-         * toString method for a schedule.
-         * @return a string representation of a schedule in a weekly timeslot format
-         */
-        public String toString() throws NullPointerException {
-            StringBuilder str = new StringBuilder();
-            // Prints the schedule ID
-            str.append("Schedule ID: | ");
-            str.append(scheduleID);
-            str.append(" |\n");
-
-            str.append("\t8:00a\t\t\t\t\t\t9:00a\t\t\t\t\t\t10:00a\t\t\t\t\t\t11:00a\t\t\t\t\t\t12:00p\t\t\t\t\t\t1:00p\t\t\t\t\t\t2:00p\t\t\t\t\t\t3:00p\t\t\t\t\t\t4:00\t\t\t\t\t\t6:30p");
-            str.append("\nM:\t");
-
-            // print classes
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-            try{
-                String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
-            }catch(Exception e){
-                return "Sorry the schedule is empty";
-            }
-            String startTime = dateFormat.format(courses.getFirst().getMeetingTimes()[0][0]);
-            Search s = new Search("",null, null);
-
-
-
-            for (Course e : courses) {
-                str.append(e);
-            }
-            str.append("\n\nT:\t");
-            // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[1]) {
-                    str.append(e);
-                }
-            }
-            str.append("\n\nW:\t");
-            // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[2]) {
-                    str.append(e);
-                }
-            }
-            str.append("\n\nR:\t");
-            // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[3]) {
-                    str.append(e);
-                }
-            }
-            str.append("\n\nF:\t");
-            // print classes
-            for (Course e: courses) {
-                if (e.getMeetingDays()[4]) {
-                    str.append(e);
-                }
-            }
-            str.append("\n\nOnline\t");
-            for (Course e: courses){
-                if(!areAllTrue(e.getMeetingDays())){
-                    str.append(e);
-                }
-            }
-            return str.toString();
-        }
-
-        public String makeSchedRow(){
-
-            return  "";
-        }
-
 
     public static boolean areAllTrue(boolean[] array)
     {
