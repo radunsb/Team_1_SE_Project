@@ -1,38 +1,54 @@
 package classes;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 
 
 public class PDFBoxToText {
+
+    private static ArrayList<Course> recomendedCourses;
+
+
     public static void main(String[] args) {
         PDFManager pdfManager = new PDFManager();
         pdfManager.setFilePath("C:\\Users\\GROSSMANRC20\\IdeaProjects\\Team1_SE_project2\\CS.pdf");
         try{
             String firstPageText = pdfManager.toText();
-            //System.out.println(firstPageText);
-            System.out.println(firstPageText);
+
             String[] token = firstPageText.split(" ");
 
             System.out.println("\n\n");
             for (int i = 0; i < token.length; i++){
-                if(token[i].equals("Freshman")){
-                    for (int j = i; j < token.length - i; j++) {
-                        System.out.println(token[j]);
-                    }
+                if(isAllUpper(token[i]) && !isNumeric(token[i])){
+                    System.out.println(token[i] + token[i+1]);
                 }
             }
-
-//            for (int i = 0; i < token.length; i++){
-//                if(token[i].contains("..")){
-//                    System.out.println(token[i-3].strip() + " " + token[i-2].strip() + " " + token[i-1].strip() + " " + token[i+1].strip()+ " " + token[i+2].strip()+ " " + token[i+3].strip());
-//                    //System.out.println(token[i]);
-//                }
-//                else{
-//                }
-//            }
 
         }catch(IOException e){
             System.out.println("Shit Broke");
         }
     }
+
+    private static boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 }
