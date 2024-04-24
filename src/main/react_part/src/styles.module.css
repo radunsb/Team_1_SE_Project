@@ -1,0 +1,8 @@
+.mainTable {
+    color: rgb(255, 68, 30);
+    padding: 0px;
+    font-family: Arial;
+    text-align: center;
+    outline-style:dashed;
+    outline-width:thin;
+  }

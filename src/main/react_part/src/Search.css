@@ -1,0 +1,51 @@
+body {
+    background-color: rgb(198, 146, 105);
+  }
+  
+  h1 {
+    color: rgb(0, 0, 0);
+  }
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 70vw;
+    margin-top: 10px;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  }
+
+  .searchbar input[type=text] {
+    float: left;
+    padding: 6px;
+    border: none;
+    margin-top: 8px;
+    margin-right: 16px;
+    font-size: 17px;
+  }
+
+  .main{
+    display: flex;
+    flex-direction:row;
+  }
+
+  .submain{
+    display: flex;
+    flex-direction:column;
+  }
+
+  .filterbar{
+    background-color:white;
+    border: 1px solid salmon;
+    height: 100vh;
+    width: 20vw;
+    margin-left: 5vw;
+  }
