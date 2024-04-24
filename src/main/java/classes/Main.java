@@ -51,7 +51,8 @@ public class Main {
         if (confirm == 1) {
             Student ben = craftUser(input);
             currentStudent = ben;
-            schedCount = 0;
+            File lookForData = new File(ben.getStudentID() + "_" + ben.getUsername());
+            schedCount = lookForData.exists() ? Objects.requireNonNull(lookForData.listFiles()).length : 0;
             System.out.println("congratulations " + ben.toString() + " welcome to our app");
             navigateHome(input, ben);
         } else{
@@ -62,7 +63,8 @@ public class Main {
                 if(id.equals("C")){
                     Student ben = craftUser(input);
                     currentStudent = ben;
-                    schedCount = 0;
+                    File lookForData = new File(ben.getStudentID() + "_" + ben.getUsername());
+                    schedCount = lookForData.exists() ? Objects.requireNonNull(lookForData.listFiles()).length : 0;
                     System.out.println("congratulations " + ben.toString() + " welcome to our app");
                     navigateHome(input, ben);
                     break;
@@ -137,9 +139,9 @@ public class Main {
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
             int year = 2020;
-            current.addNewSchedule(1, "Fall", year, "defaultSchedule");
+            current.addNewSchedule(0, "Fall", year, "defaultSchedule");
             System.out.println("You did not have any schedules.\nHere is a default schedule\n");
-
+            schedCount++;
         }
         currentSchedule = current.getSchedules().getFirst();
         currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
@@ -190,7 +192,7 @@ public class Main {
             }
 
             if (command.equals("2")) {
-                System.out.println(currentSchedule.toString());
+                System.out.println(currentSchedule.toStringEx());
             }
             if (command.equals("3")) {
                 //do search method here
@@ -237,7 +239,12 @@ public class Main {
                 if(toRemove.equals("B")){
                     return;
                 }
-                else if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
+                for(Character c : toRemove.toCharArray()){
+                    if(!Character.isDigit(c)){
+                        return;
+                    }
+                }
+                if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
                     currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
 
 
@@ -261,7 +268,7 @@ public class Main {
             } else if (state.equals("4")) {
                 for (int i = 0; i < current.getSchedules().size(); i++) {
                     System.out.print(i + 1 + ".) ");
-                    System.out.println(current.getSchedules().get(i).toString());}
+                    System.out.println(current.getSchedules().get(i).toStringEx());}
 
                 System.out.println("\nEnter the number of the schedule you would like to edit");
                 temp = s.nextInt() - 1;
@@ -297,6 +304,11 @@ public class Main {
         Search s = new Search("", courseCatalog, filters, semesterFilter);
 
         while(!query.equals("Q")){
+            System.out.println("---Your Schedule---");
+            for(Course c : currentSchedule.getCourses()){
+                System.out.println(c);
+            }
+            System.out.println("-------------------");
             // Search info and navigation info
             System.out.println("-----Course Search-----");
             System.out.println("To leave the search type 'Q'");

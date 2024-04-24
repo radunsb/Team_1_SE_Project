@@ -32,7 +32,7 @@ public class Schedule {
     public boolean addCourse(Course c) {
         if (!courseConflict(c)) {
             courses.add(c);
-            sortArr(courses);
+            //sortArr(courses);
             return true;
         }
         return false;
@@ -84,6 +84,60 @@ public class Schedule {
                 courses.remove(i);
             }
         }
+    }
+
+    public String toStringEx(){
+        StringBuilder str = new StringBuilder();
+        str.append("Schedule ID: | ");
+        str.append(scheduleID);
+        str.append(" |\n");
+        str.append("Name: | ");
+        str.append(scheduleName);
+        str.append(" |\n");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String[] endTimes = {"8:59 AM", "9:59 AM","10:59 AM","11:59 AM","12:59 PM","1:59 PM","2:59 PM","3:59 PM","4:59 PM","5:59 PM","6:59 PM","7:59 PM"};
+        String[] times = {"8:00 AM", "9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM"};
+        String[] days = {"M", "T", "W", "R", "F"};
+        HashMap<String, Integer> dayIndexes = new HashMap<>();
+        dayIndexes.put("M", 0);
+        dayIndexes.put("T", 1);
+        dayIndexes.put("W", 2);
+        dayIndexes.put("R", 3);
+        dayIndexes.put("F", 4);
+        Search s = new Search("", null, null);
+
+        str.append("                 8:00a                            9:00a                            10:00a                            11:00a                            12:00p                            1:00p                            2:00p                            3:00p                            4:00                            5:00p                            6:00p                            7:00p              \n");
+        for(String day : days){
+            str.append(day);
+            str.append(":   ");
+            for(int i = 0; i < times.length; i++){
+                boolean timeFull = false;
+                for(Course c : courses){
+                    if(c.getMeetingDays()[dayIndexes.get(day)] && (day.equals("T") || day.equals("R")) && s.isTimeBetween(c.getMeetingTimes()[dayIndexes.get(day)][0], times[i], endTimes[i]) && i != 0){
+                        str.append("   ");
+                        str.append(c);
+                        str.append("     ");
+                        timeFull = true;
+                    }else if(c.getMeetingDays()[dayIndexes.get(day)] && s.isTimeBetween(c.getMeetingTimes()[dayIndexes.get(day)][0], times[i], endTimes[i])){
+                        str.append(c);
+                        str.append("       ");
+                        timeFull = true;
+                    }
+                }
+                if(!timeFull){
+                    str.append("                                ");
+                }
+            }
+            str.append("\n");
+        }
+        str.append("Online/other courses: ");
+        for(Course c : courses){
+            if(c.getMeetingTimes() == null){
+                str.append(c);
+                str.append(", ");
+            }
+        }
+        return str.toString();
     }
 
     // helper method that sorts the class day arrays
@@ -245,20 +299,14 @@ public class Schedule {
         Filter semFilter = new Filter(filterInput, Filter.FilterType.SEMESTER);
         filt.add(semFilter);
         List<String> coursePrimaryKeys = parts.subList(4, parts.size());
-        List<Course> additionalTimeslots = new ArrayList<>();
         List<Course> courses = new ArrayList<>(coursePrimaryKeys.stream().map(course -> {
             search.search(course);
             search.search(filt);
-            if (search.getResults().size() > 1) {
-                for (int i = 1; i < search.getResults().size(); i++) {
-                    additionalTimeslots.add(search.getResults().get(i));
-                }
-            } else if (search.getResults().isEmpty()) {
-                throw new FindException("The saved schedule contains a Course that could not be found in the database. Schedule was unable to be loaded");
+            if (search.getResults().isEmpty()) {
+                return null;
             }
             return search.getResults().get(0);
         }).toList());
-        courses.addAll(additionalTimeslots);
         this.scheduleID = scheduleID;
         this.semester = semester;
         this.scheduleName = scheduleName;
