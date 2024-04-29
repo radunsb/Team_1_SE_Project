@@ -5,7 +5,15 @@ import { useState } from 'react';
 //JSON object of courses returned from Java backend
 let courseJSON = null;
 
-const sampleData = [
+let myCourses = [
+  <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
+  professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
+  meetingDays = {['M', 'W', 'F']}/>,
+  <Course courseCode={"HUMA110"} name={"Northern Civ"} description={"Ah yes northern civ my favorite class"}
+  professor={"Your Mom"} meetingTimes = {["11:00 AM"]} meetingDays = {['T', 'R']}/>,
+]
+
+let sampleData = [
     <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
         professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
         meetingDays = {['M', 'W', 'F']}/>,
@@ -50,27 +58,10 @@ function timesFormat(timeList){
       );     
   }
 
-  export function SearchBar(){
-
-    let handleSearchChange = e => {
-        setQuery({
-            ...query,
-            q: e.target.value
-        });
-    }
-
-    const [query, setQuery] = useState({
-        q: ''
-    });
-
-    return(
-        <div className = "searchbar">
-            <input type="text" value={query.q}
-                onChange={handleSearchChange}/>
-            {query.q}
-        </div>
-    );
-}
+  function useForceUpdate(){
+    const [value, setValue] = useState(0);
+    return () => setValue(value => value + 1);
+  }
 
 export function FilterBar(){
   return(
@@ -81,10 +72,34 @@ export function FilterBar(){
 }
 
   export default function Search(){
+
+    let handleSearchChange = e => {
+      setQuery({
+          ...query,
+          q: e.target.value
+      });
+      let newArray = [<Course courseCode={"BEANS101"} name={"Beans"} description={"Beans"}
+      professor={"BIGLEGUMEFAN3007"} meetingTimes = {["1:00 PM"]} meetingDays = {['T', 'R']}/>]
+      sampleData = sampleData.concat(newArray);      
+      forceUpdate();
+  }
+
+  const [query, setQuery] = useState({
+      q: ''
+  });
+
+    const forceUpdate = useForceUpdate();
+
     return (
     <div className = "main">
     <div className = "submain">
-      <SearchBar/>
+    <div className = "searchbar">
+          <p>Search by Name or Course Code:</p>
+            <input type="text" value={query.q}
+                onChange={handleSearchChange}/>
+            {query.q}
+        </div>
+    <div className = "coursetable">
       <table>
         <tr>
             <th>Course Code</th>
@@ -96,6 +111,7 @@ export function FilterBar(){
         </tr>
         {sampleData}     
       </table>
+      </div>
     </div>
     <FilterBar/>
     </div>
