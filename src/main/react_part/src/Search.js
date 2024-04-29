@@ -25,6 +25,8 @@ let sampleData = [
 
 let data = [];
 
+let filters = [];
+
 function updateJSON(newJSON){
   courseJSON = newJSON;
 }
@@ -43,6 +45,7 @@ function timesFormat(timeList){
   function daysFormat(dayList){
     return dayList.join(", ");
   }
+
   
   export function Course({courseCode, name, description, professor, meetingTimes,
   meetingDays, meetingLocations, prerequisites, corequisites, year, semester, creditHours, capacity}){
@@ -58,15 +61,46 @@ function timesFormat(timeList){
       );     
   }
 
+  export function Filter({input, type}){
+    return (
+      <p>{type} filter: {input}</p>
+    );
+  }
+
   function useForceUpdate(){
     const [value, setValue] = useState(0);
     return () => setValue(value => value + 1);
   }
 
 export function FilterBar(){
+
+  function useForceUpdateFilter(){
+    const [value, setValue] = useState(0);
+    return () => setValue(value => value + 1);
+  }
+
+  let handleFilterChange = e => {
+    e.preventDefault();
+    const inString = document.getElementById("filterinput").value + "";
+    const type = inString.substring(0, inString.indexOf(' '));
+    const input = inString.substring(inString.indexOf(' '));
+    filters.push(<Filter type={type} input={input}/>);
+    forceUpdateFilter();
+  }
+
+
+  const forceUpdateFilter = useForceUpdateFilter();
+
   return(
     <div className = "filterbar">
-      <p>Filter stuff goes here</p>
+      <p>
+        <form id="filterform" onSubmit={handleFilterChange}>
+          <label for = "filterinput">Filter: </label>
+          <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
+          <input type="submit" value="Submit"/>
+        </form>       
+        <column>{filters}</column>
+      </p>
     </div>
   );
 }
