@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.*;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
 
@@ -204,6 +205,143 @@ public class Main {
 
     }
 
+    /**
+     * allows the user to edit their profile
+     * @param s
+     * @param current
+     */
+    public static void editProfile(Scanner s, Student current) throws InterruptedException {
+        String state = "0";
+        int temp;
+
+        while (!state.equals("6")) {
+            if (state.equals("0")) {
+                System.out.println("You are currently editing " + current.getUsername() + "'s profile" );
+                System.out.println();
+            }
+
+            System.out.println("Enter 1 to edit your username");
+            System.out.println("Enter 2 to add or remove a major");
+            System.out.println("Enter 3 to add or remove a minor");
+            System.out.println("Enter 4 to change your class standing");
+            System.out.println("Enter 5 to enter in previously taken courses");
+            System.out.println("Enter 6 to return to home");
+            state = s.next();
+
+            if (state.equals("1")) {
+                System.out.println("Your current username is: " + current.getUsername());
+                System.out.println("Or press B to go back");
+                String newName = s.next();
+                if(newName.equals("B")){
+                    return;
+                }
+                current.setUsername(newName);
+                System.out.println("Your username has been changed to " + current.getUsername());
+                TimeUnit.SECONDS.sleep(5);
+                return;
+
+            } else if (state.equals("2")) {
+                System.out.print("Your current major(s) are: ");
+                for(int i = 0; i < current.getMajors().size(); i++){
+                    System.out.print(current.getMajors().get(i) + " ");
+                }
+                //new line
+                System.out.println();
+                System.out.println("Enter 1 to add a major or enter 2 to remove a major or B to go back");
+                String majorControl = s.next();
+                if(majorControl.equals("B")){
+                    return;
+                }
+                else if(majorControl.equals("1")){
+                    System.out.println("Enter what major you would like to add");
+                    //do major adding logic
+                }
+                else if(majorControl.equals("2")){
+                    for (int i = 0; i < current.getMajors().size(); i++) {
+                        System.out.print(i+1);
+                        System.out.print(".)");
+                        System.out.print(current.getMajors().get(i));
+                        System.out.println();
+                    }
+                    System.out.println("Enter the number of the major you would like to remove");
+                    String toRemove = s.next();
+
+                    for(Character c : toRemove.toCharArray()){
+                        if(!Character.isDigit(c)){
+                            return;
+                        }
+                    }
+                    if(Integer.parseInt(toRemove)-1 < current.getMajors().size() && Integer.parseInt(toRemove)-1 >= 0) {
+                        current.getMajors().remove(Integer.parseInt(toRemove) - 1);
+                    }
+
+                }
+
+            } else if (state.equals("3")) {
+                System.out.print("Your current minor(s) are: ");
+                for(int i = 0; i < current.getMinors().size(); i++){
+                    System.out.print(current.getMinors().get(i) + " ");
+                }
+                //new line
+                System.out.println();
+                System.out.println("Enter 1 to add a minor or enter 2 to remove a minor or B to go back");
+                String minorControl = s.next();
+                if(minorControl.equals("B")){
+                    return;
+                }
+                else if(minorControl.equals("1")){
+                    System.out.println("Enter what minor you would like to add");
+                    //do minor adding logic
+                }
+                else if(minorControl.equals("2")){
+                    for (int i = 0; i < current.getMinors().size(); i++) {
+                        System.out.print(i+1);
+                        System.out.print(".)");
+                        System.out.print(current.getMinors().get(i));
+                        System.out.println();
+                    }
+                    System.out.println("Enter the number of the minor you would like to remove");
+                    String toRemove = s.next();
+
+                    for(Character c : toRemove.toCharArray()){
+                        if(!Character.isDigit(c)){
+                            return;
+                        }
+                    }
+                    if(Integer.parseInt(toRemove)-1 < current.getMinors().size() && Integer.parseInt(toRemove)-1 >= 0) {
+                        current.getMinors().remove(Integer.parseInt(toRemove) - 1);
+                    }
+
+                }
+
+            }
+            else if (state.equals("4")) {
+                System.out.println("Your current class standing is " + current.getClassStanding());
+                System.out.println("Enter 1 to change tour class standing or B to go back");
+                String classControl = s.next();
+
+                if(classControl.equals("B")){
+                    return;
+                }else if(classControl.equals("1")){
+                    System.out.println("1.) Freshman");
+                    System.out.println("2.) Sophmore");
+                    System.out.println("3.) Junior");
+                    System.out.println("4.) Senior");
+                    System.out.println("5.) Other");
+                    //do logic for enum change
+                }
+            }
+            else if (state.equals("5")){
+                //do logic for adding already taken courses
+            }
+        }
+    }
+
+    /**
+     * handles allowing the user to navigate their schedules
+     * @param s
+     * @param current
+     */
     public static void navigateSchedules(Scanner s, Student current) {
         String state = "0";
         int temp;
@@ -244,10 +382,9 @@ public class Main {
                         return;
                     }
                 }
-                if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0)
+                if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0) {
                     currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
-
-
+                }
             } else if (state.equals("3")) {
                 System.out.println("This schedules current name is " + currentSchedule.getScheduleName());
                 System.out.println("Enter what you would like to name this schedule");
