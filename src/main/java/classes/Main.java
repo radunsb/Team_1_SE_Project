@@ -1,9 +1,10 @@
 package classes;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.time.*;
 import java.util.concurrent.TimeUnit;
@@ -16,12 +17,13 @@ public class Main {
     private static int schedCount;
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        createActionLogger();
         run();
     }
 
     //hi
-    public static void run() {
+    public static void run() throws IOException {
 
         //Read the CSV
         try{
@@ -135,7 +137,7 @@ public class Main {
         return newStudent;
     }
 
-    public static void navigateHome(Scanner s, Student current) {
+    public static void navigateHome(Scanner s, Student current) throws IOException {
         String command = "";
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
@@ -342,7 +344,7 @@ public class Main {
      * @param s
      * @param current
      */
-    public static void navigateSchedules(Scanner s, Student current) {
+    public static void navigateSchedules(Scanner s, Student current) throws IOException {
         String state = "0";
         int temp;
 
@@ -383,6 +385,7 @@ public class Main {
                     }
                 }
                 if(Integer.parseInt(toRemove)-1 < currentSchedule.getCourses().size() && Integer.parseInt(toRemove)-1 >= 0) {
+                    writeActionLogger("removed " +currentSchedule.getCourses().get(Integer.parseInt(toRemove)-1));
                     currentSchedule.getCourses().remove(Integer.parseInt(toRemove) - 1);
                 }
             } else if (state.equals("3")) {
@@ -518,6 +521,7 @@ public class Main {
                             System.out.println("Could not add " + results.get(classToAdd) + " to your schedule due to time conflict or a duplicate course.");
                         }else{
                             System.out.println(results.get(classToAdd) + " was added to your schedule.");
+                            writeActionLogger("added " +results.get(classToAdd));
                         }
                         // Clear the input
                         input.nextLine();
@@ -771,9 +775,47 @@ public class Main {
 
         }
     }
-
     public static ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
+    private static File users = new File("user_actions.txt");
+    // creates a writer to user_actions file and logs a timestamp
+    private static void createActionLogger() throws IOException {
+        try {
+            PrintWriter writer = new PrintWriter(users, StandardCharsets.UTF_8);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+            LocalDateTime now = LocalDateTime.now();
+            writer.write("Timestamp: " +dtf.format(now) +"\n");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
+    // Writes to the user file after each new action is performed
+    private static int actionCount = 1;
+    private static int recentAction = 0;
+    // writes the input text to user_actions text file
+    private static void writeActionLogger(String action) throws IOException {
+        try {
+            FileWriter write = new FileWriter(users, true);
+            BufferedWriter br = new BufferedWriter(write);
+            br.write(actionCount +" " +action +"\n");
+            recentAction++;
+            br.close();
+            write.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    // parses user_actions file into an array and views the last element
+    private static void undoAction() throws FileNotFoundException {
+        Scanner reader = new Scanner(users);
+        reader.useDelimiter("\n");
+        ArrayList<String> lines = new ArrayList<>();
+        while (reader.hasNext()) {
+            lines.add(reader.next());
+        }
+        lines.removeFirst();
+    }
 }
