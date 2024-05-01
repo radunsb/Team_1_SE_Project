@@ -4,11 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.lang.module.FindException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Calendar;
-
+//
 public class Schedule {
     private int scheduleID;
     private String semester;
@@ -24,6 +25,8 @@ public class Schedule {
         this.courses = new ArrayList<>();
     }
 
+    // variable that holds most recent class added to the schedule
+    Course recent;
     /**
      * Adds the specified classes.Course object to the courses ArrayList
      * @param c is the course to add to the schedule
@@ -32,7 +35,7 @@ public class Schedule {
     public boolean addCourse(Course c) {
         if (!courseConflict(c)) {
             courses.add(c);
-            //sortArr(courses);
+            recent = c;
             return true;
         }
         return false;
@@ -46,7 +49,7 @@ public class Schedule {
     private boolean courseConflict(Course candidate) {
         // check if the class is already in the users' schedule
         for(Course c : courses){
-            if(c.getCourseCode().equals(candidate.getCourseCode())){
+            if(c.getName().equals(candidate.getName())){
                 return true;
             }
         }
@@ -83,6 +86,9 @@ public class Schedule {
             if(courses.get(i).getCourseCode().equals(courseCode)){
                 courses.remove(i);
             }
+        }
+        if (!courses.isEmpty()) {
+            recent = courses.getLast();
         }
     }
 
@@ -139,6 +145,7 @@ public class Schedule {
         }
         return str.toString();
     }
+
 
     // helper method that sorts the class day arrays
     private void sortArr(ArrayList<Course> list) {
@@ -223,6 +230,7 @@ public class Schedule {
 
             return  "";
         }
+
 
 
     public static boolean areAllTrue(boolean[] array)

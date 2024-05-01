@@ -441,6 +441,7 @@ public class Main {
         Search s = new Search("", courseCatalog, filters, semesterFilter);
 
         while(!query.equals("Q")){
+            System.out.println();
             System.out.println("---Your Schedule---");
             for(Course c : currentSchedule.getCourses()){
                 System.out.println(c);
@@ -448,17 +449,30 @@ public class Main {
             System.out.println("-------------------");
             // Search info and navigation info
             System.out.println("-----Course Search-----");
+            System.out.println("To undo last addition type 'U'");
             System.out.println("To leave the search type 'Q'");
             System.out.println("To apply or remove a filter type 'F'");
             System.out.println("Type a course code or name to search here: ");
             query = input.nextLine();
+            System.out.println();
 
             // Quit -> exit search
             if(query.equals("Q")){
                 return;
             }
+
+            // Undo -> remove most recent course added to schedule
+            if (query.equals("U")){
+                if (currentSchedule.getCourses().isEmpty()) {
+                    System.out.println("No classes to remove.");
+                }
+                else {
+                    System.out.println(currentSchedule.recent + " was removed from your schedule.");
+                    currentSchedule.removeCourse(currentSchedule.recent);
+                }
+            }
             // Filter navigation and info
-            if(query.equals("F")){
+            else if(query.equals("F")){
                 // Print all applied filters with label numbers
                 System.out.println("-----Applied Filters-----");
                 for(int i = 0; i < filters.size(); i++){
@@ -487,10 +501,12 @@ public class Main {
                 // Search on the query
                 results = s.search(query);
                 results = s.search(filters);
+                results.removeIf(c -> currentSchedule.getCourses().contains(c));
                 if(results.isEmpty()){
                     System.out.println("No courses match your search.");
                 }
                 for(int i = 0; i < results.size(); i++){
+
                     System.out.println(String.format("%4d", i) + " - " + displayCourse(results.get(i)));
                 }
                 System.out.println("To add a course to your schedule, type the number to the left of the course code (type 'B' to go back):");

@@ -19,11 +19,13 @@ public class PDFBoxToText {
     private static Schedule currentSchedule;
 
 
+
     public static void main(String[] args) {
         PDFManager pdfManager = new PDFManager();
         pdfManager.setFilePath("C:\\Users\\GROSSMANRC20\\IdeaProjects\\Team1_SE_project2\\CS.pdf");
         try{
             String firstPageText = pdfManager.toText();
+
             String[] token = firstPageText.split(" ");
             for(String s:token){
                 s.strip();
@@ -62,10 +64,14 @@ public class PDFBoxToText {
 
             }
 
+            System.out.println(firstPageText);
+
+
         }catch(IOException e){
             System.out.println("Shit Broke");
         }
     }
+
 
     private static boolean isAllUpper(String s) {
         for(char c : s.toCharArray()) {
@@ -364,4 +370,5 @@ public class PDFBoxToText {
     }
 
 }
+
 
