@@ -74,11 +74,6 @@ function timesFormat(timeList){
 
 export function FilterBar(){
 
-  function useForceUpdateFilter(){
-    const [value, setValue] = useState(0);
-    return () => setValue(value => value + 1);
-  }
-
   let handleFilterChange = e => {
     e.preventDefault();
     const inString = document.getElementById("filterinput").value + "";
@@ -89,7 +84,7 @@ export function FilterBar(){
   }
 
 
-  const forceUpdateFilter = useForceUpdateFilter();
+  const forceUpdateFilter = useForceUpdate();
 
   return(
     <div className = "filterbar">
