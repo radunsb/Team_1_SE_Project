@@ -636,7 +636,7 @@ public class Main {
         }
     }
 
-    public ArrayList<Course> getCourseCatalog() {
+    public static ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
 
