@@ -25,24 +25,23 @@
 .ScheduleName {
     background-color: red;
     color: white;
-    padding: 10px;
+    padding: 0px;
     margin: 0;
     width: 100%;
     top: 0;
     z-index: 999;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 75px;
+    height: 60px;
     margin-left: 10px;
     margin-top: -50px;
 }
 
 .ScheduleView {
     flex: 1;
-    padding: 20px;
+    padding: 0px;
     width: 100%;
     margin-left: 10px;
-    margin-top: 10px;
-    background-color: #f0f0f0;
+    margin-top: 0px;
 }
 
 .SearchBtn {
@@ -96,3 +95,52 @@
 .dropdown-item:hover {
     background-color: #f0f0f0;
 }
+
+.Calendar {
+    width: 100%;
+    border-collapse: collapse; /* Merge borders */
+    tr:nth-child(even) {
+        background-color: white !important;
+    }
+
+    tr:nth-child(odd){
+        background-color: white !important;
+    }
+
+    .DaysOfWeek {
+        height: 15px;
+        border: 1px solid #000;
+        text-align: center;
+        padding: 0px;
+    }
+
+    .DaysOfWeek th {
+        font-size: 15px;
+        padding: 0px;
+        text-align: center;
+        background-color: white;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+    }
+
+    .TimeSlots tr {
+        height: 12px;
+        border: 1px solid #000;
+        padding: 0px;
+        margin: 0px;
+        text-align: center;
+        background-color: red;
+    }
+
+    .TimeSlots td {
+        font-size: 12px;
+        padding: 0px;
+        margin: 0px;
+        text-align: center;
+        border-left: 1px solid #000;
+        border-right: 1px solid #000;
+    }
+}
+
+
+
