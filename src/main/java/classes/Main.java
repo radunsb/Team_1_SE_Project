@@ -153,8 +153,9 @@ public class Main {
             System.out.println();
             System.out.println("Enter 1 to make a new schedule");
             System.out.println("Enter 2 to view current Schedule");
-            System.out.println("Enter 3 to search courses");
-            System.out.println("Enter 4 to edit Schedules");
+            System.out.println("Enter 3 to compare your current schedule");
+            System.out.println("Enter 4 to search courses");
+            System.out.println("Enter 5 to edit Schedules");
             System.out.println("\nEnter EXIT to log out");
 
             command = s.next();
@@ -197,10 +198,33 @@ public class Main {
                 System.out.println(currentSchedule.toStringEx());
             }
             if (command.equals("3")) {
+                System.out.println();
+                ArrayList<Schedule> otherSchedules = new ArrayList<>();
+                for (Schedule check: current.getSchedules()) {
+                    if (!check.equals(currentSchedule)) {
+                        otherSchedules.add(check);
+                    }
+                }
+                if (!otherSchedules.isEmpty()) {
+                    for (int i = 0; i < otherSchedules.size(); i++) {
+                        System.out.print(i+1 + ".) ");
+                        System.out.println(otherSchedules.get(i).getScheduleName());
+                    }
+                    System.out.println("Enter number of schedule you want to compare with");
+                    int compare = s.nextInt();
+                    System.out.println(currentSchedule.toStringEx());
+                    System.out.println(otherSchedules.get(compare-1).toStringEx());
+
+                }
+                else {
+                    System.out.println("No other schedules to compare with");
+                }
+            }
+            if (command.equals("4")) {
                 //do search method here
                 searchCourses();
             }
-            if (command.equals("4")) {
+            if (command.equals("5")) {
                 navigateSchedules(s, current);
             }
         }
