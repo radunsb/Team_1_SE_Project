@@ -46,7 +46,7 @@ public class AppMain {
         // Search api path to search by name/code -> returns results list in json
         app.get("/search", SearchController::emptySearch);
         app.get("/search/{query}", SearchController::getResults);
-        //app.get("/search/{query}/{filters}", SearchController::getResultsWithFilters);
+        app.get("/search/{query}/{filters}", SearchController::getResultsWithFilters);
         //TODO: add filter endpoints
 
         app.get("/getScheduleNames", StudentController::getScheduleNames);
