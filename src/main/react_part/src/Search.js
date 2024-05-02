@@ -7,13 +7,20 @@ import "./Search.css"
 
 
 async function getClasses(q){
-  const response = await fetch(`http://localhost:7979/search/${q}`);
+  let response = '';
+  if(filters.length > 0){
+    const filtquery = filterStrings.join(",");
+    response = await fetch(`http://localhost:7979/search/${q}/${filtquery}`);
+  }
+  else{
+    response = await fetch(`http://localhost:7979/search/${q}`);
+  }
   const content = await response.json();
-  const courses = JSON.parse(JSON.stringify(content))
+  const courses = JSON.parse(JSON.stringify(content));
   let toReturn = [];
   courses.forEach((course) => toReturn.push(<Course courseCode={course.courseCode}
   name={course.name} description={course.description} professor={course.professor}
-  meetingDays = {course.meetingDays}/>));
+  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}/>));
   return toReturn;
 }
 
@@ -21,21 +28,40 @@ let data = [];
 
 let filters = [];
 
-function timesFormat(timeList){
-    let startTimes = [];
-    let endTimes = [];
-    for(let i = 0; i < 5; i++){
-      let times = timeList[i];
-      if(!startTimes.includes(times[0]) || !endTimes.includes(times[1])){
-        startTimes.push(times[0]);
-        endTimes.push(times[1]);
-      }
+let filterStrings = [];
+
+function convertTimeToString(time){
+  const base = 18000000;
+  const diff = time - base;
+  const realTime = diff/3600000;
+  const hour = Math.floor(realTime);
+  let minute = Math.floor(1/60 * Math.round((realTime - hour)/(1/60)) * 60) + '';
+  if (minute.length < 2) {
+    minute = '0' + minute; 
     }
-    return <ul>{startTimes[0]} - {endTimes[0]}</ul>
+  return hour + ":" + minute;
+}
+
+function timesFormat(timeList){
+    const timeString = (timeList + "").replaceAll(",", "");
+    if(timeString.length < 16){
+      return <p>No Times</p>
+    }
+    var st = Number(timeString.substring(0, 8));
+    var et = Number(timeString.substring(8, 16));
+    return <p>{convertTimeToString(st)} - {convertTimeToString(et)}</p>
   }
   
   function daysFormat(dayList){
-    return dayList.join(", ");
+    dayList = (dayList + '').split(",");
+    const days = ['M', 'T', 'W', 'R', 'F'];
+    const realDays = [];
+    for(let i = 0; i < 5; i++){
+      if(dayList[i].trim() === "true"){
+        realDays.push(days[i]);
+      }
+    }
+    return realDays.join(", ");
   }
 
   
@@ -45,16 +71,29 @@ function timesFormat(timeList){
       <tr className={styles.mainTable}>
           <td>{courseCode}</td>
           <td>{name}</td>
-          <td>{description}</td>
           <td>{professor}</td>
           <td>{daysFormat(meetingDays)}</td>
+          <td>{timesFormat(meetingTimes)}</td>
       </tr>
       );     
   }
 
+  export function FilterSetup(){
+    const [type, setType] = useState("Day");
+
+  }
+
+  export function TimeBar(){
+    return(
+      <div>
+
+      </div>    
+    );
+  }
+
   export function Filter({input, type}){
     return (
-      <p>{type} filter: {input}</p>
+      <p>{type}: {input}</p>
     );
   }
 
@@ -71,6 +110,7 @@ export function FilterBar(){
     const type = inString.substring(0, inString.indexOf(' '));
     const input = inString.substring(inString.indexOf(' '));
     filters.push(<Filter type={type} input={input}/>);
+    filterStrings.push(type + "& " + input);
     forceUpdateFilter();
   }
 
@@ -85,7 +125,7 @@ export function FilterBar(){
           <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
           <input type="submit" value="Submit"/>
         </form>       
-        <column>{filters}</column>
+        <column>{filterStrings}</column>
       </p>
     </div>
   );
@@ -132,9 +172,9 @@ export function FilterBar(){
         <tr>
             <th>Course Code</th>
             <th>Course Name</th>
-            <th>Description</th>
             <th>Professor</th>
             <th>Meeting Days</th>
+            <th>Meeting Time</th>
         </tr>
         {courses}     
       </table>

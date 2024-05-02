@@ -21,80 +21,86 @@ public class PDFBoxToText {
 
 
     public static void main(String[] args) {
+
+        currentSchedule = new Schedule(1,"Spring",2020,"default");
+        try{
+            readCSV();
+        } catch(FileNotFoundException | ParseException e){
+            System.out.println(e.getMessage());
+        }
+
+        String ni = PremadeScheduleString("CS.pdf");
+
+        System.out.println(ni);
+
+        String[] courses = ni.split("\n");
+
+        recomendedCourses = new ArrayList<Course>();
+        for(String s:courses){
+            if(s.contains("…") || s.contains("&")){
+
+            }else{
+                searchRecomended(s,0);
+            }
+        }
+
+        System.out.println(recomendedCourses);
+
+    }
+
+
+    private static String cleanString(String s){
+        if(!s.contains("\r\n")){
+            return s;
+        }
+        String segments[] = s.split("\r\n");
+        return segments[segments.length-1];
+    }
+
+    private static String PremadeScheduleString(String filepath){
         PDFManager pdfManager = new PDFManager();
-        pdfManager.setFilePath("C:\\Users\\GROSSMANRC20\\IdeaProjects\\Team1_SE_project2\\CS.pdf");
+        pdfManager.setFilePath(filepath);
+
         try{
             String firstPageText = pdfManager.toText();
 
-            String[] token = firstPageText.split(" ");
+            String[] token = firstPageText.split("Credits");
             for(String s:token){
                 s.strip();
             }
 
             StringBuilder bob = new StringBuilder();
 
-            String next, next2;
+            for (int i = 0; i < token.length; i++){
+//
+                String[] block = token[i].split(" ");
 
-            for (int i = 0; i < token.length-2; i++){
-
-                if(!token[i+1].isBlank()){
-                    next = token[i+1];
-                }else{
-                    next = "";
+                for (int k = 0; k < block.length; k++) {
+                    block[k] = cleanString(block[k]);
                 }
 
-                if(!token[i+2].isBlank()){
-                    next2 = token[i+2];
-                }else{
-                    next2 = "";
-                }
+                for (int j = 0; j < block.length-1; j++) {
 
-                if((isAllUpper(token[i]) && !isNumeric(token[i])) || token[i].equals("General")){
-                    bob.append(token[i]);
-                    bob.append(next);
-                    bob.append(next2);
-                    bob.append(" ");
+                    if((isAllUpper(block[j]) && !isNumeric(block[j]) && !block[j].contains("…") && !block[j+1].contains("…"))){
+                        bob.append(block[j]);
+                        bob.append(block[j+1]);
+                        bob.append("\n");
+                    }
+                    if(block[j].equals("Science") || block[j].equals("General")){
+                        bob.append(block[j]);
+                        bob.append(block[j+1]);
+                        bob.append("\n");
+                    }
                 }
             }
 
-            System.out.println(bob.toString());
-
-            Scanner s = new Scanner(bob.toString());
-            while(s.hasNext(" ")){
-
-            }
-
-            System.out.println(firstPageText);
-
+            return bob.toString();
 
         }catch(IOException e){
-            System.out.println("Shit Broke");
+            System.out.println("it Broke");
+            return "";
         }
     }
-
-
-    private static boolean isAllUpper(String s) {
-        for(char c : s.toCharArray()) {
-            if(Character.isLetter(c) && Character.isLowerCase(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
-
 
     static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
@@ -180,55 +186,36 @@ public class PDFBoxToText {
         }
     }
 
-    private static int searchRecomended(String q) {
+    private static void searchRecomended(String q, int i) {
         //User input setup
-        Scanner input = new Scanner(System.in);
         String query = q;
-        ArrayList<Course> results;
         ArrayList<Filter> filters = new ArrayList<>();
 
-        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),
-                "" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
 
         // Create search instance
-        Search s = new Search("", courseCatalog, filters, semesterFilter);
+        Search s = new Search("", courseCatalog, filters);
 
-        while (!query.equals("Q")) {
-            for (Course c : currentSchedule.getCourses()) {
-                System.out.println(c);
-            }
-            //query = input.nextLine();
-
-            // Quit -> exit search
             if (query.equals("Q")) {
-                return -1;
+                return;
             }
-            // Filter navigation and info
             if (query.equals("F")) {
-                return -1;
+                return;
             } else {
                 // Search on the query
-                results = s.search(query);
-                results = s.search(filters);
+                ArrayList<Course> results = s.search(query);
                 if (results.isEmpty()) {
-                    return -1;
+                    return;
                 }
-
                 try {
-                    int classToAdd = 0;
-                    if (classToAdd >= 0 && classToAdd < results.size()) {
-
-                        System.out.println(results.get(classToAdd) + " was added to your schedule.");
-                        return 0;
-//                        }
-                    }
+                    recomendedCourses.add(results.get(i));
+                    return;
                 } catch (Exception e) {
                     // Clear the input and do nothing -> go back to search
-                    return -1;
+                    return;
                 }
             }
-        }
-        return 0;
+
     }
 
     private static void removeFilter(Search s, ArrayList<Filter> filters){
@@ -369,6 +356,28 @@ public class PDFBoxToText {
         return s;
     }
 
+    private static boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 }
+
 
 

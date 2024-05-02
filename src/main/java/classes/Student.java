@@ -46,7 +46,7 @@ public class Student {
      * @param course is the course to add
      */
     public void addCourseToHistory(Course course){
-
+        courseHistory.add(course);
     }
 
     /**
@@ -54,7 +54,7 @@ public class Student {
      * @param course is the course to remove
      */
     public void removeCourseFromHistory(Course course){
-
+        courseHistory.remove(course);
     }
 
     public void addNewSchedule(int scheduleID, String semester, int year, String scheduleName){
