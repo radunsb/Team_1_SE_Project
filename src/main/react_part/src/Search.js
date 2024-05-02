@@ -1,46 +1,36 @@
 import React from 'react'
 import styles from './styles.module.css';
-import { useState } from 'react';
-import "./Search.css"
+import { useState, useEffect} from 'react';
 
 //JSON object of courses returned from Java backend
-let courseJSON = null;
 
-let myCourses = [
-  <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
-  professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
-  meetingDays = {['M', 'W', 'F']}/>,
-  <Course courseCode={"HUMA110"} name={"Northern Civ"} description={"Ah yes northern civ my favorite class"}
-  professor={"Your Mom"} meetingTimes = {["11:00 AM"]} meetingDays = {['T', 'R']}/>,
-]
 
-let sampleData = [
-    <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
-        professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
-        meetingDays = {['M', 'W', 'F']}/>,
-    <Course courseCode={"HUMA110"} name={"Northern Civ"} description={"Ah yes northern civ my favorite class"}
-        professor={"Your Mom"} meetingTimes = {["11:00 AM"]} meetingDays = {['T', 'R']}/>,
-    <Course courseCode={"BEANS101"} name={"Beans"} description={"Beans"}
-        professor={"BIGLEGUMEFAN3007"} meetingTimes = {["1:00 PM"]} meetingDays = {['T', 'R']}/>
-]
+async function getClasses(q){
+  const response = await fetch(`http://localhost:7979/search/${q}`);
+  const content = await response.json();
+  const courses = JSON.parse(JSON.stringify(content))
+  let toReturn = [];
+  courses.forEach((course) => toReturn.push(<Course courseCode={course.courseCode}
+  name={course.name} description={course.description} professor={course.professor}
+  meetingDays = {course.meetingDays}/>));
+  return toReturn;
+}
 
 let data = [];
 
 let filters = [];
 
-function updateJSON(newJSON){
-  courseJSON = newJSON;
-}
-
-function updateCoursesFromJSON(){
-  const courses = JSON.parse(courseJSON);
-  const courseList = courses.map(course => course);
-  data = courseList;
-}
-
 function timesFormat(timeList){
-    const times = timeList.map(time => <li>{time}</li>);
-    return <ul>{times}</ul>
+    let startTimes = [];
+    let endTimes = [];
+    for(let i = 0; i < 5; i++){
+      let times = timeList[i];
+      if(!startTimes.includes(times[0]) || !endTimes.includes(times[1])){
+        startTimes.push(times[0]);
+        endTimes.push(times[1]);
+      }
+    }
+    return <ul>{startTimes[0]} - {endTimes[0]}</ul>
   }
   
   function daysFormat(dayList){
@@ -56,7 +46,6 @@ function timesFormat(timeList){
           <td>{name}</td>
           <td>{description}</td>
           <td>{professor}</td>
-          <td>{timesFormat(meetingTimes)}</td>
           <td>{daysFormat(meetingDays)}</td>
       </tr>
       );     
@@ -103,14 +92,22 @@ export function FilterBar(){
 
   export default function Search(){
 
+    const [courses, setCourses] = useState('');
+
+    useEffect(() => {
+      async function fetchData() {
+          const courseData = await getClasses(query.q);
+          setCourses(courseData);
+      }
+      fetchData();
+  });
+
     let handleSearchChange = e => {
       setQuery({
           ...query,
           q: e.target.value
       });
-      let newArray = [<Course courseCode={"BEANS101"} name={"Beans"} description={"Beans"}
-      professor={"BIGLEGUMEFAN3007"} meetingTimes = {["1:00 PM"]} meetingDays = {['T', 'R']}/>]
-      sampleData = sampleData.concat(newArray);      
+      getClasses(query.q);      
       forceUpdate();
   }
 
@@ -136,10 +133,9 @@ export function FilterBar(){
             <th>Course Name</th>
             <th>Description</th>
             <th>Professor</th>
-            <th>Meeting Times</th>
             <th>Meeting Days</th>
         </tr>
-        {sampleData}     
+        {courses}     
       </table>
       </div>
     </div>
