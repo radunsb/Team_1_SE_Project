@@ -828,6 +828,7 @@ public class Main {
             while (reader.hasNext()) {
                 lines.add(reader.next());
             }
+            // filter correct line of text file
             for (String line : lines) {
                 if (line.startsWith(String.valueOf(recentAction))) {
                     int i = 0;
@@ -855,9 +856,9 @@ public class Main {
 
             }
             else if (lastAction[1].equals("removed") && !removedCourses.isEmpty()) {
-                System.out.println(removedCourses.getFirst() + " was added back to your schedule");
-                currentSchedule.getCourses().add(removedCourses.getFirst());
-                removedCourses.removeFirst();
+                System.out.println(removedCourses.getLast() + " was added back to your schedule");
+                currentSchedule.getCourses().add(removedCourses.getLast());
+                removedCourses.removeLast();
             }
         }
         else {
