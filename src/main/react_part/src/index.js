@@ -3,12 +3,14 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './Home.css';
 import Home from './Home.js';
+import './Search.css'
+import Search from './Search.js';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Home />
+    <Search />
   </React.StrictMode>
 );
 

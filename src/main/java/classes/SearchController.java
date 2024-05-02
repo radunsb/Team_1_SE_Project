@@ -24,4 +24,12 @@ public class SearchController {
         context.json(results);
     }
 
+    public static void getResultsWithFilters(Context context){
+        //Search instance
+        Search s = new Search("", Main.getCourseCatalog(), null);
+        String query = context.pathParam("query");
+        ArrayList<Course> results = s.search(query);
+        String filters = context.pathParam("filter");
+    }
+
 }
