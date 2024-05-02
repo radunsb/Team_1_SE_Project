@@ -1,6 +1,7 @@
 import React from 'react'
 import styles from './styles.module.css';
 import { useState } from 'react';
+import "./Search.css"
 
 //JSON object of courses returned from Java backend
 let courseJSON = null;
