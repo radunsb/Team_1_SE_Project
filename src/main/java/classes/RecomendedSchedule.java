@@ -220,6 +220,12 @@ public class RecomendedSchedule {
         }
         return true;
     }
+
+    /**
+     * reads CSV file to make course catalog
+     * @throws FileNotFoundException
+     * @throws ParseException
+     */
     static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
 
@@ -327,6 +333,7 @@ public class RecomendedSchedule {
     public Schedule getRecomendedFallSopohmore() {
         return recomendedFallSopohmore;
     }
+
 
     public Schedule getRecomendedFallJunior() {
         return recomendedFallJunior;
