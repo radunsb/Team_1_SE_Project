@@ -3,10 +3,18 @@ import styles from './styles.module.css';
 import { useState, useEffect} from 'react';
 import { Button } from 'react-bootstrap';
 import Home from './Home.js';
+import FilterPart from './FilterPart.js';
 import "./Search.css"
 
 //JSON object of courses returned from Java backend
 
+async function getSchedule(){
+  let response = '';
+  response = await fetch(`http://localhost:7979/getCurrentSchedule`);
+  const content = await response.json();
+  const schedule = JSON.parse(JSON.stringify(content));
+  return schedule;
+}
 
 async function getClasses(q){
   let response = '';
@@ -22,11 +30,12 @@ async function getClasses(q){
   let toReturn = [];
   courses.forEach((course) => toReturn.push(<Course courseCode={course.courseCode}
   name={course.name} description={course.description} professor={course.professor}
-  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}/>));
+  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}
+  isTaken = {takenCourses.includes(course.courseCode.substring(0, course.courseCode.length - 1))}/>));
   return toReturn;
 }
 
-let data = [];
+let takenCourses = [];
 
 let filters = [];
 
@@ -65,37 +74,48 @@ function timesFormat(timeList){
     }
     return realDays.join(", ");
   }
-
   
   export function Course({courseCode, name, description, professor, meetingTimes,
-  meetingDays, meetingLocations, prerequisites, corequisites, year, semester, creditHours, capacity}){
-      return (
+  meetingDays, isTaken}){
+/*
+    const addNewClass = async (course) => {
+      let response = '';
+      response = await fetch(`http://localhost:7979/search/${courseCode}`);
+      const content = await response.json();
+      const courses = JSON.parse(JSON.stringify(content));
+      await fetch(`http://localhost:7979/addCourseToSchedule/${courses}`);
+    }
+    */
+
+    const buttonClicked = () => {
+      if(!isTaken){
+        takenCourses.push(courseCode.substring(0, courseCode.length - 1));
+        //addNewClass(courseCode);
+      }
+      else{
+        takenCourses.pop(courseCode.substring(0, courseCode.length - 1));
+      }
+  };
+
+    return (
       <tr className={styles.mainTable}>
           <td>{courseCode}</td>
           <td>{name}</td>
           <td>{professor}</td>
           <td>{daysFormat(meetingDays)}</td>
           <td>{timesFormat(meetingTimes)}</td>
+          <td>{!isTaken ? (
+            <Button className = "addButton" onClick = {buttonClicked}>+</Button>
+          ) : (
+            <Button className = "removeButton" onClick = {buttonClicked}>-</Button>
+          )}</td>
       </tr>
-      );     
-  }
-
-  export function FilterSetup(){
-    const [type, setType] = useState("Day");
-
-  }
-
-  export function TimeBar(){
-    return(
-      <div>
-
-      </div>    
-    );
+    );     
   }
 
   export function Filter({input, type}){
     return (
-      <p>{type}: {input}</p>
+      <p id="filters">{type}: {input}</p>
     );
   }
 
@@ -106,43 +126,69 @@ function timesFormat(timeList){
 
 export function FilterBar(){
 
-  let handleFilterChange = e => {
-    e.preventDefault();
-    const inString = document.getElementById("filterinput").value + "";
-    const type = inString.substring(0, inString.indexOf(' '));
-    const input = inString.substring(inString.indexOf(' '));
-    filters.push(<Filter type={type} input={input}/>);
-    filterStrings.push(type + "& " + input);
-    forceUpdateFilter();
+  const [addingFilter, setAddingFilter] = useState(false);
+
+  const[activeFilters, setActiveFilters] = useState("");
+
+  function switchAddingFilter(){
+    setAddingFilter(!addingFilter);
   }
 
-
-  const forceUpdateFilter = useForceUpdate();
-
-  return(
-    <div className = "filterbar">
-      <p>
-        <form id="filterform" onSubmit={handleFilterChange}>
+/*
+<form id="filterform" onSubmit={handleFilterChange}>
           <label for = "filterinput">Filter: </label>
           <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
           <input type="submit" value="Submit"/>
-        </form>       
-        <column>{filterStrings}</column>
-      </p>
+        </form>   
+*/
+
+  const forceUpdateFilter = useForceUpdate();
+
+  function yayFilters(){
+      filters.length = 0;
+      filterStrings.length = 0;
+
+      if(document.getElementById("filters") != null){
+      const inString = document.getElementById("filters").textContent + "";
+      const type = inString.substring(0, inString.indexOf(' '));
+      const input = inString.substring(inString.indexOf(' '));
+      filters.push(<Filter type={type} input={input}/>);
+      filterStrings.push(type + "& " + input);
+      setActiveFilters(filterStrings.join(", ").replaceAll("&", ":"));      
+      forceUpdateFilter();
+      }
+
+      switchAddingFilter();
+  }
+
+  
+
+  return(
+    <div className = "filterbar">  
+        <Button className="filterbutton" onClick={switchAddingFilter}>{addingFilter ? "Cancel" : "Add New Filter"}</Button>
+        {addingFilter ? <FilterPart/> : ''}
+        {addingFilter ? <Button className="filterbutton" onClick={yayFilters}>Save Filter</Button> : ""}
+        <p>Current Filters: </p>
+        <p className="activeFilters">{activeFilters}</p>
     </div>
   );
 }
-
 
 
   export default function Search(){
 
     const [backClicked, setBackClicked] = useState(false);
     const onBack = () => {
+        filterStrings.length = 0;
+        filters.length = 0;
+        takenCourses.length = 0;
+        setSchedule(null);
+        setCourses(null);
         setBackClicked(true);
     };
 
     const [courses, setCourses] = useState('');
+    const [schedule, setSchedule] = useState(null);
 
     useEffect(() => {
       async function fetchData() {
@@ -152,12 +198,26 @@ export function FilterBar(){
       fetchData();
   });
 
+    useEffect(() => {
+      async function fetchData(){
+        const sched = await getSchedule();
+        await setSchedule(sched);
+        sched.courses.forEach((course) => {
+          if(!takenCourses.includes(course.courseCode.substring(0, course.courseCode.length - 1))){
+            takenCourses.push(course.courseCode.substring(0, course.courseCode.length - 1));
+          }
+        });
+        
+      }
+      fetchData();
+    });
+
     let handleSearchChange = e => {
       setQuery({
           ...query,
           q: e.target.value
       });
-      getClasses(query.q);      
+      getClasses(query.q);     
       forceUpdate();
   }
 
@@ -181,7 +241,7 @@ export function FilterBar(){
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
-            {query.q}
+                <p>Taken Courses: {takenCourses}</p>
         </div>
     <div className = "coursetable">
       <table>
@@ -191,6 +251,7 @@ export function FilterBar(){
             <th>Professor</th>
             <th>Meeting Days</th>
             <th>Meeting Time</th>
+            <th>Add/Remove</th>
         </tr>
         {courses}     
       </table>
