@@ -1,49 +1,68 @@
 import React from 'react'
 import styles from './styles.module.css';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
+import { Button } from 'react-bootstrap';
+import Home from './Home.js';
 
 //JSON object of courses returned from Java backend
-let courseJSON = null;
 
-let myCourses = [
-  <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
-  professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
-  meetingDays = {['M', 'W', 'F']}/>,
-  <Course courseCode={"HUMA110"} name={"Northern Civ"} description={"Ah yes northern civ my favorite class"}
-  professor={"Your Mom"} meetingTimes = {["11:00 AM"]} meetingDays = {['T', 'R']}/>,
-]
 
-let sampleData = [
-    <Course courseCode={"COMP447"} name={"Networked"} description={"Sample desc"}
-        professor={"James Borg"} meetingTimes = {["8:00 AM", "10:00 AM"]}
-        meetingDays = {['M', 'W', 'F']}/>,
-    <Course courseCode={"HUMA110"} name={"Northern Civ"} description={"Ah yes northern civ my favorite class"}
-        professor={"Your Mom"} meetingTimes = {["11:00 AM"]} meetingDays = {['T', 'R']}/>,
-    <Course courseCode={"BEANS101"} name={"Beans"} description={"Beans"}
-        professor={"BIGLEGUMEFAN3007"} meetingTimes = {["1:00 PM"]} meetingDays = {['T', 'R']}/>
-]
+async function getClasses(q){
+  let response = '';
+  if(filters.length > 0){
+    const filtquery = filterStrings.join(",");
+    response = await fetch(`http://localhost:7979/search/${q}/${filtquery}`);
+  }
+  else{
+    response = await fetch(`http://localhost:7979/search/${q}`);
+  }
+  const content = await response.json();
+  const courses = JSON.parse(JSON.stringify(content));
+  let toReturn = [];
+  courses.forEach((course) => toReturn.push(<Course courseCode={course.courseCode}
+  name={course.name} description={course.description} professor={course.professor}
+  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}/>));
+  return toReturn;
+}
 
 let data = [];
 
 let filters = [];
 
-function updateJSON(newJSON){
-  courseJSON = newJSON;
-}
+let filterStrings = [];
 
-function updateCoursesFromJSON(){
-  const courses = JSON.parse(courseJSON);
-  const courseList = courses.map(course => course);
-  data = courseList;
+function convertTimeToString(time){
+  const base = 18000000;
+  const diff = time - base;
+  const realTime = diff/3600000;
+  const hour = Math.floor(realTime);
+  let minute = Math.floor(1/60 * Math.round((realTime - hour)/(1/60)) * 60) + '';
+  if (minute.length < 2) {
+    minute = '0' + minute; 
+    }
+  return hour + ":" + minute;
 }
 
 function timesFormat(timeList){
-    const times = timeList.map(time => <li>{time}</li>);
-    return <ul>{times}</ul>
+    const timeString = (timeList + "").replaceAll(",", "");
+    if(timeString.length < 16){
+      return <p>No Times</p>
+    }
+    var st = Number(timeString.substring(0, 8));
+    var et = Number(timeString.substring(8, 16));
+    return <p>{convertTimeToString(st)} - {convertTimeToString(et)}</p>
   }
   
   function daysFormat(dayList){
-    return dayList.join(", ");
+    dayList = (dayList + '').split(",");
+    const days = ['M', 'T', 'W', 'R', 'F'];
+    const realDays = [];
+    for(let i = 0; i < 5; i++){
+      if(dayList[i].trim() === "true"){
+        realDays.push(days[i]);
+      }
+    }
+    return realDays.join(", ");
   }
 
   
@@ -53,17 +72,29 @@ function timesFormat(timeList){
       <tr className={styles.mainTable}>
           <td>{courseCode}</td>
           <td>{name}</td>
-          <td>{description}</td>
           <td>{professor}</td>
-          <td>{timesFormat(meetingTimes)}</td>
           <td>{daysFormat(meetingDays)}</td>
+          <td>{timesFormat(meetingTimes)}</td>
       </tr>
       );     
   }
 
+  export function FilterSetup(){
+    const [type, setType] = useState("Day");
+
+  }
+
+  export function TimeBar(){
+    return(
+      <div>
+
+      </div>    
+    );
+  }
+
   export function Filter({input, type}){
     return (
-      <p>{type} filter: {input}</p>
+      <p>{type}: {input}</p>
     );
   }
 
@@ -80,6 +111,7 @@ export function FilterBar(){
     const type = inString.substring(0, inString.indexOf(' '));
     const input = inString.substring(inString.indexOf(' '));
     filters.push(<Filter type={type} input={input}/>);
+    filterStrings.push(type + "& " + input);
     forceUpdateFilter();
   }
 
@@ -94,22 +126,37 @@ export function FilterBar(){
           <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
           <input type="submit" value="Submit"/>
         </form>       
-        <column>{filters}</column>
+        <column>{filterStrings}</column>
       </p>
     </div>
   );
 }
 
+
+
   export default function Search(){
+
+    const [backClicked, setBackClicked] = useState(false);
+    const onBack = () => {
+        setBackClicked(true);
+    };
+
+    const [courses, setCourses] = useState('');
+
+    useEffect(() => {
+      async function fetchData() {
+          const courseData = await getClasses(query.q);
+          setCourses(courseData);
+      }
+      fetchData();
+  });
 
     let handleSearchChange = e => {
       setQuery({
           ...query,
           q: e.target.value
       });
-      let newArray = [<Course courseCode={"BEANS101"} name={"Beans"} description={"Beans"}
-      professor={"BIGLEGUMEFAN3007"} meetingTimes = {["1:00 PM"]} meetingDays = {['T', 'R']}/>]
-      sampleData = sampleData.concat(newArray);      
+      getClasses(query.q);      
       forceUpdate();
   }
 
@@ -120,9 +167,16 @@ export function FilterBar(){
     const forceUpdate = useForceUpdate();
 
     return (
+      <div>
+      {backClicked ? (<Home/>) : 
+
+      
     <div className = "main">
+      
     <div className = "submain">
+    
     <div className = "searchbar">
+    <Button className="BackBtn" onClick = {onBack}>Back</Button>
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
@@ -133,16 +187,17 @@ export function FilterBar(){
         <tr>
             <th>Course Code</th>
             <th>Course Name</th>
-            <th>Description</th>
             <th>Professor</th>
-            <th>Meeting Times</th>
             <th>Meeting Days</th>
+            <th>Meeting Time</th>
         </tr>
-        {sampleData}     
+        {courses}     
       </table>
       </div>
     </div>
     <FilterBar/>
     </div>
+      }
+      </div>
     );
 }
