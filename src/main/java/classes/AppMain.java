@@ -78,7 +78,11 @@ public class AppMain {
         app.get("/renameSchedule/{name}", StudentController::renameSchedule);
         app.get("/addCourseToSchedule/{course}", StudentController::addCourseToSchedule);
 
+        app.get("/deleteSchedule/{scheduleName}", StudentController::deleteSchedule);
+
         app.get("/changeCurrentSchedule/{scheduleName}", StudentController::changeCurrentSchedule);
+
+        app.get("/removeCourse/{courseCode}", StudentController::removeCourse);
 
         // kind of optional
         //app.post("/changeScheduleName", StudentController::changeScheduleName);
