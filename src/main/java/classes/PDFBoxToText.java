@@ -19,8 +19,8 @@ public class PDFBoxToText {
     private static ArrayList<Course> courseCatalog;
     private static Schedule currentSchedule;
 
-    private static ArrayList<Course> recomendedSpring;
-    private static ArrayList<Course> recomendedFall;
+    private static Schedule recomendedSpring;
+    private static Schedule recomendedFall;
 
 
 
@@ -40,8 +40,8 @@ public class PDFBoxToText {
         String fall = makeFall(courses);
         String spring = makeSpring(courses);
 
-        recomendedSpring = new ArrayList<Course>();
-        recomendedFall = new ArrayList<Course>();
+        recomendedSpring = new Schedule(1,"Spring",2020,"recomendedSpring");
+        recomendedFall = new Schedule(1,"Fall",2020,"recomendedFall");
 
         makeRecomended(fall, recomendedFall);
         makeRecomended(spring, recomendedSpring);
@@ -52,7 +52,7 @@ public class PDFBoxToText {
 
     }
 
-    public static void makeRecomended(String s, ArrayList<Course> sched){
+    public static void makeRecomended(String s, Schedule sched){
         String[] courses = s.split("\n");
 
         for(String t:courses){
@@ -221,7 +221,7 @@ public class PDFBoxToText {
         }
     }
 
-    private static void searchRecomended(String q, ArrayList<Course> sched) {
+    private static void searchRecomended(String q, Schedule sched) {
         //User input setup
         String query = q;
         ArrayList<Filter> filters = new ArrayList<>();
@@ -243,7 +243,7 @@ public class PDFBoxToText {
                     return;
                 }
                 try {
-                    sched.add(results.get(0));
+                    sched.addCourse(results.get(0));
                     return;
                 } catch (Exception e) {
                     // Clear the input and do nothing -> go back to search

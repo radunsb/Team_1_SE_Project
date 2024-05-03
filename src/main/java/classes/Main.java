@@ -4,9 +4,9 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.time.*;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -28,6 +28,9 @@ public class Main {
         //Read the CSV
         try{
             readCSV();
+            for(Course c:courseCatalog){
+                System.out.println(c.getPrerequisites());
+            }
         } catch(FileNotFoundException | ParseException e){
             System.out.println(e.getMessage());
         }
@@ -335,6 +338,7 @@ public class Main {
             }
             else if (state.equals("5")){
                 //do logic for adding already taken courses
+                searchTakenCourses();
             }
         }
     }
@@ -424,6 +428,112 @@ public class Main {
             } else if (state.equals("5")){
                 currentSchedule.saveSchedule(current.getStudentID() + "_" + current.getUsername());
                 current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
+            }
+        }
+    }
+
+    /**
+     * handles user IO for the search menu, navigation, and functionality
+     */
+    private static void searchTakenCourses(){
+        //User input setup
+        Scanner input = new Scanner(System.in);
+        String query = "";
+        ArrayList<Course> results;
+        ArrayList<Filter> filters = new ArrayList<>();
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),
+                ""+currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+
+        // Create search instance
+        Search s = new Search("", courseCatalog, filters, semesterFilter);
+
+        while(!query.equals("Q")){
+            System.out.println();
+            System.out.println("---Your Previous Classes---");
+            for(Course c : currentStudent.getCourseHistory()){
+                System.out.println(c);
+            }
+            System.out.println("-------------------");
+            // Search info and navigation info
+            System.out.println("-----Course Search-----");
+            System.out.println("To undo last addition type 'U'");
+            System.out.println("To leave the search type 'Q'");
+            System.out.println("To apply or remove a filter type 'F'");
+            System.out.print("Type a course code or name to search here: ");
+            query = input.nextLine();
+            System.out.println();
+
+            // Quit -> exit search
+            if(query.equals("Q")){
+                return;
+            }
+
+            // Undo -> remove most recent course added to schedule
+            if (query.equals("U")){
+                if (currentStudent.getCourseHistory().isEmpty()) {
+                    System.out.println("No classes to remove.");
+                }
+                else {
+                    System.out.println(currentSchedule.recent + " was removed from your schedule.");
+                    currentSchedule.removeCourse(currentSchedule.recent);
+                }
+            }
+            // Filter navigation and info
+            else if(query.equals("F")){
+                // Print all applied filters with label numbers
+                System.out.println("-----Applied Filters-----");
+                for(int i = 0; i < filters.size(); i++){
+                    System.out.println("Filter " + i + ": " + filters.get(i).getType());
+                }
+                System.out.println("To remove a filter type 'R'");
+                System.out.println("To remove all filters type 'Rall'");
+                System.out.println("To add a filter type 'A'");
+                System.out.println("To go back to search type 'B'");
+                query = input.nextLine();
+
+                if(query.equals("R")){
+                    // Remove filter
+                    removeFilter(s, filters);
+                } else if(query.equals("Rall")){
+                    // Clear the filter ArrayList
+                    filters.removeAll(filters);
+                } else if(query.equals("A")){
+                    // Add filter
+                    Filter f = addFilter(filters);
+                    if(f != null){
+                        s.addFilter(f);
+                    }
+                }
+            } else {
+                // Search on the query
+                results = s.search(query);
+                results = s.search(filters);
+                results.removeIf(c -> currentSchedule.getCourses().contains(c));
+                if(results.isEmpty()){
+                    System.out.println("No courses match your search.");
+                }
+                for(int i = 0; i < results.size(); i++){
+
+                    System.out.println(String.format("%4d", i) + " - " + displayCourse(results.get(i)));
+                }
+                System.out.println("To add a course to your history, type the number to the left of the course code (type 'B' to go back):");
+                try{
+                    int classToAdd = input.nextInt();
+                    if(classToAdd >= 0 && classToAdd < results.size()){
+                        // Add course to current schedule
+                        if(!currentStudent.getCourseHistory().contains(results.get(classToAdd))) {
+                            System.out.println(results.get(classToAdd) + " is already in your course history");
+                        }else{
+                            System.out.println(results.get(classToAdd) + " was added to your course history.");
+                            writeActionLogger("added " +results.get(classToAdd));
+                        }
+                        // Clear the input
+                        input.nextLine();
+                    }
+                }catch(Exception e){
+                    // Clear the input and do nothing -> go back to search
+                    input.nextLine();
+                }
             }
         }
     }
@@ -753,6 +863,17 @@ public class Main {
 
             String profLast = line.next();
             String profFirst = line.next();
+            String profMiddle = line.next();
+            String prerequisites;
+            if(line.hasNext()){
+                prerequisites = line.next();
+            }else{
+                prerequisites = "None";
+            }
+
+
+            //String[]preReqs = prerequisites.split(";");
+
 
             // TODO: If we want the comments off the csv file, they need to be dealt with here
             // TODO: Also need to write the logic for combining weird courses such as calculus -> will do later
@@ -768,18 +889,21 @@ public class Main {
                     semester,
                     capacity,
                     null,
-                    null,
+                    prerequisites,
                     null
             );
             courseCatalog.add(newCourse);
-
         }
     }
+
+
     public static ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
+
     private static File users = new File("user_actions.txt");
     // creates a writer to user_actions file and logs a timestamp
+
     private static void createActionLogger() throws IOException {
         try {
             PrintWriter writer = new PrintWriter(users, StandardCharsets.UTF_8);

@@ -13,7 +13,7 @@ public class Course {
     private Date[][] meetingTimes;
     private boolean[] meetingDays;
     private ArrayList<String> meetingLocations;
-    private ArrayList<String> prerequisites; //ArrayList of course codes
+    private String prerequisites; //ArrayList of course codes
     private ArrayList<String> corequisites; //ArrayList of course codes
 
     private int year;
@@ -36,7 +36,7 @@ public class Course {
                   Semester semester,
                   int capacity,
                   ArrayList<String> meetingLocations,
-                  ArrayList<String> prerequisites,
+                  String prerequisites,
                   ArrayList<String> corequisites) {
         this.courseCode = courseCode;
         this.name = name;
@@ -104,11 +104,11 @@ public class Course {
         this.meetingLocations = meetingLocations;
     }
 
-    public ArrayList<String> getPrerequisites() {
+    public String getPrerequisites() {
         return prerequisites;
     }
 
-    public void setPrerequisites(ArrayList<String> prerequisites) {
+    public void setPrerequisites(String prerequisites) {
         this.prerequisites = prerequisites;
     }
 
