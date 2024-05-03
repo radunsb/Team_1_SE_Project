@@ -209,6 +209,7 @@
 
 .courseTime {
     border: red;
+    border-color: red;
     background-color: red;
     font-weight: bold;
     color: white;

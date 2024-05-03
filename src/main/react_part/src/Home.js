@@ -39,6 +39,12 @@ function Home() {
         fetchScheduleNames();
     }
 
+    const handleRemoveCourse = async (name) => {
+        const url = `http:\/\/localhost:7979/removeCourse/${name}`;
+        await fetch(url);
+        fetchCurrentSchedule();
+    }
+
     const updateCalendar = (schedule) => {
         const scheduleNameHeader = document.querySelectorAll('.titleInput input');
         scheduleNameHeader.textContent = schedule.scheduleName;
@@ -88,6 +94,9 @@ function Home() {
                             const button = document.createElement('button');
                             button.className = "tooltip-button";
                             button.textContent = "Remove";
+                            button.addEventListener('click', function() {
+                                handleRemoveCourse(course.courseCode);
+                            });
                             //Add event handler to the button
                             tooltipContent.appendChild(button);
 
@@ -152,10 +161,17 @@ function Home() {
     }
 
     const deleteSchedule = async () => {
+        //TODO: Make sure they don't delete the last schedule in their list lol
+
         const url = `http:\/\/localhost:7979/deleteSchedule/${scheduleName}`;
         await fetch(url);
         //change the current schedule
+        const scheduleData = await getScheduleNames();
+
         fetchScheduleNames();
+        const url2 = `http:\/\/localhost:7979/changeCurrentSchedule/${scheduleData[0]}`;
+        await fetch(url2); // Wait for the request to complete
+        fetchCurrentSchedule(); // Refetch the current schedule
     }
 
     return (

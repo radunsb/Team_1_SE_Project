@@ -89,4 +89,17 @@ public class StudentController {
             }
         }
     }
+
+    public static void removeCourse(Context context) {
+        ArrayList<Schedule> schedules = AppMain.user.getSchedules();
+        for(Schedule s : schedules) {
+            if (s.getScheduleID() == AppMain.currentSchedule) {
+                for (Course c : s.getCourses()) {
+                    if (c.getCourseCode().equals(context.pathParam("courseCode"))) {
+                        s.removeCourse(c);
+                    }
+                }
+            }
+        }
+    }
 }

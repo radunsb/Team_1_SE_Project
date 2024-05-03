@@ -80,6 +80,8 @@ public class AppMain {
 
         app.get("/changeCurrentSchedule/{scheduleName}", StudentController::changeCurrentSchedule);
 
+        app.get("/removeCourse/{courseCode}", StudentController::removeCourse);
+
         // kind of optional
         //app.post("/changeScheduleName", StudentController::changeScheduleName);
 
