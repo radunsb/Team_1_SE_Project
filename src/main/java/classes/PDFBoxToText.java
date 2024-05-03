@@ -19,8 +19,14 @@ public class PDFBoxToText {
     private static ArrayList<Course> courseCatalog;
     private static Schedule currentSchedule;
 
-    private static Schedule recomendedSpring;
-    private static Schedule recomendedFall;
+    private static Schedule recomendedSpringFreshman;
+    private static Schedule recomendedSpringSophmore;
+    private static Schedule recomendedSpringJunior;
+    private static Schedule recomendedSpringSenior;
+    private static Schedule recomendedFallFreshman;
+    private static Schedule recomendedFallSopohmore;
+    private static Schedule recomendedFallJunior;
+    private static Schedule recomendedFallSenior;
 
 
 
@@ -40,28 +46,89 @@ public class PDFBoxToText {
         String fall = makeFall(courses);
         String spring = makeSpring(courses);
 
-        recomendedSpring = new Schedule(1,"Spring",2020,"recomendedSpring");
-        recomendedFall = new Schedule(1,"Fall",2020,"recomendedFall");
-
-        makeRecomended(fall, recomendedFall);
-        makeRecomended(spring, recomendedSpring);
-
-        System.out.println(recomendedFall);
+        System.out.println(fall);
         System.out.println();
-        System.out.println(recomendedSpring);
+        System.out.println(spring);
+
+        recomendedFallFreshman = new Schedule(1,"Fall",2020,"recomendedFallFreshman");
+        recomendedFallSopohmore = new Schedule(1,"Fall",2020,"recomendedFallSophmore");
+        recomendedFallJunior = new Schedule(1,"Fall",2020,"recomendedFallJunior");
+        recomendedFallSenior = new Schedule(1,"Fall",2020,"recomendedFallSeninor");
+
+        recomendedSpringFreshman = new Schedule(1,"Spring",2020,"recomendedSpringFreshman");
+        recomendedSpringSophmore = new Schedule(1,"Spring",2020,"recomendedSpringSophmore");
+        recomendedSpringJunior = new Schedule(1,"Spring",2020,"recomendedSpringJunior");
+        recomendedSpringSenior = new Schedule(1,"Spring",2020,"recomendedSpringSenior");
+
+        makeRecomended(fall,recomendedFallFreshman,0,4);
+        makeRecomended(fall,recomendedFallSopohmore,5,11);
+        //change these to spring
+        makeRecomended(fall,recomendedSpringJunior,12,17);
+        makeRecomended(fall,recomendedFallSenior,18,22);
+
+        makeRecomended(spring,recomendedSpringFreshman,0,4);
+        makeRecomended(spring,recomendedSpringSophmore,5,9);
+        makeRecomended(spring,recomendedFallJunior,11,16);
+        makeRecomended(spring,recomendedSpringSenior,17,22);
+
+        System.out.println(recomendedFallFreshman);
+        System.out.println();
+        System.out.println(recomendedFallSopohmore);
+        System.out.println();
+        System.out.println(recomendedSpringJunior);
+        System.out.println();
+        System.out.println(recomendedSpringSenior);
+        System.out.println();
+        System.out.println(recomendedSpringSenior);
+
 
     }
 
-    public static void makeRecomended(String s, Schedule sched){
+    public static void makeRecomended(String s, Schedule sched, int start, int end){
         String[] courses = s.split("\n");
 
-        for(String t:courses){
-            if(t.contains("…") || t.contains("&")){
+        for (int i = start; i < end; i++) {
+            if(courses[i].contains("…") || courses[i].contains("&")){
 
             }else{
-                searchRecomended(t,sched);
+                searchRecomended(courses[i],sched);
             }
         }
+    }
+
+    private static void searchRecomended(String q, Schedule sched) {
+        //User input setup
+        String query = q;
+        ArrayList<Filter> filters = new ArrayList<>();
+
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+
+        // Create search instance
+        Search s = new Search("", courseCatalog, filters);
+
+        if (query.equals("Q")) {
+            return;
+        }
+        else if(query.equals("Science Elective")){
+            //add blank course
+        }else if(query.equals("General Elective")){
+            //add blank general elective
+        }
+         else {
+            // Search on the query
+            ArrayList<Course> results = s.search(query);
+            if (results.isEmpty()) {
+                return;
+            }
+            try {
+                sched.addCourse(results.get(0));
+                return;
+            } catch (Exception e) {
+                // Clear the input and do nothing -> go back to search
+                return;
+            }
+        }
+
     }
     public static String makeSpring(String[] s){
         StringBuilder st = new StringBuilder();
@@ -219,38 +286,6 @@ public class PDFBoxToText {
             courseCatalog.add(newCourse);
 
         }
-    }
-
-    private static void searchRecomended(String q, Schedule sched) {
-        //User input setup
-        String query = q;
-        ArrayList<Filter> filters = new ArrayList<>();
-
-        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
-
-        // Create search instance
-        Search s = new Search("", courseCatalog, filters);
-
-            if (query.equals("Q")) {
-                return;
-            }
-            if (query.equals("F")) {
-                return;
-            } else {
-                // Search on the query
-                ArrayList<Course> results = s.search(query);
-                if (results.isEmpty()) {
-                    return;
-                }
-                try {
-                    sched.addCourse(results.get(0));
-                    return;
-                } catch (Exception e) {
-                    // Clear the input and do nothing -> go back to search
-                    return;
-                }
-            }
-
     }
 
     private static void removeFilter(Search s, ArrayList<Filter> filters){

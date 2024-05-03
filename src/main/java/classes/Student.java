@@ -157,7 +157,7 @@ public class Student {
      * @param major is the specified major to add
      */
     public void addMajor(Major major){
-
+        majors.add(major);
     }
 
     /**
@@ -165,7 +165,7 @@ public class Student {
      * @param major is the specified major to remove
      */
     public void removeMajor(Major major){
-
+        majors.remove(major);
     }
 
     /**
@@ -173,7 +173,7 @@ public class Student {
      * @param minor is the specified minor to add
      */
     public void addMinor(Minor minor){
-
+        minors.add(minor);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Student {
      * @param minor is the specified minor to remove
      */
     public void removeMinor(Minor minor){
-
+        minors.remove(minor);
     }
 
     public int getStudentID() {

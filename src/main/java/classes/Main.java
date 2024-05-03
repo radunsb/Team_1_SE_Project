@@ -17,13 +17,13 @@ public class Main {
     private static int schedCount;
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         createActionLogger();
         run();
     }
 
     //hi
-    public static void run() throws IOException {
+    public static void run() throws IOException, InterruptedException {
 
         //Read the CSV
         try{
@@ -140,7 +140,7 @@ public class Main {
         return newStudent;
     }
 
-    public static void navigateHome(Scanner s, Student current) throws IOException {
+    public static void navigateHome(Scanner s, Student current) throws IOException, InterruptedException {
         String command = "";
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
@@ -159,6 +159,7 @@ public class Main {
             System.out.println("Enter 2 to view current Schedule");
             System.out.println("Enter 3 to search courses");
             System.out.println("Enter 4 to edit Schedules");
+            System.out.println("Enter 5 to edit personal information");
             System.out.println("\nEnter EXIT to log out");
 
             command = s.next();
@@ -206,6 +207,9 @@ public class Main {
             if (command.equals("4")) {
                 navigateSchedules(s, current);
             }
+            if(command.equals("5")){
+                editProfile(s,current);
+            }
         }
 
     }
@@ -223,27 +227,27 @@ public class Main {
             if (state.equals("0")) {
                 System.out.println("You are currently editing " + current.getUsername() + "'s profile" );
                 System.out.println();
+                System.out.println("Enter 1 to edit your username");
+                System.out.println("Enter 2 to add or remove a major");
+                System.out.println("Enter 3 to add or remove a minor");
+                System.out.println("Enter 4 to change your class standing");
+                System.out.println("Enter 5 to enter in previously taken courses");
+                System.out.println("Enter 6 to return to home");
+                state = s.next();
             }
-
-            System.out.println("Enter 1 to edit your username");
-            System.out.println("Enter 2 to add or remove a major");
-            System.out.println("Enter 3 to add or remove a minor");
-            System.out.println("Enter 4 to change your class standing");
-            System.out.println("Enter 5 to enter in previously taken courses");
-            System.out.println("Enter 6 to return to home");
-            state = s.next();
 
             if (state.equals("1")) {
                 System.out.println("Your current username is: " + current.getUsername());
                 System.out.println("Or press B to go back");
+                System.out.println("Please enter your new Username");
                 String newName = s.next();
                 if(newName.equals("B")){
-                    return;
+                    state = "0";
                 }
                 current.setUsername(newName);
                 System.out.println("Your username has been changed to " + current.getUsername());
                 TimeUnit.SECONDS.sleep(5);
-                return;
+                state = "0";
 
             } else if (state.equals("2")) {
                 System.out.print("Your current major(s) are: ");
@@ -255,7 +259,7 @@ public class Main {
                 System.out.println("Enter 1 to add a major or enter 2 to remove a major or B to go back");
                 String majorControl = s.next();
                 if(majorControl.equals("B")){
-                    return;
+                    state = "0";
                 }
                 else if(majorControl.equals("1")){
                     System.out.println("Enter what major you would like to add");
@@ -273,7 +277,7 @@ public class Main {
 
                     for(Character c : toRemove.toCharArray()){
                         if(!Character.isDigit(c)){
-                            return;
+                            state = "0";
                         }
                     }
                     if(Integer.parseInt(toRemove)-1 < current.getMajors().size() && Integer.parseInt(toRemove)-1 >= 0) {
@@ -284,41 +288,47 @@ public class Main {
 
             } else if (state.equals("3")) {
                 System.out.print("Your current minor(s) are: ");
-                for(int i = 0; i < current.getMinors().size(); i++){
+                for (int i = 0; i < current.getMinors().size(); i++) {
                     System.out.print(current.getMinors().get(i) + " ");
                 }
                 //new line
                 System.out.println();
                 System.out.println("Enter 1 to add a minor or enter 2 to remove a minor or B to go back");
                 String minorControl = s.next();
-                if(minorControl.equals("B")){
-                    return;
-                }
-                else if(minorControl.equals("1")){
+                if (minorControl.equals("B")) {
+                    state = "0";
+                } else if (minorControl.equals("1")) {
                     System.out.println("Enter what minor you would like to add");
-                    //do minor adding logic
-                }
-                else if(minorControl.equals("2")){
+                    String minorToAdd = s.next();
+                    Minor newMinor = new Minor(1, minorToAdd, null);
+                    current.addMinor(newMinor);
+                    state = "3";
+                } else if (minorControl.equals("2")) {
                     for (int i = 0; i < current.getMinors().size(); i++) {
-                        System.out.print(i+1);
+                        System.out.print(i + 1);
                         System.out.print(".)");
                         System.out.print(current.getMinors().get(i));
                         System.out.println();
                     }
-                    System.out.println("Enter the number of the minor you would like to remove");
-                    String toRemove = s.next();
+                    if (current.getMinors().isEmpty()) {
+                        System.out.println("You do not have any minors to remove");
+                        state = "3";
+                    } else {
+                        System.out.println("enter the number of the minor you would like to remove");
+                        String toRemove = s.next();
 
-                    for(Character c : toRemove.toCharArray()){
-                        if(!Character.isDigit(c)){
-                            return;
+                        for (Character c : toRemove.toCharArray()) {
+                            if (!Character.isDigit(c)) {
+                                state = "0";
+                            }
                         }
-                    }
-                    if(Integer.parseInt(toRemove)-1 < current.getMinors().size() && Integer.parseInt(toRemove)-1 >= 0) {
-                        current.getMinors().remove(Integer.parseInt(toRemove) - 1);
+                        if (Integer.parseInt(toRemove) - 1 < current.getMinors().size() && Integer.parseInt(toRemove) - 1 >= 0) {
+                            current.getMinors().remove(Integer.parseInt(toRemove) - 1);
+                        }
+
                     }
 
                 }
-
             }
             else if (state.equals("4")) {
                 System.out.println("Your current class standing is " + current.getClassStanding());
@@ -326,7 +336,7 @@ public class Main {
                 String classControl = s.next();
 
                 if(classControl.equals("B")){
-                    return;
+                    state = "0";
                 }else if(classControl.equals("1")){
                     System.out.println("1.) Freshman");
                     System.out.println("2.) Sophmore");
@@ -337,8 +347,15 @@ public class Main {
                 }
             }
             else if (state.equals("5")){
-                //do logic for adding already taken courses
+
                 searchTakenCourses();
+                state = "0";
+            }
+            else if (state.equals("5")){
+                return;
+            }else{
+
+                state = "0";
             }
         }
     }
