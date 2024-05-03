@@ -23,6 +23,7 @@ function Home() {
     const fetchCurrentSchedule = async () => {
         const schedule = await getCurrentSchedule();
         setCurrentSchedule(schedule);
+        setSemester(schedule.semester);
         setScheduleName(schedule.scheduleName);
         setScheduleTitle(schedule.scheduleName);
         updateCalendar(schedule);
@@ -174,6 +175,28 @@ function Home() {
         fetchCurrentSchedule(); // Refetch the current schedule
     }
 
+    const [semester, setSemester] = useState("FALL");
+    const switchSemester = async () => {
+
+        if(currentSchedule.courses.length !== 0){
+            alert("Cannot Change The Semester of a Schedule that has Courses in it!");
+            return;
+        }
+
+        const semester = currentSchedule.semester;
+        let changeTo;
+        if(semester === "FALL"){
+            changeTo = "SPRING";
+            setSemester("SPRING");
+        }else{
+            changeTo = "FALL";
+            setSemester("FALL");
+        }
+        const url = `http:\/\/localhost:7979/changeScheduleSemester/${changeTo}`;
+        await fetch(url);
+        fetchCurrentSchedule();
+    }
+
     return (
         <div>
             {searchClicked ? (
@@ -205,6 +228,9 @@ function Home() {
                                 value={scheduleTitle}
                                 onChange={scheduleTitleChange}
                             />
+                            <div className="semesterBtn">
+                                <Button className="switchSemesterBtn btn btn-danger" onClick={switchSemester}> {semester} </Button>
+                            </div>
                         </div>
                         <div className="ScheduleView">
                         <div className="TableContainer">
