@@ -115,7 +115,7 @@ function timesFormat(timeList){
 
   export function Filter({input, type}){
     return (
-      <p>{type}: {input}</p>
+      <p id="filters">{type}: {input}</p>
     );
   }
 
@@ -126,34 +126,53 @@ function timesFormat(timeList){
 
 export function FilterBar(){
 
-  let handleFilterChange = e => {
-    e.preventDefault();
-    const inString = document.getElementById("filterinput").value + "";
-    const type = inString.substring(0, inString.indexOf(' '));
-    const input = inString.substring(inString.indexOf(' '));
-    filters.push(<Filter type={type} input={input}/>);
-    filterStrings.push(type + "& " + input);
-    forceUpdateFilter();
+  const [addingFilter, setAddingFilter] = useState(false);
+
+  const[activeFilters, setActiveFilters] = useState("");
+
+  function switchAddingFilter(){
+    setAddingFilter(!addingFilter);
   }
 
-
-  const forceUpdateFilter = useForceUpdate();
-
-  return(
-    <div className = "filterbar">
-      <p>
-        <form id="filterform" onSubmit={handleFilterChange}>
+/*
+<form id="filterform" onSubmit={handleFilterChange}>
           <label for = "filterinput">Filter: </label>
           <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
           <input type="submit" value="Submit"/>
-        </form>
-        <FilterPart/>
-        <column>{filterStrings}</column>
-      </p>
+        </form>   
+*/
+
+  const forceUpdateFilter = useForceUpdate();
+
+  function yayFilters(){
+      filters.length = 0;
+      filterStrings.length = 0;
+
+      if(document.getElementById("filters") != null){
+      const inString = document.getElementById("filters").textContent + "";
+      const type = inString.substring(0, inString.indexOf(' '));
+      const input = inString.substring(inString.indexOf(' '));
+      filters.push(<Filter type={type} input={input}/>);
+      filterStrings.push(type + "& " + input);
+      setActiveFilters(filterStrings.join(", ").replaceAll("&", ":"));      
+      forceUpdateFilter();
+      }
+
+      switchAddingFilter();
+  }
+
+  
+
+  return(
+    <div className = "filterbar">  
+        <Button onClick={switchAddingFilter}>{addingFilter ? "Cancel" : "Add New Filter"}</Button>
+        {addingFilter ? <FilterPart/> : ''}
+        {addingFilter ? <Button onClick={yayFilters}>Save Filter</Button> : ""}
+        <p>Current Filters: </p>
+        <p className="activeFilters">{activeFilters}</p>
     </div>
   );
 }
-
 
 
   export default function Search(){
@@ -196,7 +215,7 @@ export function FilterBar(){
           ...query,
           q: e.target.value
       });
-      getClasses(query.q);      
+      getClasses(query.q);     
       forceUpdate();
   }
 
@@ -223,6 +242,7 @@ export function FilterBar(){
                 <p>Taken Courses: {takenCourses}</p>
         </div>
     <div className = "coursetable">
+      {filterStrings}
       <table>
         <tr>
             <th>Course Code</th>

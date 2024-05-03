@@ -53,19 +53,19 @@ export function FilterInput({filterType}){
     if(filterType === "Day"){
         return(
         <div>
-            <input type="checkbox" id="monday" name="monday"/>
+            <input type="checkbox" id="monday" name="monday" onClick={submitDayFilter}/>
             <label for="monday">Monday</label>
-            <input type="checkbox" id="tuesday" name="tuesday"/>
+            <input type="checkbox" id="tuesday" name="tuesday" onClick={submitDayFilter}/>
             <label for="tuesday">Tuesday</label>
-            <input type="checkbox" id="wednesday" name="wednesday"/>
+            <input type="checkbox" id="wednesday" name="wednesday" onClick={submitDayFilter}/>
             <label for="wednesday">Wednesday</label>
-            <input type="checkbox" id="thursday" name="thursday"/>
+            <input type="checkbox" id="thursday" name="thursday" onClick={submitDayFilter}/>
             <label for="thursday">Thursday</label>
-            <input type="checkbox" id="friday" name="friday"/>
+            <input type="checkbox" id="friday" name="friday" onClick={submitDayFilter}/>
             <label for="friday">Friday</label>
-            <Button className="filter-submit-button" onClick={submitDayFilter}>Submit</Button>
-            <p>{output}</p>
+            <p id="filters">{output}</p>
         </div>
         );
     }
 }
+
