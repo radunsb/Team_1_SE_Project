@@ -3,6 +3,7 @@ import styles from './styles.module.css';
 import { useState, useEffect} from 'react';
 import { Button } from 'react-bootstrap';
 import Home from './Home.js';
+import "./Search.css"
 
 //JSON object of courses returned from Java backend
 

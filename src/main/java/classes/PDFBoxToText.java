@@ -12,89 +12,130 @@ import java.util.Scanner;
 import java.util.*;
 
 
+
 public class PDFBoxToText {
 
     private static ArrayList<Course> recomendedCourses;
     private static ArrayList<Course> courseCatalog;
     private static Schedule currentSchedule;
 
+    private static Schedule recomendedSpring;
+    private static Schedule recomendedFall;
+
 
 
     public static void main(String[] args) {
+
+        currentSchedule = new Schedule(1,"Spring",2020,"default");
+        try{
+            readCSV();
+        } catch(FileNotFoundException | ParseException e){
+            System.out.println(e.getMessage());
+        }
+
+        String ni = PremadeScheduleString("CS.pdf");
+
+        String[] courses = ni.split("\n");
+
+        String fall = makeFall(courses);
+        String spring = makeSpring(courses);
+
+        recomendedSpring = new Schedule(1,"Spring",2020,"recomendedSpring");
+        recomendedFall = new Schedule(1,"Fall",2020,"recomendedFall");
+
+        makeRecomended(fall, recomendedFall);
+        makeRecomended(spring, recomendedSpring);
+
+        System.out.println(recomendedFall);
+        System.out.println();
+        System.out.println(recomendedSpring);
+
+    }
+
+    public static void makeRecomended(String s, Schedule sched){
+        String[] courses = s.split("\n");
+
+        for(String t:courses){
+            if(t.contains("…") || t.contains("&")){
+
+            }else{
+                searchRecomended(t,sched);
+            }
+        }
+    }
+    public static String makeSpring(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 1; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
+
+    public static String makeFall(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 0; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
+
+    private static String cleanString(String s){
+        if(!s.contains("\r\n")){
+            return s;
+        }
+        String segments[] = s.split("\r\n");
+        return segments[segments.length-1];
+    }
+
+    private static String PremadeScheduleString(String filepath){
         PDFManager pdfManager = new PDFManager();
-        pdfManager.setFilePath("C:\\Users\\GROSSMANRC20\\IdeaProjects\\Team1_SE_project2\\CS.pdf");
+        pdfManager.setFilePath(filepath);
+
+        StringBuilder stringBuilder = new StringBuilder();
+
         try{
             String firstPageText = pdfManager.toText();
 
-            String[] token = firstPageText.split(" ");
+            String[] token = firstPageText.split("Credits");
             for(String s:token){
                 s.strip();
             }
 
-            StringBuilder bob = new StringBuilder();
+            for (int i = 0; i < token.length; i++){
 
-            String next, next2;
-
-            for (int i = 0; i < token.length-2; i++){
-
-                if(!token[i+1].isBlank()){
-                    next = token[i+1];
-                }else{
-                    next = "";
+                String[] block = token[i].split(" ");
+                for (int k = 0; k < block.length; k++) {
+                    block[k] = cleanString(block[k]);
                 }
 
-                if(!token[i+2].isBlank()){
-                    next2 = token[i+2];
-                }else{
-                    next2 = "";
-                }
+                for (int j = 0; j < block.length-1; j++) {
 
-                if((isAllUpper(token[i]) && !isNumeric(token[i])) || token[i].equals("General")){
-                    bob.append(token[i]);
-                    bob.append(next);
-                    bob.append(next2);
-                    bob.append(" ");
+                    if((isAllUpper(block[j]) && !isNumeric(block[j]) && !block[j].contains("…") && !block[j+1].contains("…"))){
+                        stringBuilder.append(block[j]);
+                        stringBuilder.append(block[j+1]);
+                        stringBuilder.append("\n");
+                    }
+                    if(block[j].equals("Science")){
+                        stringBuilder.append("Science Elective");
+                        stringBuilder.append("\n");
+                    }
+                    if(block[j].equals("General")){
+                        stringBuilder.append("General Elective");
+                        stringBuilder.append("\n");
+                    }
                 }
             }
-
-            System.out.println(bob.toString());
-
-            Scanner s = new Scanner(bob.toString());
-            while(s.hasNext(" ")){
-
-            }
-
-            System.out.println(firstPageText);
-
+            return stringBuilder.toString();
 
         }catch(IOException e){
-            System.out.println("Shit Broke");
+            System.out.println("it Broke");
+            return "";
         }
     }
-
-
-    private static boolean isAllUpper(String s) {
-        for(char c : s.toCharArray()) {
-            if(Character.isLetter(c) && Character.isLowerCase(c)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
-    }
-
-
 
     static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
@@ -180,55 +221,36 @@ public class PDFBoxToText {
         }
     }
 
-    private static int searchRecomended(String q) {
+    private static void searchRecomended(String q, Schedule sched) {
         //User input setup
-        Scanner input = new Scanner(System.in);
         String query = q;
-        ArrayList<Course> results;
         ArrayList<Filter> filters = new ArrayList<>();
 
-        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),
-                "" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
 
         // Create search instance
-        Search s = new Search("", courseCatalog, filters, semesterFilter);
+        Search s = new Search("", courseCatalog, filters);
 
-        while (!query.equals("Q")) {
-            for (Course c : currentSchedule.getCourses()) {
-                System.out.println(c);
-            }
-            //query = input.nextLine();
-
-            // Quit -> exit search
             if (query.equals("Q")) {
-                return -1;
+                return;
             }
-            // Filter navigation and info
             if (query.equals("F")) {
-                return -1;
+                return;
             } else {
                 // Search on the query
-                results = s.search(query);
-                results = s.search(filters);
+                ArrayList<Course> results = s.search(query);
                 if (results.isEmpty()) {
-                    return -1;
+                    return;
                 }
-
                 try {
-                    int classToAdd = 0;
-                    if (classToAdd >= 0 && classToAdd < results.size()) {
-
-                        System.out.println(results.get(classToAdd) + " was added to your schedule.");
-                        return 0;
-//                        }
-                    }
+                    sched.addCourse(results.get(0));
+                    return;
                 } catch (Exception e) {
                     // Clear the input and do nothing -> go back to search
-                    return -1;
+                    return;
                 }
             }
-        }
-        return 0;
+
     }
 
     private static void removeFilter(Search s, ArrayList<Filter> filters){
@@ -369,6 +391,25 @@ public class PDFBoxToText {
         return s;
     }
 
+    private static boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
+
 }
-
-
