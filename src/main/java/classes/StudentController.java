@@ -49,6 +49,33 @@ public class StudentController {
         for(Schedule s : schedules) {
             if (s.getScheduleName().equals(context.pathParam("scheduleName"))) {
                 AppMain.currentSchedule = s.getScheduleID();
+                return;
+            }
+        }
+    }
+
+    public static void createSchedule(Context context) {
+        Schedule s = new Schedule(AppMain.nextId, "FALL", 2020, "New Schedule");
+        AppMain.user.addSchedule(s);
+        AppMain.currentSchedule = s.getScheduleID();
+        AppMain.nextId++;
+        context.json(s);
+    }
+
+    public static void changeScheduleSemester(Context context) {
+        ArrayList<Schedule> schedules = AppMain.user.getSchedules();
+        for(Schedule s : schedules){
+            if(s.getScheduleID() == AppMain.currentSchedule){
+                s.setSemester(context.pathParam("semester"));
+            }
+        }
+    }
+
+    public static void renameSchedule(Context context) {
+        ArrayList<Schedule> schedules = AppMain.user.getSchedules();
+        for(Schedule s : schedules){
+            if(s.getScheduleID() == AppMain.currentSchedule){
+                s.setScheduleName(context.pathParam("name"));
             }
         }
     }
