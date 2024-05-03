@@ -21,11 +21,12 @@ async function getClasses(q){
   let toReturn = [];
   courses.forEach((course) => toReturn.push(<Course courseCode={course.courseCode}
   name={course.name} description={course.description} professor={course.professor}
-  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}/>));
+  meetingDays = {course.meetingDays} meetingTimes = {course.meetingTimes}
+  isTaken = {takenCourses.includes(course.courseCode.substring(0, course.courseCode.length - 1))}/>));
   return toReturn;
 }
 
-let data = [];
+let takenCourses = [];
 
 let filters = [];
 
@@ -64,19 +65,33 @@ function timesFormat(timeList){
     }
     return realDays.join(", ");
   }
-
   
   export function Course({courseCode, name, description, professor, meetingTimes,
-  meetingDays, meetingLocations, prerequisites, corequisites, year, semester, creditHours, capacity}){
-      return (
+  meetingDays, isTaken}){
+
+    const buttonClicked = () => {
+      if(!isTaken){
+        takenCourses.push(courseCode.substring(0, courseCode.length - 1));
+      }
+      else{
+        takenCourses.pop(courseCode.substring(0, courseCode.length - 1));
+      }
+  };
+
+    return (
       <tr className={styles.mainTable}>
           <td>{courseCode}</td>
           <td>{name}</td>
           <td>{professor}</td>
           <td>{daysFormat(meetingDays)}</td>
           <td>{timesFormat(meetingTimes)}</td>
+          <td>{!isTaken ? (
+            <Button className = "addButton" onClick = {buttonClicked}>+</Button>
+          ) : (
+            <Button className = "removeButton" onClick = {buttonClicked}>-</Button>
+          )}</td>
       </tr>
-      );     
+    );     
   }
 
   export function FilterSetup(){
@@ -180,7 +195,7 @@ export function FilterBar(){
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
-            {query.q}
+            {takenCourses}
         </div>
     <div className = "coursetable">
       <table>
@@ -190,6 +205,7 @@ export function FilterBar(){
             <th>Professor</th>
             <th>Meeting Days</th>
             <th>Meeting Time</th>
+            <th>Add/Remove</th>
         </tr>
         {courses}     
       </table>
