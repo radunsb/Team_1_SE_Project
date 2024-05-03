@@ -1,10 +1,9 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './Home.css';
+//import "./Home.css"
 import Home from './Home.js';
-import './Search.css'
-import Search from './Search.js';
+//import Search from './Search.js';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom'
 
@@ -12,7 +11,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 <BrowserRouter>
   <React.StrictMode>
-    <Search />
+    <Home />
   </React.StrictMode>
   </BrowserRouter>
 );

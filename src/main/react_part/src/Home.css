@@ -25,24 +25,49 @@
 .ScheduleName {
     background-color: red;
     color: white;
-    padding: 10px;
+    padding: 0px;
     margin: 0;
     width: 100%;
     top: 0;
     z-index: 999;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    height: 75px;
+    height: 60px;
     margin-left: 10px;
     margin-top: -50px;
 }
 
-.ScheduleView {
-    flex: 1;
-    padding: 20px;
+.titleInput {
+    background-color: red;
+    padding: 5px;
+    height: 60px;
+    font-size: 30px;
+
+    color: white;
+    border: white;
+    transition: background-color 0.3s ease;
+}
+
+.titleInput:hover {
+    background-color: #A50000 !important;
+}
+
+.newScheduleBtn {
+    display: block;
     width: 100%;
-    margin-left: 10px;
-    margin-top: 10px;
-    background-color: #f0f0f0;
+    margin-bottom: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    background-color: #ff0000 !important;
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newScheduleBtn:hover {
+    background-color: #A50000 !important;
 }
 
 .SearchBtn {
@@ -51,8 +76,8 @@
     margin-bottom: 10px;
     padding: 10px;
     text-align: center;
-    background-color: #007bff;
-    color: #ff0000;
+    background-color: #ff0000 !important;
+    color: white !important;
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -60,18 +85,43 @@
 }
 
 .SearchBtn:hover {
-    background-color: #0056b3;
+    background-color: #A50000 !important;
+
+}
+
+.deleteScheduleBtn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #ff0000 !important;
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.deleteScheduleBtn:hover {
+    background-color: #A50000 !important;
 }
 
 .dropdown {
     margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+    background-color: #A50000 !important;
 }
 
 .dropdown-toggle {
     width: 100%;
     text-align: left;
-    background-color: #fff;
-    color: #333;
+    background-color: #ff0000 !important;
+    color: white !important;
     border: 1px solid #ccc;
     border-radius: 5px;
     padding: 10px;
@@ -96,3 +146,113 @@
 .dropdown-item:hover {
     background-color: #f0f0f0;
 }
+
+.ScheduleView {
+    flex: 1;
+    padding: 0;
+    width: 100%;
+    margin-left: 10px;
+    margin-top: 0;
+    overflow: scroll;
+    height: 500px;
+}
+
+.Calendar {
+    overflow: scroll;
+    height: 500px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.TableContainer {
+    width: 100%;
+    overflow: auto;
+    height: 550px;
+}
+
+.Calendar tr:nth-child(even) {
+    background-color: white;
+}
+
+.Calendar tr:nth-child(odd){
+    background-color: white;
+}
+
+.Calendar .DaysOfWeek {
+    height: 15px;
+    border: 1px solid #000;
+    text-align: center;
+    padding: 0;
+}
+
+.Calendar .DaysOfWeek th {
+    font-size: 15px;
+    padding: 0;
+    text-align: center;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.Calendar .TimeSlots tr {
+    height: 20px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.Calendar .TimeSlots td {
+    font-size: 12px;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.courseTime {
+    border: red;
+    border-color: red;
+    background-color: red;
+    font-weight: bold;
+    color: white;
+    transition: color 0.3s ease;
+    position: relative;
+    cursor: pointer;
+}
+
+.courseTime:hover {
+    color: white;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    position: absolute;
+    background-color: red;
+    padding: 10px;
+    z-index: 1;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: red;
+}
+
+.courseTime:hover .tooltip-content {
+    visibility: visible;
+}
+
+.tooltip-button {
+    background-color: #A50000;
+    border: red;
+    font-weight: bold;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.tooltip-button:hover {
+    background-color: #3E0000;
+}
+
+.time {
+    border-top: 1px solid #000;
+}
+
