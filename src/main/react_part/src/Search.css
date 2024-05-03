@@ -72,6 +72,10 @@ body {
     height: 100vh;
     width: 20vw;
     margin-left: 5vw;
+    display: flex;
+    flex-direction:column;
+    text-align: center;
+    align-content: center;
   }
 
   button.BackBtn {
@@ -121,3 +125,31 @@ button.BackBtn:hover {
   background-color: #5e240f;
 }
 
+button.typeButton {
+  width: 50%;
+  background-color:rgb(96, 0, 0);
+  color: antiquewhite;
+  border-radius: 6px;
+  border-color: black;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  align-self: center;
+}
+
+button.filterbutton{
+  width: 80%;
+  background-color:rgb(205, 52, 18);
+  color: antiquewhite;
+  border-radius: 6px;
+  border-color: black;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  align-self: center;
+}
+
+.filterblock{
+  display: flex;
+  flex-direction:column;
+  text-align: center;
+  align-content: center;
+}

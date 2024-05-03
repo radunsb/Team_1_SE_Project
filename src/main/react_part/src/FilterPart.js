@@ -60,15 +60,19 @@ export function FilterInput({filterType}){
         return(
         <div>
             <input type="checkbox" id="monday" name="monday" onClick={submitDayFilter}/>
-            <label for="monday">Monday</label>
+            <label for="monday">Monday </label>
+            <br></br>
             <input type="checkbox" id="tuesday" name="tuesday" onClick={submitDayFilter}/>
-            <label for="tuesday">Tuesday</label>
+            <label for="tuesday">Tuesday </label>
+            <br></br>
             <input type="checkbox" id="wednesday" name="wednesday" onClick={submitDayFilter}/>
-            <label for="wednesday">Wednesday</label>
+            <label for="wednesday">Wednesday </label>
+            <br></br>
             <input type="checkbox" id="thursday" name="thursday" onClick={submitDayFilter}/>
-            <label for="thursday">Thursday</label>
+            <label for="thursday">Thursday </label>
+            <br></br>
             <input type="checkbox" id="friday" name="friday" onClick={submitDayFilter}/>
-            <label for="friday">Friday</label>
+            <label for="friday">Friday </label>
             <p id="filters">{output}</p>
         </div>
         );
@@ -78,6 +82,7 @@ export function FilterInput({filterType}){
             <div>
                 <p>Start Time: </p>
                 <input type="text" id="startTime" name="startTime"/>
+                <p>End Time: </p>
                 <input type="text" id="endTime" name="endTime" onChange={submitTimeFilter}/>
                 <p id="filters">{output}</p>
             </div>

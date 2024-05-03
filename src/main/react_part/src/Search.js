@@ -165,9 +165,9 @@ export function FilterBar(){
 
   return(
     <div className = "filterbar">  
-        <Button onClick={switchAddingFilter}>{addingFilter ? "Cancel" : "Add New Filter"}</Button>
+        <Button className="filterbutton" onClick={switchAddingFilter}>{addingFilter ? "Cancel" : "Add New Filter"}</Button>
         {addingFilter ? <FilterPart/> : ''}
-        {addingFilter ? <Button onClick={yayFilters}>Save Filter</Button> : ""}
+        {addingFilter ? <Button className="filterbutton" onClick={yayFilters}>Save Filter</Button> : ""}
         <p>Current Filters: </p>
         <p className="activeFilters">{activeFilters}</p>
     </div>
@@ -179,6 +179,8 @@ export function FilterBar(){
 
     const [backClicked, setBackClicked] = useState(false);
     const onBack = () => {
+        filterStrings.length = 0;
+        filters.length = 0;
         takenCourses.length = 0;
         setSchedule(null);
         setCourses(null);
@@ -242,7 +244,6 @@ export function FilterBar(){
                 <p>Taken Courses: {takenCourses}</p>
         </div>
     <div className = "coursetable">
-      {filterStrings}
       <table>
         <tr>
             <th>Course Code</th>
