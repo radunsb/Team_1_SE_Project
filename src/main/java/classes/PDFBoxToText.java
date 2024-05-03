@@ -12,11 +12,15 @@ import java.util.Scanner;
 import java.util.*;
 
 
+
 public class PDFBoxToText {
 
     private static ArrayList<Course> recomendedCourses;
     private static ArrayList<Course> courseCatalog;
     private static Schedule currentSchedule;
+
+    private static ArrayList<Course> recomendedSpring;
+    private static ArrayList<Course> recomendedFall;
 
 
 
@@ -31,23 +35,53 @@ public class PDFBoxToText {
 
         String ni = PremadeScheduleString("CS.pdf");
 
-        System.out.println(ni);
-
         String[] courses = ni.split("\n");
 
-        recomendedCourses = new ArrayList<Course>();
-        for(String s:courses){
-            if(s.contains("…") || s.contains("&")){
+        String fall = makeFall(courses);
+        String spring = makeSpring(courses);
 
-            }else{
-                searchRecomended(s,0);
-            }
-        }
+        recomendedSpring = new ArrayList<Course>();
+        recomendedFall = new ArrayList<Course>();
 
-        System.out.println(recomendedCourses);
+        makeRecomended(fall, recomendedFall);
+        makeRecomended(spring, recomendedSpring);
+
+        System.out.println(recomendedFall);
+        System.out.println();
+        System.out.println(recomendedSpring);
 
     }
 
+    public static void makeRecomended(String s, ArrayList<Course> sched){
+        String[] courses = s.split("\n");
+
+        for(String t:courses){
+            if(t.contains("…") || t.contains("&")){
+
+            }else{
+                searchRecomended(t,sched);
+            }
+        }
+    }
+    public static String makeSpring(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 1; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
+
+    public static String makeFall(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 0; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
 
     private static String cleanString(String s){
         if(!s.contains("\r\n")){
@@ -61,6 +95,8 @@ public class PDFBoxToText {
         PDFManager pdfManager = new PDFManager();
         pdfManager.setFilePath(filepath);
 
+        StringBuilder stringBuilder = new StringBuilder();
+
         try{
             String firstPageText = pdfManager.toText();
 
@@ -69,12 +105,9 @@ public class PDFBoxToText {
                 s.strip();
             }
 
-            StringBuilder bob = new StringBuilder();
-
             for (int i = 0; i < token.length; i++){
-//
-                String[] block = token[i].split(" ");
 
+                String[] block = token[i].split(" ");
                 for (int k = 0; k < block.length; k++) {
                     block[k] = cleanString(block[k]);
                 }
@@ -82,19 +115,21 @@ public class PDFBoxToText {
                 for (int j = 0; j < block.length-1; j++) {
 
                     if((isAllUpper(block[j]) && !isNumeric(block[j]) && !block[j].contains("…") && !block[j+1].contains("…"))){
-                        bob.append(block[j]);
-                        bob.append(block[j+1]);
-                        bob.append("\n");
+                        stringBuilder.append(block[j]);
+                        stringBuilder.append(block[j+1]);
+                        stringBuilder.append("\n");
                     }
-                    if(block[j].equals("Science") || block[j].equals("General")){
-                        bob.append(block[j]);
-                        bob.append(block[j+1]);
-                        bob.append("\n");
+                    if(block[j].equals("Science")){
+                        stringBuilder.append("Science Elective");
+                        stringBuilder.append("\n");
+                    }
+                    if(block[j].equals("General")){
+                        stringBuilder.append("General Elective");
+                        stringBuilder.append("\n");
                     }
                 }
             }
-
-            return bob.toString();
+            return stringBuilder.toString();
 
         }catch(IOException e){
             System.out.println("it Broke");
@@ -186,7 +221,7 @@ public class PDFBoxToText {
         }
     }
 
-    private static void searchRecomended(String q, int i) {
+    private static void searchRecomended(String q, ArrayList<Course> sched) {
         //User input setup
         String query = q;
         ArrayList<Filter> filters = new ArrayList<>();
@@ -208,7 +243,7 @@ public class PDFBoxToText {
                     return;
                 }
                 try {
-                    recomendedCourses.add(results.get(i));
+                    sched.add(results.get(0));
                     return;
                 } catch (Exception e) {
                     // Clear the input and do nothing -> go back to search
@@ -378,6 +413,3 @@ public class PDFBoxToText {
     }
 
 }
-
-
-
