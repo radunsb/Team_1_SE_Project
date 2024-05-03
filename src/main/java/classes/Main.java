@@ -463,9 +463,11 @@ public class Main {
                     String response = s.next();
                     if (response.equals("Y")) {
                         System.out.println("Removed schedule named " +currentSchedule.getScheduleName());
-                        writeActionLogger("removed  schedule  " + currentSchedule.getScheduleName());
-                        removedSchedules.add(currentSchedule);
-                        current.getSchedules().remove(currentSchedule);
+                        writeActionLogger("removed  schedule  " +currentSchedule.getScheduleName());
+                        removedSchedules.add(currentStudent.getSchedules().getLast());
+                        currentStudent.getSchedules().removeLast();
+                        currentSchedule = currentStudent.getSchedules().getLast();
+                        schedCount--;
                     }
                 }
             }
@@ -933,9 +935,6 @@ public class Main {
         }
     }
 
-
-
-
     public static ArrayList<Course> getCourseCatalog() {
         return courseCatalog;
     }
@@ -1034,22 +1033,24 @@ public class Main {
             removedCourses.removeLast();
         }
     }
-
     private static void scheduleAction(String command) {
         // removing a schedule that just got added
         if (command.equals("added")) {
-            int scheduleToRemove = schedCount-1;
             // Undo -> remove most recent course added to schedule
             System.out.println(currentSchedule.getScheduleName() + " was removed from your schedule.");
-            //removedCourses.add(recentCourse);
-            currentStudent.getSchedules().remove(scheduleToRemove);
+            currentSchedule = currentStudent.getSchedules().getLast();
+            currentStudent.getSchedules().removeLast();
             schedCount--;
             // adding a schedule that just got removed
         } else if (command.equals("removed") && !removedSchedules.isEmpty()) {
             System.out.println(removedSchedules.getLast().getScheduleName() + " was added back to your schedule");
             currentSchedule = removedSchedules.getLast();
+            System.out.println("You are not working on schedule: " +currentSchedule.getScheduleName());
             currentStudent.getSchedules().add(removedSchedules.getLast());
             removedSchedules.removeLast();
+        }
+        else {
+            System.out.println("No actions to undo");
         }
     }
 }
