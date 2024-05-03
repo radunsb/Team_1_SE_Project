@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.js';
 import $ from 'jquery';
 import Popper from 'popper.js';
+import ReactDOM from 'react-dom';
 
 function Home() {
 
@@ -24,8 +25,6 @@ function Home() {
         setCurrentSchedule(schedule);
         setScheduleName(schedule.scheduleName);
         setScheduleTitle(schedule.scheduleName);
-        //const inputField = document.querySelectorAll(".titleInput input");
-        //scheduleTitleChange(inputField);
         updateCalendar(schedule);
     };
 
@@ -47,12 +46,12 @@ function Home() {
         const WeekDays = document.querySelectorAll('.DaysOfWeek th');
         for (let i = 0; i < timeSlots.length; i++) {
             const row = timeSlots[i];
-            // Remove all but the first td item
+            // Remove all but the first td item (to refresh)
             const cellsToRemove = row.querySelectorAll('td:not(:first-child)');
             cellsToRemove.forEach(cell => cell.remove());
             //console.log(row.id);
 
-            // Add 5 tds
+            // Add 5 tds for new course data
             for (let j = 0; j < 5; j++) {
                 const day = WeekDays[j+1];
                 //console.log(day.id);
@@ -71,12 +70,28 @@ function Home() {
                         const startTimeString = convertTimeToString(startTime);
                         const endTimeString = convertTimeToString(endTime);
 
-//                        console.log(course.courseCode);
-//                        console.log(row.id);
+                        //console.log(course.courseCode);
+                        //console.log(row.id);
                         //console.log(startTimeString);
                         if(row.id === startTimeString){
-                            newCell.textContent = course.courseCode;
+                            newCell.textContent = course.courseCode; // Set tooltip text
                             newCell.classList.add("courseTime");
+                            newCell.setAttribute('data-tooltip', course.courseCode); // Set tooltip text
+
+                            const tooltipContent = document.createElement('div');
+                            tooltipContent.className = "tooltip-content";
+
+                            const span = document.createElement('span');
+                            span.textContent = course.courseCode;
+                            tooltipContent.appendChild(span);
+
+                            const button = document.createElement('button');
+                            button.className = "tooltip-button";
+                            button.textContent = "Remove";
+                            //Add event handler to the button
+                            tooltipContent.appendChild(button);
+
+                            newCell.appendChild(tooltipContent);
                             break;
                         }
                         if(isAfter(row.id, endTimeString) && isAfter(startTimeString, row.id)){
@@ -132,7 +147,15 @@ function Home() {
         fetchCurrentSchedule();
         updateCalendar(content);
         fetchScheduleNames();
+        // Not really necessary -> it might be necessary for updates but haven't tried removing it lol
         setNewScheduleClicked(true);
+    }
+
+    const deleteSchedule = async () => {
+        const url = `http:\/\/localhost:7979/deleteSchedule/${scheduleName}`;
+        await fetch(url);
+        //change the current schedule
+        fetchScheduleNames();
     }
 
     return (
@@ -142,7 +165,7 @@ function Home() {
             ) : (
                 <div className="container">
                     <div className="Navigation">
-                        <Button className="SearchBtn btn btn-danger" onClick={onSearch}>Search</Button>
+                        <Button className="SearchBtn btn btn-danger" onClick={onSearch}>Search Courses</Button>
 
                         <Dropdown className="dropdown">
                             <Dropdown.Toggle variant="success" id="dropdown-basic" className="btn btn-danger">
@@ -153,8 +176,9 @@ function Home() {
                             </Dropdown.Menu>
                         </Dropdown>
 
-                        <Button className="newScheduleBtn btn btn-danger" onClick={makeNewSchedule}>New Schedule</Button>
+                        <Button className="newScheduleBtn btn btn-danger" onClick={makeNewSchedule}>Create New Schedule <strong>+</strong></Button>
 
+                        <Button className="deleteScheduleBtn btn btn-danger" onClick={deleteSchedule}>Delete This Schedule</Button>
                     </div>
                     <div className="HomePage">
                         <div className="ScheduleName">

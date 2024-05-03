@@ -79,4 +79,14 @@ public class StudentController {
             }
         }
     }
+
+    public static void deleteSchedule(Context context) {
+        ArrayList<Schedule> schedules = AppMain.user.getSchedules();
+        for(Schedule s : schedules){
+            if(s.getScheduleName().equals(context.pathParam("scheduleName"))){
+                schedules.remove(s);
+                return;
+            }
+        }
+    }
 }
