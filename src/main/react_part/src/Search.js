@@ -6,6 +6,13 @@ import Home from './Home.js';
 
 //JSON object of courses returned from Java backend
 
+async function getSchedule(){
+  let response = '';
+  response = await fetch(`http://localhost:7979/getCurrentSchedule`);
+  const content = await response.json();
+  const schedule = JSON.parse(JSON.stringify(content));
+  schedule.courses.forEach((course) => takenCourses.push(course.courseCode.substring(0, course.courseCode - 1)));
+}
 
 async function getClasses(q){
   let response = '';
@@ -166,6 +173,13 @@ export function FilterBar(){
       fetchData();
   });
 
+    useEffect(() => {
+      async function fetchData(){
+        await getSchedule();
+      }
+      fetchData();
+    });
+
     let handleSearchChange = e => {
       setQuery({
           ...query,
@@ -195,7 +209,6 @@ export function FilterBar(){
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
-            {takenCourses}
         </div>
     <div className = "coursetable">
       <table>
