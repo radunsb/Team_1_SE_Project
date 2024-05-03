@@ -50,6 +50,12 @@ export function FilterInput({filterType}){
         setOutput("Day " + days.join("|"));
     }
 
+    function submitTimeFilter(){
+        let st = document.getElementById("startTime").value;
+        let et = document.getElementById("endTime").value;
+        setOutput("Time " + st + "|" + et);
+    }
+
     if(filterType === "Day"){
         return(
         <div>
@@ -66,6 +72,16 @@ export function FilterInput({filterType}){
             <p id="filters">{output}</p>
         </div>
         );
+    }
+    if(filterType === "Time"){
+        return(
+            <div>
+                <p>Start Time: </p>
+                <input type="text" id="startTime" name="startTime"/>
+                <input type="text" id="endTime" name="endTime" onChange={submitTimeFilter}/>
+                <p id="filters">{output}</p>
+            </div>
+        )
     }
 }
 
