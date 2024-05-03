@@ -103,4 +103,16 @@ public class StudentController {
             }
         }
     }
+
+    public static void addCourseToSchedule(Context context){
+        String courseString = context.pathParam("course");
+        Search search = new Search(courseString, Main.getCourseCatalog(), null);
+        Course course = search.getResults().get(0);
+        ArrayList<Schedule> schedules = AppMain.user.getSchedules();
+        for(Schedule s : schedules){
+            if(s.getScheduleID() == AppMain.currentSchedule){
+                s.addCourse(course);
+            }
+        }
+    }
 }
