@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './styles.module.css';
 import { useState, useEffect} from 'react';
+import { Button } from 'react-bootstrap';
+import Home from './Home.js';
 
 //JSON object of courses returned from Java backend
 
@@ -130,7 +132,14 @@ export function FilterBar(){
   );
 }
 
+
+
   export default function Search(){
+
+    const [backClicked, setBackClicked] = useState(false);
+    const onBack = () => {
+        setBackClicked(true);
+    };
 
     const [courses, setCourses] = useState('');
 
@@ -158,9 +167,16 @@ export function FilterBar(){
     const forceUpdate = useForceUpdate();
 
     return (
+      <div>
+      {backClicked ? (<Home/>) : 
+
+      
     <div className = "main">
+      
     <div className = "submain">
+    
     <div className = "searchbar">
+    <Button className="BackBtn" onClick = {onBack}>Back</Button>
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
@@ -181,5 +197,7 @@ export function FilterBar(){
     </div>
     <FilterBar/>
     </div>
+      }
+      </div>
     );
 }
