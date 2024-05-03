@@ -44,7 +44,7 @@ function Home() {
         await fetch(url);
         fetchCurrentSchedule();
     }
-
+    
     const updateCalendar = (schedule) => {
         const scheduleNameHeader = document.querySelectorAll('.titleInput input');
         scheduleNameHeader.textContent = schedule.scheduleName;
@@ -56,7 +56,7 @@ function Home() {
             const cellsToRemove = row.querySelectorAll('td:not(:first-child)');
             cellsToRemove.forEach(cell => cell.remove());
             //console.log(row.id);
-
+          
             // Add 5 tds for new course data
             for (let j = 0; j < 5; j++) {
                 const day = WeekDays[j+1];
@@ -191,6 +191,7 @@ function Home() {
                                 {dropdownOptions}
                             </Dropdown.Menu>
                         </Dropdown>
+
 
                         <Button className="newScheduleBtn btn btn-danger" onClick={makeNewSchedule}>Create New Schedule <strong>+</strong></Button>
 

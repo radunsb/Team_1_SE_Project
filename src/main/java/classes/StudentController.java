@@ -76,6 +76,7 @@ public class StudentController {
         for(Schedule s : schedules){
             if(s.getScheduleID() == AppMain.currentSchedule){
                 s.setScheduleName(context.pathParam("name"));
+
             }
         }
     }
