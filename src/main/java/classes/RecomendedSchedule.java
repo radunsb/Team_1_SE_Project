@@ -7,56 +7,39 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
-import java.util.*;
 
+public class RecomendedSchedule {
 
-
-public class PDFBoxToText {
-
-    private static ArrayList<Course> recomendedCourses;
+    private String filePath;
     private static ArrayList<Course> courseCatalog;
-    private static Schedule currentSchedule;
+    private Schedule currentSchedule;
+    private Schedule recomendedSpringFreshman;
+    private Schedule recomendedSpringSophmore;
+    private Schedule recomendedSpringJunior;
+    private Schedule recomendedSpringSenior;
+    private Schedule recomendedFallFreshman;
+    private Schedule recomendedFallSopohmore;
+    private Schedule recomendedFallJunior;
+    private Schedule recomendedFallSenior;
 
-    private static Schedule recomendedSpringFreshman;
-    private static Schedule recomendedSpringSophmore;
-    private static Schedule recomendedSpringJunior;
-    private static Schedule recomendedSpringSenior;
-    private static Schedule recomendedFallFreshman;
-    private static Schedule recomendedFallSopohmore;
-    private static Schedule recomendedFallJunior;
-    private static Schedule recomendedFallSenior;
+    public RecomendedSchedule(String filePath){
+        this.filePath = filePath;
+    }
 
-
-
-    public static void main(String[] args) {
+    public void makeRecomended(){
         try{
             readCSV();
         } catch(FileNotFoundException | ParseException e){
             System.out.println(e.getMessage());
         }
 
-        String ni = PremadeScheduleString("CS.pdf");
+        String workingString = PremadeScheduleString(filePath);
 
-        String[] courses = ni.split("\n");
+        String[] courses = workingString.split("\n");
 
         String fall = makeFall(courses);
         String spring = makeSpring(courses);
-
-        System.out.println(fall);
-        System.out.println();
-        System.out.println(spring);
-
-        recomendedFallFreshman = new Schedule(1,"Fall",2020,"recomendedFallFreshman");
-        recomendedFallSopohmore = new Schedule(1,"Fall",2020,"recomendedFallSophmore");
-        recomendedFallJunior = new Schedule(1,"Fall",2020,"recomendedFallJunior");
-        recomendedFallSenior = new Schedule(1,"Fall",2020,"recomendedFallSeninor");
-
-        recomendedSpringFreshman = new Schedule(1,"Spring",2020,"recomendedSpringFreshman");
-        recomendedSpringSophmore = new Schedule(1,"Spring",2020,"recomendedSpringSophmore");
-        recomendedSpringJunior = new Schedule(1,"Spring",2020,"recomendedSpringJunior");
-        recomendedSpringSenior = new Schedule(1,"Spring",2020,"recomendedSpringSenior");
 
         makeRecomended(fall,recomendedFallFreshman,0,4);
         makeRecomended(fall,recomendedFallSopohmore,5,11);
@@ -69,92 +52,13 @@ public class PDFBoxToText {
         makeRecomended(spring,recomendedFallJunior,11,16);
         makeRecomended(spring,recomendedSpringSenior,17,22);
 
-        System.out.println(recomendedFallFreshman);
-        System.out.println();
-        System.out.println(recomendedFallSopohmore);
-        System.out.println();
-        System.out.println(recomendedSpringJunior);
-        System.out.println();
-        System.out.println(recomendedSpringSenior);
-        System.out.println();
-        System.out.println(recomendedSpringSenior);
-
     }
 
-    public static void makeRecomended(String s, Schedule sched, int start, int end){
-        String[] courses = s.split("\n");
-
-        for (int i = start; i < end; i++) {
-            if(courses[i].contains("…") || courses[i].contains("&")){
-
-            }else{
-                searchRecomended(courses[i],sched);
-            }
-        }
-    }
-
-    private static void searchRecomended(String q, Schedule sched) {
-        //User input setup
-        String query = q;
-        ArrayList<Filter> filters = new ArrayList<>();
-
-        //Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
-
-        // Create search instance
-        Search s = new Search("", courseCatalog, filters);
-
-        if (query.equals("Q")) {
-            return;
-        }
-        else if(query.equals("Science Elective")){
-            //add blank course
-        }else if(query.equals("General Elective")){
-            //add blank general elective
-        }
-         else {
-            // Search on the query
-            ArrayList<Course> results = s.search(query);
-            if (results.isEmpty()) {
-                return;
-            }
-            try {
-                sched.addCourse(results.get(0));
-                return;
-            } catch (Exception e) {
-                // Clear the input and do nothing -> go back to search
-                return;
-            }
-        }
-
-    }
-    public static String makeSpring(String[] s){
-        StringBuilder st = new StringBuilder();
-
-        for (int i = 1; i < s.length; i = i+2) {
-            st.append(s[i]);
-            st.append("\n");
-        }
-        return st.toString();
-    }
-
-    public static String makeFall(String[] s){
-        StringBuilder st = new StringBuilder();
-
-        for (int i = 0; i < s.length; i = i+2) {
-            st.append(s[i]);
-            st.append("\n");
-        }
-        return st.toString();
-    }
-
-    private static String cleanString(String s){
-        if(!s.contains("\r\n")){
-            return s;
-        }
-        String segments[] = s.split("\r\n");
-        return segments[segments.length-1];
-    }
-
+    /**
+     * returns ruff string from PDF for filtering into schedules
+     * @param filepath
+     * @return ruffString
+     */
     private static String PremadeScheduleString(String filepath){
         PDFManager pdfManager = new PDFManager();
         pdfManager.setFilePath(filepath);
@@ -201,6 +105,121 @@ public class PDFBoxToText {
         }
     }
 
+    /**
+     * Uses filtered string repeditely call searchmethod to fill
+     * example schedules
+     * @param s
+     * @param sched
+     * @param start
+     * @param end
+     */
+    public static void makeRecomended(String s, Schedule sched, int start, int end){
+        String[] courses = s.split("\n");
+
+        for (int i = start; i < end; i++) {
+            if(courses[i].contains("…") || courses[i].contains("&")){
+
+            }else{
+                searchRecomended(courses[i],sched);
+            }
+        }
+    }
+
+    /**
+     * modified couse search method for creating default example schedule
+     * @param q
+     * @param sched
+     */
+    private static void searchRecomended(String q, Schedule sched) {
+        //User input setup
+        String query = q;
+        ArrayList<Filter> filters = new ArrayList<>();
+
+        //Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+
+        // Create search instance
+        Search s = new Search("", courseCatalog, filters);
+
+        if (query.equals("Q")) {
+            return;
+        }
+        else if(query.equals("Science Elective")){
+            //add blank course
+        }else if(query.equals("General Elective")){
+            //add blank general elective
+        }
+        else {
+            // Search on the query
+            ArrayList<Course> results = s.search(query);
+            if (results.isEmpty()) {
+                return;
+            }
+            try {
+                sched.addCourse(results.get(0));
+                return;
+            } catch (Exception e) {
+                // Clear the input and do nothing -> go back to search
+                return;
+            }
+        }
+
+    }
+
+    /**
+     * Makes string for spring semester classes
+     * @param s
+     * @return
+     */
+    public static String makeSpring(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 1; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
+
+    /**
+     * Makes string for fall semester classes
+     * @param s
+     * @return
+     */
+    public static String makeFall(String[] s){
+        StringBuilder st = new StringBuilder();
+
+        for (int i = 0; i < s.length; i = i+2) {
+            st.append(s[i]);
+            st.append("\n");
+        }
+        return st.toString();
+    }
+    private static String cleanString(String s){
+        if(!s.contains("\r\n")){
+            return s;
+        }
+        String segments[] = s.split("\r\n");
+        return segments[segments.length-1];
+    }
+    private static boolean isAllUpper(String s) {
+        for(char c : s.toCharArray()) {
+            if(Character.isLetter(c) && Character.isLowerCase(c)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    public static boolean isNumeric(String strNum) {
+        if (strNum == null) {
+            return false;
+        }
+        try {
+            double d = Double.parseDouble(strNum);
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+        return true;
+    }
     static void readCSV() throws FileNotFoundException, ParseException {
         courseCatalog = new ArrayList<>();
 
@@ -285,25 +304,35 @@ public class PDFBoxToText {
         }
     }
 
-    private static boolean isAllUpper(String s) {
-        for(char c : s.toCharArray()) {
-            if(Character.isLetter(c) && Character.isLowerCase(c)) {
-                return false;
-            }
-        }
-        return true;
+    public Schedule getRecomendedSpringFreshman() {
+        return recomendedSpringFreshman;
     }
 
-    public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
+    public Schedule getRecomendedSpringSophmore() {
+        return recomendedSpringSophmore;
     }
 
+    public Schedule getRecomendedSpringJunior() {
+        return recomendedSpringJunior;
+    }
+
+    public Schedule getRecomendedSpringSenior() {
+        return recomendedSpringSenior;
+    }
+
+    public Schedule getRecomendedFallFreshman() {
+        return recomendedFallFreshman;
+    }
+
+    public Schedule getRecomendedFallSopohmore() {
+        return recomendedFallSopohmore;
+    }
+
+    public Schedule getRecomendedFallJunior() {
+        return recomendedFallJunior;
+    }
+
+    public Schedule getRecomendedFallSenior() {
+        return recomendedFallSenior;
+    }
 }
