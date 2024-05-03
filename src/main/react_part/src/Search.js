@@ -3,6 +3,7 @@ import styles from './styles.module.css';
 import { useState, useEffect} from 'react';
 import { Button } from 'react-bootstrap';
 import Home from './Home.js';
+import FilterPart from './FilterPart.js';
 import "./Search.css"
 
 //JSON object of courses returned from Java backend
@@ -12,7 +13,7 @@ async function getSchedule(){
   response = await fetch(`http://localhost:7979/getCurrentSchedule`);
   const content = await response.json();
   const schedule = JSON.parse(JSON.stringify(content));
-  schedule.courses.forEach((course) => takenCourses.push(course.courseCode.substring(0, course.courseCode - 1)));
+  return schedule;
 }
 
 async function getClasses(q){
@@ -76,10 +77,20 @@ function timesFormat(timeList){
   
   export function Course({courseCode, name, description, professor, meetingTimes,
   meetingDays, isTaken}){
+/*
+    const addNewClass = async (course) => {
+      let response = '';
+      response = await fetch(`http://localhost:7979/search/${courseCode}`);
+      const content = await response.json();
+      const courses = JSON.parse(JSON.stringify(content));
+      await fetch(`http://localhost:7979/addCourseToSchedule/${courses}`);
+    }
+    */
 
     const buttonClicked = () => {
       if(!isTaken){
         takenCourses.push(courseCode.substring(0, courseCode.length - 1));
+        //addNewClass(courseCode);
       }
       else{
         takenCourses.pop(courseCode.substring(0, courseCode.length - 1));
@@ -100,19 +111,6 @@ function timesFormat(timeList){
           )}</td>
       </tr>
     );     
-  }
-
-  export function FilterSetup(){
-    const [type, setType] = useState("Day");
-
-  }
-
-  export function TimeBar(){
-    return(
-      <div>
-
-      </div>    
-    );
   }
 
   export function Filter({input, type}){
@@ -148,7 +146,8 @@ export function FilterBar(){
           <label for = "filterinput">Filter: </label>
           <input type="text" id="filterinput" placeholder = "Format: [type] [input]" onSubmit={handleFilterChange}/>
           <input type="submit" value="Submit"/>
-        </form>       
+        </form>
+        <FilterPart/>
         <column>{filterStrings}</column>
       </p>
     </div>
@@ -161,10 +160,14 @@ export function FilterBar(){
 
     const [backClicked, setBackClicked] = useState(false);
     const onBack = () => {
+        takenCourses.length = 0;
+        setSchedule(null);
+        setCourses(null);
         setBackClicked(true);
     };
 
     const [courses, setCourses] = useState('');
+    const [schedule, setSchedule] = useState(null);
 
     useEffect(() => {
       async function fetchData() {
@@ -176,7 +179,14 @@ export function FilterBar(){
 
     useEffect(() => {
       async function fetchData(){
-        await getSchedule();
+        const sched = await getSchedule();
+        await setSchedule(sched);
+        sched.courses.forEach((course) => {
+          if(!takenCourses.includes(course.courseCode.substring(0, course.courseCode.length - 1))){
+            takenCourses.push(course.courseCode.substring(0, course.courseCode.length - 1));
+          }
+        });
+        
       }
       fetchData();
     });
@@ -210,6 +220,7 @@ export function FilterBar(){
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
+                <p>Taken Courses: {takenCourses}</p>
         </div>
     <div className = "coursetable">
       <table>

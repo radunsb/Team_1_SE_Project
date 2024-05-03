@@ -74,7 +74,7 @@ body {
     margin-left: 5vw;
   }
 
-  .BackBtn {
+  button.BackBtn {
     display: block;
     height: 5vw;
     width: 10vw;
@@ -89,7 +89,7 @@ body {
     transition: background-color 0.3s ease;
 }
 
-.addButton{
+button.addButton{
   height: 100%;
   width: 100%;
   display: block;
@@ -103,7 +103,7 @@ body {
   padding-right: 15px;
 }
 
-.removeButton{
+button.removeButton{
   height: 100%;
   width: 100%;
   display: block;
@@ -117,7 +117,7 @@ body {
   padding-right: 15px;
 }
 
-.BackBtn:hover {
+button.BackBtn:hover {
   background-color: #5e240f;
 }
 
