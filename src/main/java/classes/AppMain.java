@@ -12,6 +12,7 @@ public class AppMain {
 
     public static Student user;
     public static int currentSchedule;
+    public static int nextId;
 
     public static void main(String[] args) {
         //Read the CSV
@@ -39,7 +40,7 @@ public class AppMain {
         System.out.println(c4.getCourseCode());
 
         Schedule defaultSchedule = new Schedule(0, "FALL", 2020, "mySchedule");
-        Schedule defaultSchedule2 = new Schedule(1, "FALL", 2020, "otherSchedule");
+        Schedule defaultSchedule2 = new Schedule(-1, "FALL", 2020, "otherSchedule");
         defaultSchedule.addCourse(c1);
         defaultSchedule2.addCourse(c2);
         defaultSchedule.addCourse(c3);
@@ -49,6 +50,7 @@ public class AppMain {
         schedules.add(defaultSchedule2);
 
         currentSchedule = 0;
+        nextId = 1;
         user = new Student(9999, "newStudent", Student.Class.OTHER, majors, minors, courseHistory, schedules);
 
 
@@ -70,6 +72,10 @@ public class AppMain {
         app.get("/getScheduleNames", StudentController::getScheduleNames);
         app.get("/getCurrentSchedule", StudentController::getCurrentSchedule);
         app.get("/getSchedule/{scheduleName}", StudentController::getScheduleByName);
+
+        app.get("/createSchedule/{name}", StudentController::createSchedule);
+        app.get("/changeScheduleSemester/{semester}", StudentController::changeScheduleSemester);
+        app.get("/renameSchedule/{name}", StudentController::renameSchedule);
 
         app.get("/changeCurrentSchedule/{scheduleName}", StudentController::changeCurrentSchedule);
 

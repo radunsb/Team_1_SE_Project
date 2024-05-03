@@ -15,22 +15,37 @@ function Home() {
     const [scheduleName, setScheduleName] = useState(null);
 
     useEffect(() => {
-            fetchCurrentSchedule();
-        }, []);
+        fetchCurrentSchedule();
+    }, []);
 
+    const [scheduleTitle, setScheduleTitle] = useState("default");
     const fetchCurrentSchedule = async () => {
         const schedule = await getCurrentSchedule();
         setCurrentSchedule(schedule);
         setScheduleName(schedule.scheduleName);
-
+        setScheduleTitle(schedule.scheduleName);
+        //const inputField = document.querySelectorAll(".titleInput input");
+        //scheduleTitleChange(inputField);
         updateCalendar(schedule);
     };
 
+    const scheduleTitleChange = (inputField) => {
+        setScheduleTitle(inputField.target.value);
+        changeScheduleName(inputField.target.value);
+    };
+
+    const changeScheduleName = async (name) => {
+        const url = `http:\/\/localhost:7979/renameSchedule/${name}`;
+        await fetch(url);
+        fetchScheduleNames();
+    }
+
     const updateCalendar = (schedule) => {
+        const scheduleNameHeader = document.querySelectorAll('.titleInput input');
+        scheduleNameHeader.textContent = schedule.scheduleName;
         const timeSlots = document.querySelectorAll('.TimeSlots tr');
         const WeekDays = document.querySelectorAll('.DaysOfWeek th');
         for (let i = 0; i < timeSlots.length; i++) {
-
             const row = timeSlots[i];
             // Remove all but the first td item
             const cellsToRemove = row.querySelectorAll('td:not(:first-child)');
@@ -56,9 +71,9 @@ function Home() {
                         const startTimeString = convertTimeToString(startTime);
                         const endTimeString = convertTimeToString(endTime);
 
-                        console.log(course.courseCode);
-                        console.log(row.id);
-                        console.log(startTimeString);
+//                        console.log(course.courseCode);
+//                        console.log(row.id);
+                        //console.log(startTimeString);
                         if(row.id === startTimeString){
                             newCell.textContent = course.courseCode;
                             newCell.classList.add("courseTime");
@@ -107,6 +122,19 @@ function Home() {
         setSearchClicked(true);
     };
 
+    const [newScheduleClicked, setNewScheduleClicked] = useState(false);
+
+    const makeNewSchedule = async (name) => {
+        name = "newSchedule";
+        const url = `http:\/\/localhost:7979/createSchedule/${name}`;
+        const response = await fetch(url);
+        const content = await validateJSON(response);
+        fetchCurrentSchedule();
+        updateCalendar(content);
+        fetchScheduleNames();
+        setNewScheduleClicked(true);
+    }
+
     return (
         <div>
             {searchClicked ? (
@@ -125,10 +153,17 @@ function Home() {
                             </Dropdown.Menu>
                         </Dropdown>
 
+                        <Button className="newScheduleBtn btn btn-danger" onClick={makeNewSchedule}>New Schedule</Button>
+
                     </div>
                     <div className="HomePage">
                         <div className="ScheduleName">
-                            <h1>{scheduleName}</h1>
+                            <input
+                                className="titleInput"
+                                type="text"
+                                value={scheduleTitle}
+                                onChange={scheduleTitleChange}
+                            />
                         </div>
                         <div className="ScheduleView">
                         <div className="TableContainer">
@@ -215,7 +250,11 @@ async function getScheduleNames() {
 
 async function getCurrentSchedule(){
     const response = await fetch('http://localhost:7979/getCurrentSchedule');
+    //const content = await response.json();
     const content = await validateJSON(response);
+//    console.log("HI");
+//    console.log(content);
+//    console.log("-----");
     return content;
 }
 

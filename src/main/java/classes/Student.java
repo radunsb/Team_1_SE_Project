@@ -62,6 +62,10 @@ public class Student {
         schedules.add(s);
     }
 
+    public void addSchedule(Schedule s){
+        schedules.add(s);
+    }
+
     /**
      * A way to load a schedule without actually setting the current schedule to it
      * @param studentID "ID_NAME" of current student (directory of saves)

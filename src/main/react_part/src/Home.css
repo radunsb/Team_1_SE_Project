@@ -36,6 +36,32 @@
     margin-top: -50px;
 }
 
+.titleInput {
+    background-color: red;
+    padding: 5px;
+    height: 60px;
+    font-size: 30px;
+}
+
+.newScheduleBtn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    margin-top: 20px;
+    text-align: center;
+    background-color: #ff0000 !important;
+    color: white !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newScheduleBtn:hover {
+    background-color: #A50000 !important;
+}
+
 .SearchBtn {
     display: block;
     width: 100%;
