@@ -42,6 +42,7 @@ body {
   .searchbar{
     display:flex;
     flex-direction:row;
+    align-items:center;
   }
 
   .searchbar input[type=text] {
@@ -72,3 +73,23 @@ body {
     width: 20vw;
     margin-left: 5vw;
   }
+
+  .BackBtn {
+    display: block;
+    height: 5vw;
+    width: 10vw;
+    margin: 10px;
+    padding: 10px;
+    text-align: center;
+    background-color: #ba0000;
+    color: #eeeeee;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.BackBtn:hover {
+  background-color: #5e240f;
+}
+
