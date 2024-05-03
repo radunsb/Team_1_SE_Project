@@ -45,10 +45,34 @@ function Home() {
 
                 // Check if a course is in this timeslot
                 for(const course of schedule.courses){
-                    //TODO: Ben's code here lol
-                }
+                    const hasClass = course.meetingDays[j];
+                    //console.log(hasClass);
+                    if(hasClass){
+                        const times = course.meetingTimes;
+                        const timeString = (times + "").replaceAll(",", "");
+                        //console.log(timeString);
+                        var startTime = Number(timeString.substring(0,8));
+                        var endTime = Number(timeString.substring(8,16));
+                        const startTimeString = convertTimeToString(startTime);
+                        const endTimeString = convertTimeToString(endTime);
 
-                newCell.textContent = 'hello';
+                        console.log(course.courseCode);
+                        console.log(row.id);
+                        console.log(startTimeString);
+                        if(row.id === startTimeString){
+                            newCell.textContent = course.courseCode;
+                            newCell.classList.add("courseTime");
+                            break;
+                        }
+                        if(isAfter(row.id, endTimeString) && isAfter(startTimeString, row.id)){
+                            //newCell.textContent = course.courseCode;
+                            newCell.classList.add("courseTime");
+                            break;
+                        }
+                    }else{
+                        newCell.textContent = '';
+                    }
+                }
                 row.appendChild(newCell);
             }
         }
@@ -90,10 +114,10 @@ function Home() {
             ) : (
                 <div className="container">
                     <div className="Navigation">
-                        <Button className="SearchBtn" onClick={onSearch}>Search</Button>
+                        <Button className="SearchBtn btn btn-danger" onClick={onSearch}>Search</Button>
 
                         <Dropdown className="dropdown">
-                            <Dropdown.Toggle variant="success" id="dropdown-basic">
+                            <Dropdown.Toggle variant="success" id="dropdown-basic" className="btn btn-danger">
                                 Schedules
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
@@ -107,6 +131,7 @@ function Home() {
                             <h1>{scheduleName}</h1>
                         </div>
                         <div className="ScheduleView">
+                        <div className="TableContainer">
                             <table className="Calendar">
                                 <thead className="WeekDays">
                                     <tr className="DaysOfWeek">
@@ -119,34 +144,61 @@ function Home() {
                                     </tr>
                                 </thead>
                                 <tbody className="TimeSlots">
-                                    <tr id="8:00 AM"><td> <strong>8:00</strong> </td></tr>
-                                    <tr id="8:30 AM"><td>  </td></tr>
-                                    <tr id="9:00 AM"><td> <strong>9:00</strong> </td></tr>
-                                    <tr id="9:30 AM"><td>  </td></tr>
-                                    <tr id="10:00 AM"><td> <strong>10:00</strong> </td></tr>
-                                    <tr id="10:30 AM"><td>  </td></tr>
-                                    <tr id="11:00 AM"><td> <strong>11:00</strong> </td></tr>
-                                    <tr id="11:30 AM"><td>  </td></tr>
-                                    <tr id="12:00 PM"><td> <strong>12:00</strong> </td></tr>
-                                    <tr id="12:30 PM"><td>  </td></tr>
-                                    <tr id="1:00 PM"><td> <strong>1:00</strong> </td></tr>
-                                    <tr id="1:30 PM"><td>  </td></tr>
-                                    <tr id="2:00 PM"><td> <strong>2:00</strong> </td></tr>
-                                    <tr id="2:30 PM"><td>  </td></tr>
-                                    <tr id="3:00 PM"><td> <strong>3:00</strong> </td></tr>
-                                    <tr id="3:30 PM"><td>  </td></tr>
-                                    <tr id="4:00 PM"><td> <strong>4:00</strong> </td></tr>
-                                    <tr id="4:30 PM"><td>  </td></tr>
-                                    <tr id="5:00 PM"><td> <strong>5:00</strong> </td></tr>
-                                    <tr id="5:30 PM"><td>  </td></tr>
-                                    <tr id="6:00 PM"><td> <strong>6:00</strong> </td></tr>
-                                    <tr id="6:30 PM"><td>  </td></tr>
-                                    <tr id="7:00 PM"><td> <strong>7:00</strong> </td></tr>
-                                    <tr id="7:30 PM"><td>  </td></tr>
-                                    <tr id="8:00 PM"><td> <strong>8:00</strong> </td></tr>
-                                    <tr id="8:30 PM"><td>  </td></tr>
+                                    <tr id="8:00" className="time"><td> <strong>8:00</strong> </td></tr>
+                                    <tr id="8:15"><td>  </td></tr>
+                                    <tr id="8:30"><td>  </td></tr>
+                                    <tr id="8:45"><td>  </td></tr>
+                                    <tr id="9:00" className="time"><td> <strong>9:00</strong> </td></tr>
+                                    <tr id="9:15"><td>  </td></tr>
+                                    <tr id="9:30"><td>  </td></tr>
+                                    <tr id="9:45"><td>  </td></tr>
+                                    <tr id="10:00" className="time"><td> <strong>10:00</strong> </td></tr>
+                                    <tr id="10:15"><td>  </td></tr>
+                                    <tr id="10:30"><td>  </td></tr>
+                                    <tr id="10:45"><td>  </td></tr>
+                                    <tr id="11:00" className="time"><td> <strong>11:00</strong> </td></tr>
+                                    <tr id="11:15"><td>  </td></tr>
+                                    <tr id="11:30"><td>  </td></tr>
+                                    <tr id="11:45"><td>  </td></tr>
+                                    <tr id="12:00" className="time"><td> <strong>12:00</strong> </td></tr>
+                                    <tr id="12:15"><td>  </td></tr>
+                                    <tr id="12:30"><td>  </td></tr>
+                                    <tr id="12:45"><td>  </td></tr>
+                                    <tr id="13:00" className="time"><td> <strong>1:00</strong> </td></tr>
+                                    <tr id="13:15"><td>  </td></tr>
+                                    <tr id="13:30"><td>  </td></tr>
+                                    <tr id="13:45"><td>  </td></tr>
+                                    <tr id="14:00 PM" className="time"><td> <strong>2:00</strong> </td></tr>
+                                    <tr id="14:15 PM"><td>  </td></tr>
+                                    <tr id="14:30"><td>  </td></tr>
+                                    <tr id="14:45"><td>  </td></tr>
+                                    <tr id="15:00 PM" className="time"><td> <strong>3:00</strong> </td></tr>
+                                    <tr id="15:15 PM"><td>  </td></tr>
+                                    <tr id="15:30"><td>  </td></tr>
+                                    <tr id="15:45"><td>  </td></tr>
+                                    <tr id="16:00 PM" className="time"><td> <strong>4:00</strong> </td></tr>
+                                    <tr id="16:15 PM"><td>  </td></tr>
+                                    <tr id="16:30"><td>  </td></tr>
+                                    <tr id="16:45"><td>  </td></tr>
+                                    <tr id="17:00" className="time"><td> <strong>5:00</strong> </td></tr>
+                                    <tr id="17:15"><td>  </td></tr>
+                                    <tr id="17:30"><td>  </td></tr>
+                                    <tr id="17:45"><td>  </td></tr>
+                                    <tr id="18:00" className="time"><td> <strong>6:00</strong> </td></tr>
+                                    <tr id="18:15"><td>  </td></tr>
+                                    <tr id="18:30"><td>  </td></tr>
+                                    <tr id="18:45"><td>  </td></tr>
+                                    <tr id="19:00" className="time"><td> <strong>7:00</strong> </td></tr>
+                                    <tr id="19:15"><td>  </td></tr>
+                                    <tr id="19:30"><td>  </td></tr>
+                                    <tr id="19:45"><td>  </td></tr>
+                                    <tr id="20:00" className="time"><td> <strong>8:00</strong> </td></tr>
+                                    <tr id="20:15"><td>  </td></tr>
+                                    <tr id="20:30"><td>  </td></tr>
+                                    <tr id="20:45"><td>  </td></tr>
                                 </tbody>
                             </table>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -165,6 +217,34 @@ async function getCurrentSchedule(){
     const response = await fetch('http://localhost:7979/getCurrentSchedule');
     const content = await validateJSON(response);
     return content;
+}
+
+function convertTimeToString(time){
+  const base = 18000000;
+  const diff = time - base;
+  const realTime = diff/3600000;
+  const hour = Math.floor(realTime);
+  let minute = Math.floor(1/60 * Math.round((realTime - hour)/(1/60)) * 60) + '';
+  if (minute.length < 2) {
+    minute = '0' + minute;
+    }
+  return hour + ":" + minute;
+}
+
+function isAfter(time1, time2){
+    const t1 = time1.split(":");
+    const t2 = time2.split(":");
+    const h1 = Number(t1[0]);
+    const m1 = Number(t1[1]);
+    const h2 = Number(t2[0]);
+    const m2 = Number(t2[1]);
+    if(h2 > h1){
+        return true;
+    }
+    if(h2 === h1 && m2 > m1){
+        return true;
+    }
+    return false;
 }
 
 function validateJSON(response) {
