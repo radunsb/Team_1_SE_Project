@@ -93,7 +93,7 @@ public class StudentController {
 
     public static void removeCourse(Context context) {
         ArrayList<Schedule> schedules = AppMain.user.getSchedules();
-        for(Schedule s : schedules) {
+        for (Schedule s : schedules) {
             if (s.getScheduleID() == AppMain.currentSchedule) {
                 for (Course c : s.getCourses()) {
                     if (c.getCourseCode().equals(context.pathParam("courseCode"))) {
@@ -103,11 +103,10 @@ public class StudentController {
             }
         }
     }
-
     public static void addCourseToSchedule(Context context){
         String courseString = context.pathParam("course");
         Search search = new Search(courseString, Main.getCourseCatalog(), null);
-        Course course = search.getResults().get(0);
+        Course course = search.search(courseString).get(0);
         ArrayList<Schedule> schedules = AppMain.user.getSchedules();
         for(Schedule s : schedules){
             if(s.getScheduleID() == AppMain.currentSchedule){
