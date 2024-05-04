@@ -22,41 +22,20 @@ public class AppMain {
             System.out.println(e.getMessage());
         }
 
-        // Create the student user
+        // Setup for a new Student user
+        // Create the student user attributes
         ArrayList<Major> majors = new ArrayList<>();
         ArrayList<Minor> minors = new ArrayList<>();
         ArrayList<Course> courseHistory = new ArrayList<>();
         ArrayList<Schedule> schedules = new ArrayList<>();
-
-        Search s = new Search("", Main.getCourseCatalog(),null);
-        ArrayList<Course> results = s.search("comp");
-        Course c1 = results.get(0);
-        Course c2 = results.get(1);
-        Course c3 = results.get(5);
-        Course c4 = results.get(9);
-        Course c5 = results.get(21);
-        Course c6 = results.get(23);
-        System.out.println(c1.getCourseCode());
-        System.out.println(c2.getCourseCode());
-        System.out.println(c3.getCourseCode());
-        System.out.println(c4.getCourseCode());
-
-        Schedule defaultSchedule = new Schedule(0, "FALL", 2020, "mySchedule");
-        Schedule defaultSchedule2 = new Schedule(-1, "FALL", 2020, "otherSchedule");
-        defaultSchedule.addCourse(c1);
-        defaultSchedule2.addCourse(c2);
-        defaultSchedule.addCourse(c3);
-        defaultSchedule2.addCourse(c4);
-        defaultSchedule.addCourse(c5);
-        defaultSchedule2.addCourse(c6);
-
+        // Add a default schedule to the student
+        Schedule defaultSchedule = new Schedule(0, "FALL", 2020, "My First Schedule");
         schedules.add(defaultSchedule);
-        schedules.add(defaultSchedule2);
-
+        // Setup variables
         currentSchedule = 0;
         nextId = 1;
+        // Create the user
         user = new Student(9999, "newStudent", Student.Class.OTHER, majors, minors, courseHistory, schedules);
-
 
         //Set up Javalin api on port 7979
         Javalin app = Javalin.create(config -> {
@@ -65,34 +44,30 @@ public class AppMain {
             });
         }).start(7979);
 
-        //TODO:add api endpoints to actually get data and interact with the backend
-
-        // Search api path to search by name/code -> returns results list in json
+        // Search api endpoints to search by name/code and add filters
         app.get("/search", SearchController::emptySearch);
         app.get("/search/{query}", SearchController::getResults);
         app.get("/search/{query}/{filters}", SearchController::getResultsWithFilters);
-        //TODO: add filter endpoints
 
+        // Api endpoints to get the schedule variables
         app.get("/getScheduleNames", StudentController::getScheduleNames);
         app.get("/getCurrentSchedule", StudentController::getCurrentSchedule);
         app.get("/getSchedule/{scheduleName}", StudentController::getScheduleByName);
 
+        // Api endpoints to modify schedules
         app.get("/createSchedule/{name}", StudentController::createSchedule);
         app.get("/changeScheduleSemester/{semester}", StudentController::changeScheduleSemester);
         app.get("/renameSchedule/{name}", StudentController::renameSchedule);
         app.get("/addCourseToSchedule/{course}", StudentController::addCourseToSchedule);
 
+        // Delete schedules
         app.get("/deleteSchedule/{scheduleName}", StudentController::deleteSchedule);
 
+        // Switch which schedule to edit
         app.get("/changeCurrentSchedule/{scheduleName}", StudentController::changeCurrentSchedule);
 
+        // Remove course from schedule
         app.get("/removeCourse/{courseCode}", StudentController::removeCourse);
-
-        // kind of optional
-        //app.post("/changeScheduleName", StudentController::changeScheduleName);
-
-
-
 
     }
 }
