@@ -77,23 +77,28 @@ function timesFormat(timeList){
   
   export function Course({courseCode, name, description, professor, meetingTimes,
   meetingDays, isTaken}){
-/*
+
     const addNewClass = async (course) => {
-      let response = '';
-      response = await fetch(`http://localhost:7979/search/${courseCode}`);
-      const content = await response.json();
-      const courses = JSON.parse(JSON.stringify(content));
-      await fetch(`http://localhost:7979/addCourseToSchedule/${courses}`);
+      const url = `http:\/\/localhost:7979/addCourseToSchedule/${course}`;
+      await fetch(url);
+      getSchedule();
     }
-    */
+
+    const removeClass = async (course) => {
+      const url = `http:\/\/localhost:7979/removeCourse/${course}`;
+      await fetch(url);
+      getSchedule();
+    }
+    
 
     const buttonClicked = () => {
       if(!isTaken){
         takenCourses.push(courseCode.substring(0, courseCode.length - 1));
-        //addNewClass(courseCode);
+        addNewClass(courseCode);
       }
       else{
         takenCourses.pop(courseCode.substring(0, courseCode.length - 1));
+        removeClass(courseCode);
       }
   };
 
@@ -134,6 +139,12 @@ export function FilterBar(){
     setAddingFilter(!addingFilter);
   }
 
+  function removeFilter(){
+    setActiveFilters(activeFilters.substring(0, activeFilters.lastIndexOf(",")));
+    filters.pop();
+    filterStrings.pop();
+  }
+
 /*
 <form id="filterform" onSubmit={handleFilterChange}>
           <label for = "filterinput">Filter: </label>
@@ -145,8 +156,6 @@ export function FilterBar(){
   const forceUpdateFilter = useForceUpdate();
 
   function yayFilters(){
-      filters.length = 0;
-      filterStrings.length = 0;
 
       if(document.getElementById("filters") != null){
       const inString = document.getElementById("filters").textContent + "";
@@ -168,6 +177,7 @@ export function FilterBar(){
         <Button className="filterbutton" onClick={switchAddingFilter}>{addingFilter ? "Cancel" : "Add New Filter"}</Button>
         {addingFilter ? <FilterPart/> : ''}
         {addingFilter ? <Button className="filterbutton" onClick={yayFilters}>Save Filter</Button> : ""}
+        <Button className="filterbutton" onClick={removeFilter}>Remove Latest Filter</Button>
         <p>Current Filters: </p>
         <p className="activeFilters">{activeFilters}</p>
     </div>
