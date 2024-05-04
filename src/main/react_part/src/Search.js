@@ -251,7 +251,6 @@ export function FilterBar(){
           <p>Search by Name or Course Code:</p>
             <input type="text" value={query.q}
                 onChange={handleSearchChange}/>
-                <p>Taken Courses: {takenCourses}</p>
         </div>
     <div className = "coursetable">
       <table>
