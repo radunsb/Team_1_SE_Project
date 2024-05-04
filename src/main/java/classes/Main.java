@@ -17,12 +17,13 @@ public class Main {
     private static int schedCount;
 
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         createActionLogger();
         run();
     }
 
-    public static void run() throws IOException, InterruptedException {
+    //hi
+    public static void run() throws IOException {
 
         //Read the CSV
         try {
@@ -137,7 +138,7 @@ public class Main {
         return newStudent;
     }
 
-    public static void navigateHome(Scanner s, Student current) throws IOException, InterruptedException {
+    public static void navigateHome(Scanner s, Student current) throws IOException {
         String command = "";
         current.setSchedules(current.loadAllSchedules(current.getStudentID() + "_" + current.getUsername()));
         if (current.getSchedules().isEmpty()) {
@@ -229,9 +230,6 @@ public class Main {
             }
             if (command.equals("5")) {
                 navigateSchedules(s, current);
-            }
-            if(command.equals("6")){
-                editProfile(s,current);
             }
         }
 
