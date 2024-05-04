@@ -52,6 +52,7 @@ function Home() {
         const timeSlots = document.querySelectorAll('.TimeSlots tr');
         const WeekDays = document.querySelectorAll('.DaysOfWeek th');
         for (let i = 0; i < timeSlots.length; i++) {
+            //console.log(timeSlots.length);
             const row = timeSlots[i];
             // Remove all but the first td item (to refresh)
             const cellsToRemove = row.querySelectorAll('td:not(:first-child)');
@@ -66,6 +67,7 @@ function Home() {
 
                 // Check if a course is in this timeslot
                 for(const course of schedule.courses){
+                    //console.log(course.courseCode);
                     const hasClass = course.meetingDays[j];
                     //console.log(hasClass);
                     if(hasClass){
@@ -81,6 +83,11 @@ function Home() {
                         //console.log(row.id);
                         //console.log(startTimeString);
                         if(row.id === startTimeString){
+                            //console.log("-----------------");
+                            //console.log(course.courseCode);
+                            //console.log(row.id);
+                            //console.log(startTimeString);
+                            //console.log("-----------------");
                             newCell.textContent = course.courseCode; // Set tooltip text
                             newCell.classList.add("courseTime");
                             newCell.setAttribute('data-tooltip', course.courseCode); // Set tooltip text
@@ -270,16 +277,16 @@ function Home() {
                                     <tr id="13:15"><td>  </td></tr>
                                     <tr id="13:30"><td>  </td></tr>
                                     <tr id="13:45"><td>  </td></tr>
-                                    <tr id="14:00 PM" className="time"><td> <strong>2:00</strong> </td></tr>
-                                    <tr id="14:15 PM"><td>  </td></tr>
+                                    <tr id="14:00" className="time"><td> <strong>2:00</strong> </td></tr>
+                                    <tr id="14:15"><td>  </td></tr>
                                     <tr id="14:30"><td>  </td></tr>
                                     <tr id="14:45"><td>  </td></tr>
-                                    <tr id="15:00 PM" className="time"><td> <strong>3:00</strong> </td></tr>
-                                    <tr id="15:15 PM"><td>  </td></tr>
+                                    <tr id="15:00" className="time"><td> <strong>3:00</strong> </td></tr>
+                                    <tr id="15:15"><td>  </td></tr>
                                     <tr id="15:30"><td>  </td></tr>
                                     <tr id="15:45"><td>  </td></tr>
-                                    <tr id="16:00 PM" className="time"><td> <strong>4:00</strong> </td></tr>
-                                    <tr id="16:15 PM"><td>  </td></tr>
+                                    <tr id="16:00" className="time"><td> <strong>4:00</strong> </td></tr>
+                                    <tr id="16:15"><td>  </td></tr>
                                     <tr id="16:30"><td>  </td></tr>
                                     <tr id="16:45"><td>  </td></tr>
                                     <tr id="17:00" className="time"><td> <strong>5:00</strong> </td></tr>
@@ -298,6 +305,10 @@ function Home() {
                                     <tr id="20:15"><td>  </td></tr>
                                     <tr id="20:30"><td>  </td></tr>
                                     <tr id="20:45"><td>  </td></tr>
+                                    <tr id="21:00" className="time"><td> <strong>9:00</strong> </td></tr>
+                                    <tr id="21:15"><td>  </td></tr>
+                                    <tr id="21:30"><td>  </td></tr>
+                                    <tr id="21:45"><td>  </td></tr>
                                 </tbody>
                             </table>
                         </div>

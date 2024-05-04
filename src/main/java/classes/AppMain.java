@@ -34,6 +34,8 @@ public class AppMain {
         Course c2 = results.get(1);
         Course c3 = results.get(5);
         Course c4 = results.get(9);
+        Course c5 = results.get(21);
+        Course c6 = results.get(23);
         System.out.println(c1.getCourseCode());
         System.out.println(c2.getCourseCode());
         System.out.println(c3.getCourseCode());
@@ -45,6 +47,8 @@ public class AppMain {
         defaultSchedule2.addCourse(c2);
         defaultSchedule.addCourse(c3);
         defaultSchedule2.addCourse(c4);
+        defaultSchedule.addCourse(c5);
+        defaultSchedule2.addCourse(c6);
 
         schedules.add(defaultSchedule);
         schedules.add(defaultSchedule2);
