@@ -572,7 +572,7 @@ public class Main {
                             System.out.println(results.get(classToAdd) + " is already in your course history");
                         }else{
                             System.out.println(results.get(classToAdd) + " was added to your course history.");
-                            writeActionLogger("added " +results.get(classToAdd));
+                            currentStudent.getCourseHistory().add(results.get(classToAdd));
                         }
                         // Clear the input
                         input.nextLine();
@@ -667,7 +667,7 @@ public class Main {
                             System.out.println(results.get(classToAdd) + " was added to your schedule.");
                             currentSchedule.addCourse(results.get(classToAdd));
                             numCourses++;
-                            writeActionLogger("added  " + results.get(classToAdd));
+                            writeActionLogger("added  class  " + results.get(classToAdd));
                         }
                         // Clear the input
                         input.nextLine();
