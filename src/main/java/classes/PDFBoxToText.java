@@ -19,18 +19,18 @@ public class PDFBoxToText {
     private static ArrayList<Course> courseCatalog;
     private static Schedule currentSchedule;
 
-    private static Schedule recomendedSpringFreshman;
-    private static Schedule recomendedSpringSophmore;
-    private static Schedule recomendedSpringJunior;
-    private static Schedule recomendedSpringSenior;
-    private static Schedule recomendedFallFreshman;
-    private static Schedule recomendedFallSopohmore;
-    private static Schedule recomendedFallJunior;
-    private static Schedule recomendedFallSenior;
+    private static Schedule recomendedSpring;
+    private static Schedule recomendedFall;
+
+    private static Schedule recomendedTest;
 
 
 
     public static void main(String[] args) {
+
+        RecomendedSchedule r = new RecomendedSchedule("CS.pdf");
+
+        currentSchedule = new Schedule(1,"Spring",2020,"default");
         try{
             readCSV();
         } catch(FileNotFoundException | ParseException e){
@@ -44,88 +44,33 @@ public class PDFBoxToText {
         String fall = makeFall(courses);
         String spring = makeSpring(courses);
 
-        System.out.println(fall);
-        System.out.println();
-        System.out.println(spring);
+        recomendedSpring = new Schedule(1,"Spring",2020,"recomendedSpring");
+        recomendedFall = new Schedule(1,"Fall",2020,"recomendedFall");
 
-        recomendedFallFreshman = new Schedule(1,"Fall",2020,"recomendedFallFreshman");
-        recomendedFallSopohmore = new Schedule(1,"Fall",2020,"recomendedFallSophmore");
-        recomendedFallJunior = new Schedule(1,"Fall",2020,"recomendedFallJunior");
-        recomendedFallSenior = new Schedule(1,"Fall",2020,"recomendedFallSeninor");
+        makeRecomended(fall, recomendedFall);
+        makeRecomended(spring, recomendedSpring);
 
-        recomendedSpringFreshman = new Schedule(1,"Spring",2020,"recomendedSpringFreshman");
-        recomendedSpringSophmore = new Schedule(1,"Spring",2020,"recomendedSpringSophmore");
-        recomendedSpringJunior = new Schedule(1,"Spring",2020,"recomendedSpringJunior");
-        recomendedSpringSenior = new Schedule(1,"Spring",2020,"recomendedSpringSenior");
+        r.makeRecomended();
 
-        makeRecomended(fall,recomendedFallFreshman,0,4);
-        makeRecomended(fall,recomendedFallSopohmore,5,11);
-        //change these to spring
-        makeRecomended(fall,recomendedSpringJunior,12,17);
-        makeRecomended(fall,recomendedFallSenior,18,22);
+        recomendedTest = r.getRecomendedFallFreshman();
 
-        makeRecomended(spring,recomendedSpringFreshman,0,4);
-        makeRecomended(spring,recomendedSpringSophmore,5,9);
-        makeRecomended(spring,recomendedFallJunior,11,16);
-        makeRecomended(spring,recomendedSpringSenior,17,22);
-
-        System.out.println(recomendedFallFreshman);
+        //System.out.println(recomendedFall);
         System.out.println();
-        System.out.println(recomendedFallSopohmore);
-        System.out.println();
-        System.out.println(recomendedSpringJunior);
-        System.out.println();
-        System.out.println(recomendedSpringSenior);
-        System.out.println();
-        System.out.println(recomendedSpringSenior);
+        //System.out.println(recomendedSpring);
+        System.out.println(recomendedTest);
 
     }
 
-    public static void makeRecomended(String s, Schedule sched, int start, int end){
+    public static void makeRecomended(String s, Schedule sched){
         String[] courses = s.split("\n");
 
-        for (int i = start; i < end; i++) {
-            if(courses[i].contains("…") || courses[i].contains("&")){
+        for(String t:courses){
+            if(t.contains("…") || t.contains("&")){
 
             }else{
-                searchRecomended(courses[i],sched);
+                searchRecomended(t,sched);
             }
         }
-    }
-
-    private static void searchRecomended(String q, Schedule sched) {
-        //User input setup
-        String query = q;
-        ArrayList<Filter> filters = new ArrayList<>();
-
-        //Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
-
-        // Create search instance
-        Search s = new Search("", courseCatalog, filters);
-
-        if (query.equals("Q")) {
-            return;
-        }
-        else if(query.equals("Science Elective")){
-            //add blank course
-        }else if(query.equals("General Elective")){
-            //add blank general elective
-        }
-         else {
-            // Search on the query
-            ArrayList<Course> results = s.search(query);
-            if (results.isEmpty()) {
-                return;
-            }
-            try {
-                sched.addCourse(results.get(0));
-                return;
-            } catch (Exception e) {
-                // Clear the input and do nothing -> go back to search
-                return;
-            }
-        }
-
     }
     public static String makeSpring(String[] s){
         StringBuilder st = new StringBuilder();
@@ -193,6 +138,7 @@ public class PDFBoxToText {
                     }
                 }
             }
+            System.out.println(stringBuilder);
             return stringBuilder.toString();
 
         }catch(IOException e){
@@ -283,6 +229,176 @@ public class PDFBoxToText {
             courseCatalog.add(newCourse);
 
         }
+    }
+
+    private static void searchRecomended(String q, Schedule sched) {
+        //User input setup
+        String query = q;
+        ArrayList<Filter> filters = new ArrayList<>();
+
+        Filter semesterFilter = new Filter(new ArrayList<String>(List.of(currentSchedule.getSemester(),"" + currentSchedule.getYear())), Filter.FilterType.SEMESTER);
+
+        // Create search instance
+        Search s = new Search("", courseCatalog, filters);
+
+            if (query.equals("Q")) {
+                return;
+            }
+            if (query.equals("F")) {
+                return;
+            } else {
+                // Search on the query
+                ArrayList<Course> results = s.search(query);
+                if (results.isEmpty()) {
+                    return;
+                }
+                try {
+                    sched.addCourse(results.get(0));
+                    return;
+                } catch (Exception e) {
+                    // Clear the input and do nothing -> go back to search
+                    return;
+                }
+            }
+
+    }
+
+    private static void removeFilter(Search s, ArrayList<Filter> filters){
+        Scanner input = new Scanner(System.in);
+        if(!filters.isEmpty()) {
+            System.out.println("Type the number of the filter to remove (or any non-integer character to go back): ");
+            int f = -1; // starter value for error checking
+            boolean isInt = true;
+            while (f == -1) {
+                try {
+                    f = input.nextInt();
+                } catch (Exception e) {
+                    isInt = false;
+                    break;
+                }
+                if (f >= filters.size() || f < 0) {
+                    System.out.println("Invalid Integer, try again");
+                    f = -1;
+                }
+            }
+            if(isInt) {
+                s.removeFilter(filters.get(f));
+            }
+        }else{
+            System.out.println("There are no applied filters.");
+        }
+    }
+
+    private static Filter addFilter(ArrayList<Filter> filters){
+        Scanner in = new Scanner(System.in);
+        System.out.println("To add a time filter typ 'T', to add a day filter type 'D'");
+        String type = in.next();
+        boolean filterApplied = false;
+
+        // Day filter
+        if(type.equals("D")){
+            // Check if already applied
+            for(Filter f : filters){
+                if(f.getType() == Filter.FilterType.DAY){
+                    System.out.println("Cannot have two day filters at once.");
+                    filterApplied = true;
+                }
+            }
+            if(!filterApplied) {
+                // Get the filter
+                ArrayList<String> days = new ArrayList<>();
+                System.out.println("Which days do you want to filter by? (format: 'M W F')");
+                String inDays = in.next();
+                Scanner parser = new Scanner(inDays);
+                parser.useDelimiter(" ");
+                while (parser.hasNext()) {
+                    String day = parser.next().toUpperCase();
+                    if(day.equals("M") || day.equals("T") || day.equals("W") || day.equals("R") || day.equals("F")){
+                        days.add(day);
+                    }
+                }
+                return new Filter(days, Filter.FilterType.DAY);
+            }
+        } else if(type.equals("T")){
+            // Check if already applied
+            for(Filter f : filters){
+                if(f.getType() == Filter.FilterType.TIME){
+                    System.out.println("Cannot have two time filters at once.");
+                    filterApplied = true;
+                }
+            }
+            if(!filterApplied) {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                ArrayList<String> filterTimes = new ArrayList<>();
+                Scanner times = new Scanner(System.in);
+                while(true) {
+                    System.out.println("Enter start time (format: hh:mm a)");
+                    String start = times.nextLine();
+                    try{
+                        dateFormat.parse(start);
+                        filterTimes.add(start);
+                        break;
+                    }catch(Exception e){
+                        System.out.println("Invalid Time, try again");
+                    }
+                }
+                while(true){
+                    System.out.println("Enter end time:");
+                    String end = times.nextLine();
+                    try{
+                        dateFormat.parse(end);
+                        filterTimes.add(end);
+                        break;
+                    }catch(Exception e){
+                        System.out.println("Invalid Time, try again");
+                    }
+                }
+                return new Filter(filterTimes, Filter.FilterType.TIME);
+            }
+        }
+        return null;
+    }
+
+    private static String displayCourse(Course c){
+
+        String s = c.getCourseCode() + " " + String.format("%1$40s", c.getName());
+        String days = "";
+        for(int i = 0; i < c.getMeetingDays().length; i++){
+            boolean day = c.getMeetingDays()[i];
+            if(day){
+                if(i == 0){
+                    days += " M";
+                }else if(i == 1){
+                    days += " T";
+                }else if(i == 2){
+                    days += " W";
+                }else if(i == 3){
+                    days += " R";
+                }else if(i == 4){
+                    days += " F";
+                }
+            }
+        }
+        s += String.format("%1$10s", days);
+        s += "  ";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        if(c.getMeetingTimes() != null) {
+            boolean b = false; // tells if we need to break -> i.e. we have the time
+            for(int k = 0; k < 5; k++) {
+                if(b){
+                    break;
+                }
+                for (int i = 0; i < 5; i++) {
+                    Date[] times = c.getMeetingTimes()[i];
+                    if (times[0] != null) {
+                        s += " " + dateFormat.format(times[0]) + " - " + dateFormat.format(times[1]);
+                        b = true;
+                        break;
+                    }
+                }
+            }
+        }
+        return s;
     }
 
     private static boolean isAllUpper(String s) {

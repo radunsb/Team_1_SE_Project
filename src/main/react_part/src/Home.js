@@ -23,6 +23,7 @@ function Home() {
     const fetchCurrentSchedule = async () => {
         const schedule = await getCurrentSchedule();
         setCurrentSchedule(schedule);
+        setSemester(schedule.semester);
         setScheduleName(schedule.scheduleName);
         setScheduleTitle(schedule.scheduleName);
         updateCalendar(schedule);
@@ -51,6 +52,7 @@ function Home() {
         const timeSlots = document.querySelectorAll('.TimeSlots tr');
         const WeekDays = document.querySelectorAll('.DaysOfWeek th');
         for (let i = 0; i < timeSlots.length; i++) {
+            //console.log(timeSlots.length);
             const row = timeSlots[i];
             // Remove all but the first td item (to refresh)
             const cellsToRemove = row.querySelectorAll('td:not(:first-child)');
@@ -65,6 +67,7 @@ function Home() {
 
                 // Check if a course is in this timeslot
                 for(const course of schedule.courses){
+                    //console.log(course.courseCode);
                     const hasClass = course.meetingDays[j];
                     //console.log(hasClass);
                     if(hasClass){
@@ -80,6 +83,11 @@ function Home() {
                         //console.log(row.id);
                         //console.log(startTimeString);
                         if(row.id === startTimeString){
+                            //console.log("-----------------");
+                            //console.log(course.courseCode);
+                            //console.log(row.id);
+                            //console.log(startTimeString);
+                            //console.log("-----------------");
                             newCell.textContent = course.courseCode; // Set tooltip text
                             newCell.classList.add("courseTime");
                             newCell.setAttribute('data-tooltip', course.courseCode); // Set tooltip text
@@ -174,6 +182,28 @@ function Home() {
         fetchCurrentSchedule(); // Refetch the current schedule
     }
 
+    const [semester, setSemester] = useState("FALL");
+    const switchSemester = async () => {
+
+        if(currentSchedule.courses.length !== 0){
+            alert("Cannot Change The Semester of a Schedule that has Courses in it!");
+            return;
+        }
+
+        const semester = currentSchedule.semester;
+        let changeTo;
+        if(semester === "FALL"){
+            changeTo = "SPRING";
+            setSemester("SPRING");
+        }else{
+            changeTo = "FALL";
+            setSemester("FALL");
+        }
+        const url = `http:\/\/localhost:7979/changeScheduleSemester/${changeTo}`;
+        await fetch(url);
+        fetchCurrentSchedule();
+    }
+
     return (
         <div>
             {searchClicked ? (
@@ -205,6 +235,9 @@ function Home() {
                                 value={scheduleTitle}
                                 onChange={scheduleTitleChange}
                             />
+                            <div className="semesterBtn">
+                                <Button className="switchSemesterBtn btn btn-danger" onClick={switchSemester}> {semester} </Button>
+                            </div>
                         </div>
                         <div className="ScheduleView">
                         <div className="TableContainer">
@@ -244,16 +277,16 @@ function Home() {
                                     <tr id="13:15"><td>  </td></tr>
                                     <tr id="13:30"><td>  </td></tr>
                                     <tr id="13:45"><td>  </td></tr>
-                                    <tr id="14:00 PM" className="time"><td> <strong>2:00</strong> </td></tr>
-                                    <tr id="14:15 PM"><td>  </td></tr>
+                                    <tr id="14:00" className="time"><td> <strong>2:00</strong> </td></tr>
+                                    <tr id="14:15"><td>  </td></tr>
                                     <tr id="14:30"><td>  </td></tr>
                                     <tr id="14:45"><td>  </td></tr>
-                                    <tr id="15:00 PM" className="time"><td> <strong>3:00</strong> </td></tr>
-                                    <tr id="15:15 PM"><td>  </td></tr>
+                                    <tr id="15:00" className="time"><td> <strong>3:00</strong> </td></tr>
+                                    <tr id="15:15"><td>  </td></tr>
                                     <tr id="15:30"><td>  </td></tr>
                                     <tr id="15:45"><td>  </td></tr>
-                                    <tr id="16:00 PM" className="time"><td> <strong>4:00</strong> </td></tr>
-                                    <tr id="16:15 PM"><td>  </td></tr>
+                                    <tr id="16:00" className="time"><td> <strong>4:00</strong> </td></tr>
+                                    <tr id="16:15"><td>  </td></tr>
                                     <tr id="16:30"><td>  </td></tr>
                                     <tr id="16:45"><td>  </td></tr>
                                     <tr id="17:00" className="time"><td> <strong>5:00</strong> </td></tr>
@@ -272,6 +305,10 @@ function Home() {
                                     <tr id="20:15"><td>  </td></tr>
                                     <tr id="20:30"><td>  </td></tr>
                                     <tr id="20:45"><td>  </td></tr>
+                                    <tr id="21:00" className="time"><td> <strong>9:00</strong> </td></tr>
+                                    <tr id="21:15"><td>  </td></tr>
+                                    <tr id="21:30"><td>  </td></tr>
+                                    <tr id="21:45"><td>  </td></tr>
                                 </tbody>
                             </table>
                         </div>
